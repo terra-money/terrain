@@ -29,13 +29,7 @@ Terrain will help you:
 <!-- toc -->
 * [Terrain](#terrain)
 * [Setup](#setup)
-* [set 'stable' as default release channel (used when updating rust)](#set-stable-as-default-release-channel-used-when-updating-rust)
-* [add wasm as compilation target](#add-wasm-as-compilation-target)
-* [for generating contract](#for-generating-contract)
 * [Getting Started](#getting-started)
-* [for first time, you might want to `npm install -g @iboss/terrain`](#for-first-time-you-might-want-to-npm-install--g-ibossterrain)
-* [or run `npx @iboss/terrain new my-terra-dapp`](#or-run-npx-ibossterrain-new-my-terra-dapp)
-* [since `terrain` npm module name is occupied by another module](#since-terrain-npm-module-name-is-occupied-by-another-module)
 * [Migrating CosmWasm contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
 * [Usage](#usage)
 * [Commands](#commands)
@@ -61,14 +55,21 @@ While WASM smart contracts can theoretically be written in any programming langu
 
 Then run the following commands
 
+**set `stable` as default release channel (used when updating rust)**
+
 ```sh
-# set 'stable' as default release channel (used when updating rust)
 rustup default stable
+```
 
-# add wasm as compilation target
+**add wasm as compilation target**
+
+```sh
 rustup target add wasm32-unknown-unknown
+```
 
-# for generating contract
+**for generating contracts**
+
+```sh
 cargo install cargo-generate --features vendored-openssl
 cargo install cargo-run-script
 ```
@@ -77,10 +78,11 @@ cargo install cargo-run-script
 
 Assumed that you have [npm](https://www.npmjs.com/) installed, let's generate our first app
 
+For the first time, you will need to run `npm install -g @terra-money/terrain`
+or `npx @terra-money/terrain new my-terra-dapp`
+since `terrain` npm module name is occupied by another module.
+
 ```sh
-# for first time, you might want to `npm install -g @iboss/terrain` 
-# or run `npx @iboss/terrain new my-terra-dapp`
-# since `terrain` npm module name is occupied by another module
 npx terrain new my-terra-dapp
 cd my-terra-dapp
 npm install
@@ -479,8 +481,8 @@ Migrate the contract.
 
 ```
 USAGE
-  $ terrain contract:migrate [CONTRACT] --signer <value> [--network <value>] [--config-path <value>] [--refs-path
-    <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>]
+  $ terrain contract:migrate [CONTRACT] --signer <value> [--no-rebuild] [--network <value>] [--config-path <value>]
+    [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>]
 
 FLAGS
   --code-id=<value>      target code id for migration
@@ -488,6 +490,7 @@ FLAGS
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra]
+  --no-rebuild           deploy the wasm bytecode as is.
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       (required)
 
@@ -543,7 +546,7 @@ DESCRIPTION
   display help for terrain
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.18/src/commands/help.ts)_
 
 ## `terrain new NAME`
 
