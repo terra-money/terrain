@@ -8,6 +8,7 @@ import {
   MsgMigrateContract,
   MsgStoreCode,
   Wallet,
+  TxError,
 } from "@terra-money/terra.js";
 import { execSync } from "child_process";
 import {
@@ -66,7 +67,7 @@ export const storeCode = async ({
   });
 
   const result = await lcd.tx.broadcastSync(storeCodeTx);
-  if (typeof result.code !== 'undefined') {
+  if ('code' in result) {
     return cli.error(result.raw_log);
   }
 
@@ -139,14 +140,14 @@ export const instantiate = async ({
   contract,
   codeId,
   instanceId,
-  sqeuence,
+  sequence,
 }: InstantiateParams) => {
   const instantiation = conf.instantiation;
 
   cli.action.start(`instantiating contract with code id: ${codeId}`);
 
   // Allow manual account sequences.
-  const manualSequence = sqeuence || (await signer.sequence());
+  const manualSequence = sequence || (await signer.sequence());
 
   const instantiateTx = await signer.createAndSignTx({
     sequence: manualSequence,

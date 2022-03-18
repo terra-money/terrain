@@ -8,6 +8,10 @@ export default class ContractMigrate extends Command {
   static description = "Migrate the contract.";
 
   static flags = {
+    "no-rebuild": flags.boolean({
+      description: "deploy the wasm bytecode as is.",
+      default: false,
+    }),
     network: flags.string({ default: "localterra" }),
     "config-path": flags.string({ default: "./config.terrain.json" }),
     "refs-path": flags.string({ default: "./refs.terrain.json" }),
