@@ -63,6 +63,9 @@ export default class Deploy extends Command {
       lcd: lcd,
     });
 
+    // pause for account sequence to update.
+    await new Promise(r => setTimeout(r, 1000));
+
     const admin = flags["set-signer-as-admin"]
       ? signer.key.accAddress
       : flags["admin-address"];
