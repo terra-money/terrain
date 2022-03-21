@@ -24,7 +24,6 @@ Terrain will help you:
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/terrain.svg)](https://npmjs.org/package/terrain)
 [![Downloads/week](https://img.shields.io/npm/dw/terrain.svg)](https://npmjs.org/package/terrain)
-[![License](https://img.shields.io/npm/l/terrain.svg)](https://github.com/https://github.com/iboss-ptk/terrain/terrain/blob/master/package.json)
 
 <!-- toc -->
 * [Terrain](#terrain)
@@ -252,7 +251,7 @@ You can use the lib to create task as well:
 ```js
 // tasks/example-with-lib.js
 
-const { task } = require("@iboss/terrain");
+const { task } = require("@terra-money/terrain");
 const lib = require("../lib");
 
 task(async (env) => {
@@ -282,7 +281,7 @@ Also, you can access `terrajs` in the console or import it in the lib or task to
 ```js
 // tasks/example-custom-logic.js
 
-const { task, terrajs } = require("@iboss/terrain");
+const { task, terrajs } = require("@terra-money/terrain");
 
 // terrajs is basically re-exported terra.js (https://terra-money.github.io/terra.js/)
 
