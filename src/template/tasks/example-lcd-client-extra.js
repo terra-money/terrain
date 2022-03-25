@@ -1,4 +1,4 @@
-const { task } = require("@iboss/terrain");
+const { task } = require("@terra-money/terrain");
 
 task(async ({ wallets, refs, config, client }) => {
   // query is a thin wrapper of contract query

@@ -1,4 +1,4 @@
-const { task } = require("@iboss/terrain");
+const { task } = require("@terra-money/terrain");
 const lib = require("../lib");
 
 task(async (env) => {

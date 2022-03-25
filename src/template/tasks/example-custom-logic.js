@@ -1,4 +1,4 @@
-const { task, terrajs } = require("@iboss/terrain");
+const { task, terrajs } = require("@terra-money/terrain");
 
 // terrajs is basically re-exported terra.js (https://terra-money.github.io/terra.js/)
 
