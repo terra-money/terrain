@@ -63,7 +63,6 @@ export const storeCode = async ({
         ? new MsgMigrateCode(signer.key.accAddress, codeId, wasmByteCode)
         : new MsgStoreCode(signer.key.accAddress, wasmByteCode),
     ],
-    fee: new Fee(store.fee.gasLimit, store.fee.amount),
   });
 
   const result = await lcd.tx.broadcastSync(storeCodeTx);
@@ -159,7 +158,6 @@ export const instantiate = async ({
         instantiation.instantiateMsg
       ),
     ],
-    fee: new Fee(instantiation.fee.gasLimit, instantiation.fee.amount),
   });
 
   const resInstant = await lcd.tx.broadcast(instantiateTx);
@@ -232,7 +230,6 @@ export const migrate = async ({
         instantiation.instantiateMsg
       ),
     ],
-    fee: new Fee(instantiation.fee.gasLimit, instantiation.fee.amount),
   });
 
   const resInstant = await lcd.tx.broadcast(migrateTx);
