@@ -18,6 +18,7 @@ import {
   setCodeId,
   setContractAddress,
 } from "../config";
+import { waitForInclusionInBlock } from './waitForInclusionBlock';
 import * as fs from "fs-extra";
 import { cli } from "cli-ux";
 import * as YAML from "yaml";
@@ -34,7 +35,6 @@ type StoreCodeParams = {
   codeId?: number;
 };
 export const storeCode = async ({
-  conf,
   noRebuild,
   contract,
   signer,
@@ -56,7 +56,6 @@ export const storeCode = async ({
 
   cli.action.start("storing wasm bytecode on chain");
 
-  const store = conf.store;
   const storeCodeTx = await signer.createAndSignTx({
     msgs: [
       typeof codeId !== "undefined"
@@ -70,21 +69,7 @@ export const storeCode = async ({
     return cli.error(result.raw_log);
   }
 
-  let res;
-  for (let i = 0; i <= 50; i++) {
-    
-    try {
-      res = await lcd.tx.txInfo(result.txhash);
-    } catch (error) {
-      // NOOP
-    }
-
-    if (res) {
-      break;
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
+  const res = await waitForInclusionInBlock(lcd, result.txhash);
 
   cli.action.stop()
 
@@ -160,15 +145,16 @@ export const instantiate = async ({
     ],
   });
 
-  const resInstant = await lcd.tx.broadcast(instantiateTx);
+  const result = await lcd.tx.broadcastSync(instantiateTx);
+  const res = await waitForInclusionInBlock(lcd, result.txhash);
 
   let log = [];
   try {
-    log = JSON.parse(resInstant.raw_log);
+    log = JSON.parse(res.raw_log);
   } catch (error) {
     cli.action.stop();
     if (error instanceof SyntaxError) {
-      cli.error(resInstant.raw_log);
+      cli.error(res.raw_log);
     } else {
       cli.error(`Unexpcted Error: ${error}`);
     }
