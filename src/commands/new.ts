@@ -52,7 +52,7 @@ export default class New extends Command {
     await new Promise((resolve, reject) => {
       request
         .get(
-          "https://github.com/iboss-ptk/terrain-frontend-template/archive/refs/heads/main.zip"
+          "https://github.com/terra-money/terrain-frontend-template/archive/refs/heads/main.zip"
         )
         .on("error", (error) => {
           reject(error);
