@@ -1,19 +1,19 @@
 
 export const waitForInclusionInBlock = async (lcd, txHash) => {
-  let res;
+  let res
   for (let i = 0; i <= 50; i++) {
     try {
-      res = await lcd.tx.txInfo(txHash);
+      res = await lcd.tx.txInfo(txHash)
     } catch (error) {
       // NOOP
     }
 
     if (res) {
-      break;
+      break
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 500))
   }
 
-  return res;
-};
+  return res
+}

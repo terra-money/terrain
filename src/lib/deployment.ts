@@ -9,19 +9,19 @@ import {
   MsgStoreCode,
   Wallet,
   TxError,
-} from "@terra-money/terra.js";
-import { execSync } from "child_process";
+} from '@terra-money/terra.js'
+import {execSync} from 'child_process'
 import {
   ContractConfig,
   loadRefs,
   saveRefs,
   setCodeId,
   setContractAddress,
-} from "../config";
-import { waitForInclusionInBlock } from './waitForInclusionBlock';
-import * as fs from "fs-extra";
-import { cli } from "cli-ux";
-import * as YAML from "yaml";
+} from '../config'
+import {waitForInclusionInBlock} from './waitForInclusionBlock'
+import * as fs from 'fs-extra'
+import {cli} from 'cli-ux'
+import * as YAML from 'yaml'
 
 type StoreCodeParams = {
   conf: ContractConfig;
@@ -43,63 +43,63 @@ export const storeCode = async ({
   lcd,
   codeId,
 }: StoreCodeParams) => {
-  process.chdir(`contracts/${contract}`);
+  process.chdir(`contracts/${contract}`)
 
   if (!noRebuild) {
-    execSync("cargo wasm", { stdio: "inherit" });
-    execSync("cargo run-script optimize", { stdio: "inherit" });
+    execSync('cargo wasm', {stdio: 'inherit'})
+    execSync('cargo run-script optimize', {stdio: 'inherit'})
   }
 
   const wasmByteCode = fs
-    .readFileSync(`artifacts/${contract.replace(/-/g, "_")}.wasm`)
-    .toString("base64");
+  .readFileSync(`artifacts/${contract.replace(/-/g, '_')}.wasm`)
+  .toString('base64')
 
-  cli.action.start("storing wasm bytecode on chain");
+  cli.action.start('storing wasm bytecode on chain')
 
   const storeCodeTx = await signer.createAndSignTx({
     msgs: [
-      typeof codeId !== "undefined"
-        ? new MsgMigrateCode(signer.key.accAddress, codeId, wasmByteCode)
-        : new MsgStoreCode(signer.key.accAddress, wasmByteCode),
+      typeof codeId !== 'undefined' ?
+        new MsgMigrateCode(signer.key.accAddress, codeId, wasmByteCode) :
+        new MsgStoreCode(signer.key.accAddress, wasmByteCode),
     ],
-  });
+  })
 
-  const result = await lcd.tx.broadcastSync(storeCodeTx);
+  const result = await lcd.tx.broadcastSync(storeCodeTx)
   if ('code' in result) {
-    return cli.error(result.raw_log);
+    return cli.error(result.raw_log)
   }
 
-  const res = await waitForInclusionInBlock(lcd, result.txhash);
+  const res = await waitForInclusionInBlock(lcd, result.txhash)
 
   cli.action.stop()
 
   if (typeof res === 'undefined') {
-    return cli.error('transaction not included in a block before timeout');
+    return cli.error('transaction not included in a block before timeout')
   }
 
   try {
     const savedCodeId = JSON.parse((res && res.raw_log) || '')[0]
-      .events.find((msg: { type: string }) => msg.type === "store_code")
-      .attributes.find((attr: { key: string }) => attr.key === "code_id").value;
+    .events.find((msg: { type: string }) => msg.type === 'store_code')
+    .attributes.find((attr: { key: string }) => attr.key === 'code_id').value
 
-    process.chdir("../..");
+    process.chdir('../..')
     const updatedRefs = setCodeId(
       network,
       contract,
       savedCodeId
-    )(loadRefs(refsPath));
-    saveRefs(updatedRefs, refsPath);
-    cli.log(`code is stored at code id: ${savedCodeId}`);
+    )(loadRefs(refsPath))
+    saveRefs(updatedRefs, refsPath)
+    cli.log(`code is stored at code id: ${savedCodeId}`)
 
-    return savedCodeId;
+    return savedCodeId
   } catch (error) {
     if (error instanceof SyntaxError) {
-      cli.error(res.raw_log);
+      cli.error(res.raw_log)
     } else {
-      cli.error(`Unexpcted Error: ${error}`);
+      cli.error(`Unexpcted Error: ${error}`)
     }
   }
-};
+}
 
 type InstantiateParams = {
   conf: ContractConfig;
@@ -126,12 +126,12 @@ export const instantiate = async ({
   instanceId,
   sequence,
 }: InstantiateParams) => {
-  const instantiation = conf.instantiation;
+  const instantiation = conf.instantiation
 
-  cli.action.start(`instantiating contract with code id: ${codeId}`);
+  cli.action.start(`instantiating contract with code id: ${codeId}`)
 
   // Allow manual account sequences.
-  const manualSequence = sequence || (await signer.sequence());
+  const manualSequence = sequence || (await signer.sequence())
 
   const instantiateTx = await signer.createAndSignTx({
     sequence: manualSequence,
@@ -143,41 +143,41 @@ export const instantiate = async ({
         instantiation.instantiateMsg
       ),
     ],
-  });
+  })
 
-  const result = await lcd.tx.broadcastSync(instantiateTx);
-  const res = await waitForInclusionInBlock(lcd, result.txhash);
+  const result = await lcd.tx.broadcastSync(instantiateTx)
+  const res = await waitForInclusionInBlock(lcd, result.txhash)
 
-  let log = [];
+  let log = []
   try {
-    log = JSON.parse(res.raw_log);
+    log = JSON.parse(res.raw_log)
   } catch (error) {
-    cli.action.stop();
+    cli.action.stop()
     if (error instanceof SyntaxError) {
-      cli.error(res.raw_log);
+      cli.error(res.raw_log)
     } else {
-      cli.error(`Unexpcted Error: ${error}`);
+      cli.error(`Unexpcted Error: ${error}`)
     }
   }
 
-  cli.action.stop();
+  cli.action.stop()
 
   const contractAddress = log[0].events
-    .find((event: { type: string }) => event.type === "instantiate_contract")
-    .attributes.find(
-      (attr: { key: string }) => attr.key === "contract_address"
-    ).value;
+  .find((event: { type: string }) => event.type === 'instantiate_contract')
+  .attributes.find(
+    (attr: { key: string }) => attr.key === 'contract_address'
+  ).value
 
   const updatedRefs = setContractAddress(
     network,
     contract,
     instanceId,
     contractAddress
-  )(loadRefs(refsPath));
-  saveRefs(updatedRefs, refsPath);
+  )(loadRefs(refsPath))
+  saveRefs(updatedRefs, refsPath)
 
-  cli.log(YAML.stringify(log));
-};
+  cli.log(YAML.stringify(log))
+}
 
 type MigrateParams = {
   conf: ContractConfig;
@@ -200,12 +200,12 @@ export const migrate = async ({
   network,
   instanceId,
 }: MigrateParams) => {
-  const instantiation = conf.instantiation;
-  const refs = loadRefs(refsPath);
+  const instantiation = conf.instantiation
+  const refs = loadRefs(refsPath)
 
-  const contractAddress = refs[network][contract].contractAddresses[instanceId];
+  const contractAddress = refs[network][contract].contractAddresses[instanceId]
 
-  cli.action.start(`migrating contract with address ${contractAddress} to code id: ${codeId}`);
+  cli.action.start(`migrating contract with address ${contractAddress} to code id: ${codeId}`)
 
   const migrateTx = await signer.createAndSignTx({
     msgs: [
@@ -216,31 +216,31 @@ export const migrate = async ({
         instantiation.instantiateMsg
       ),
     ],
-  });
+  })
 
-  const resInstant = await lcd.tx.broadcast(migrateTx);
+  const resInstant = await lcd.tx.broadcast(migrateTx)
 
-  let log = [];
+  let log = []
   try {
-    log = JSON.parse(resInstant.raw_log);
+    log = JSON.parse(resInstant.raw_log)
   } catch (error) {
-    cli.action.stop();
+    cli.action.stop()
     if (error instanceof SyntaxError) {
-      cli.error(resInstant.raw_log);
+      cli.error(resInstant.raw_log)
     } else {
-      cli.error(`Unexpcted Error: ${error}`);
+      cli.error(`Unexpcted Error: ${error}`)
     }
   }
 
-  cli.action.stop();
+  cli.action.stop()
 
   const updatedRefs = setContractAddress(
     network,
     contract,
     instanceId,
     contractAddress
-  )(loadRefs(refsPath));
-  saveRefs(updatedRefs, refsPath);
+  )(loadRefs(refsPath))
+  saveRefs(updatedRefs, refsPath)
 
-  cli.log(YAML.stringify(log));
-};
+  cli.log(YAML.stringify(log))
+}
