@@ -69,8 +69,7 @@ function runScript(
 ) {
   // keep track of whether callback has been invoked to prevent multiple invocations
   let invoked = false
-
-  const cProcess = childProcess.fork(scriptPath, {env})
+  const cProcess = childProcess.fork(scriptPath, { env: { ...process.env, ...env } });
 
   // listen for errors as they may prevent the exit event from firing
   cProcess.on('error', function (err) {
