@@ -46,8 +46,8 @@ export const storeCode = async ({
   process.chdir(`contracts/${contract}`);
 
   if (!noRebuild) {
-    execSync("cargo wasm", { stdio: "inherit" });
-    execSync("cargo run-script optimize", { stdio: "inherit" });
+    execSync("cargo wasm", { stdio: "inherit", env: process.env });
+    execSync("cargo run-script optimize", { stdio: "inherit", env: process.env });
   }
 
   const wasmByteCode = fs
