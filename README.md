@@ -73,9 +73,15 @@ cargo install cargo-generate --features vendored-openssl
 cargo install cargo-run-script
 ```
 
+## Setup Node
+
+To run Terrain you need to install Node.js and NPM. We recommend the **[Node.js LTS 16](https://nodejs.org/en/download/)** and **Node Package Manager** (NPM) 8.5.0 which is the default installed version for Node.js LTS 16.
+
+> If you encounter the next error code: <b>error:0308010C:digital envelope routines::unsupported</b> use LTS Node.js 16.
+
 # Getting Started
 
-Assumed that you have [npm](https://www.npmjs.com/) installed, let's generate our first app
+Assumed that you have setup the node env, let's generate our first app
 
 For the first time, you will need to run `npm install -g @terra-money/terrain`
 or `npx @terra-money/terrain new my-terra-dapp`
@@ -303,7 +309,7 @@ On Terra it is possible to initilize contracts as migratable. This functionallit
 
 We'll be using Terrain, a Terra development suite to ease the scaffolding, deployment, and migration of our contracts. 
 
-This tutorial builds on top of the Terrain quick start guide: https://docs.terra.money/Tutorials/Quick-start/Initial-setup.html
+[This tutorial](https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html) builds on top of the Terrain Quick Start Guide.
 
 ## Adding MigrateMsg to contract
 
