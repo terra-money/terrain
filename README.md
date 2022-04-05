@@ -314,7 +314,7 @@ On Terra it is possible to initilize contracts as migratable. This functionallit
 
 We'll be using Terrain, a Terra development suite to ease the scaffolding, deployment, and migration of our contracts. 
 
-This tutorial builds on top of the Terrain quick start guide: https://docs.terra.money/Tutorials/Quick-start/Initial-setup.html
+[This tutorial](https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html) builds on top of the Terrain Quick Start Guide.
 
 ## Adding MigrateMsg to contract
 
