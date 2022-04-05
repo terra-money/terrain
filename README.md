@@ -73,9 +73,20 @@ cargo install cargo-generate --features vendored-openssl
 cargo install cargo-run-script
 ```
 
+## Setup Node
+
+To run Terrain you need to install NodeJs and NPM. We recomment the **[NodeJs LTS 16](https://nodejs.org/en/download/)** and **Node Package Manager** (NPM) 8.5.0 which is the deafult installed version for NodeJs LTS 16.
+
+<sup>
+* If you are using Node 17 you have to take in consideration the issue https://github.com/bitcoinjs/bip32/issues/59 and run the environment with  <b>--openssl-legacy-provider</b> or export the variable before executing the env <b>export NODE_OPTIONS=--openssl-legacy-provider.</b>
+</sup>
+
+
+
+
 # Getting Started
 
-Assumed that you have [npm](https://www.npmjs.com/) installed, let's generate our first app
+Assumed that you have setup the node env, let's generate our first app
 
 For the first time, you will need to run `npm install -g @terra-money/terrain`
 or `npx @terra-money/terrain new my-terra-dapp`
