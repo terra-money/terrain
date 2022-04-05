@@ -77,7 +77,7 @@ cargo install cargo-run-script
 
 To run Terrain you need to install Node.js and NPM. We recommend the **[Node.js LTS 16](https://nodejs.org/en/download/)** and **Node Package Manager** (NPM) 8.5.0 which is the default installed version for Node.js LTS 16.
 
-> If you encounter the next below error code: <b>error:0308010C:digital envelope routines::unsupported</b> use LTS Node.js 16.
+> If you encounter the next error code: <b>error:0308010C:digital envelope routines::unsupported</b> use LTS Node.js 16.
 
 # Getting Started
 
