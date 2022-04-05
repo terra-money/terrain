@@ -9,22 +9,18 @@ export default class Test extends Command {
   ];
 
   static flags = {
-    "--no-fail-fast": flags.string({ description: "Run all tests regardless of failure." })
+    "no-fail-fast": flags.boolean({ default: false, description: "Run all tests regardless of failure." })
   };
 
-  static args = [{ name: "name", required: true }];
+  static args = [{ name: "contract-name", required: true }];
 
-  async run() {
+  async run() { // TODO use fs.existsSync() to call terrain test from any project directory level
     const { args, flags } = this.parse(Test);
 
-    process.chdir(`contracts/${args.name}`);
-    
-
-    // include --no-fail-fast as optional flag 
-
+    process.chdir(`contracts/${args["contract-name"]}`);
 
     execSync(
-      `cargo test ${flags["--no-fail-fast"]}`, { stdio: "inherit" }
+      `cargo test ${flags["no-fail-fast"] ? "--no-fail-fast" : ""}`, { stdio: "inherit" }
     );
   }
 }
