@@ -75,7 +75,7 @@ cargo install cargo-run-script
 
 ## Setup Node
 
-To run Terrain you need to install NodeJs and NPM. We recomment the **[NodeJs LTS 16](https://nodejs.org/en/download/)** and **Node Package Manager** (NPM) 8.5.0 which is the deafult installed version for NodeJs LTS 16.
+To run Terrain you need to install Node.js and NPM. We recommend the **[Node.js LTS 16](https://nodejs.org/en/download/)** and **Node Package Manager** (NPM) 8.5.0 which is the default installed version for Node.js LTS 16.
 
 <sup>
 * If you are using Node 17 you have to take in consideration the issue https://github.com/bitcoinjs/bip32/issues/59 and run the environment with  <b>--openssl-legacy-provider</b> or export the variable before executing the env <b>export NODE_OPTIONS=--openssl-legacy-provider.</b>
