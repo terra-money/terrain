@@ -1,4 +1,3 @@
-
 export const waitForInclusionInBlock = async (lcd, txHash) => {
   let res;
   for (let i = 0; i <= 50; i++) {

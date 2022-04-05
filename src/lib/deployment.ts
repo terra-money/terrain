@@ -9,19 +9,19 @@ import {
   MsgStoreCode,
   Wallet,
   TxError,
-} from "@terra-money/terra.js";
-import { execSync } from "child_process";
+} from '@terra-money/terra.js';
+import { execSync } from 'child_process';
+import * as fs from 'fs-extra';
+import { cli } from 'cli-ux';
+import * as YAML from 'yaml';
+import { waitForInclusionInBlock } from './waitForInclusionBlock';
 import {
   ContractConfig,
   loadRefs,
   saveRefs,
   setCodeId,
   setContractAddress,
-} from "../config";
-import { waitForInclusionInBlock } from './waitForInclusionBlock';
-import * as fs from "fs-extra";
-import { cli } from "cli-ux";
-import * as YAML from "yaml";
+} from '../config';
 
 type StoreCodeParams = {
   conf: ContractConfig;
@@ -46,19 +46,19 @@ export const storeCode = async ({
   process.chdir(`contracts/${contract}`);
 
   if (!noRebuild) {
-    execSync("cargo wasm", { stdio: "inherit", env: process.env });
-    execSync("cargo run-script optimize", { stdio: "inherit", env: process.env });
+    execSync('cargo wasm', { stdio: 'inherit', env: process.env });
+    execSync('cargo run-script optimize', { stdio: 'inherit', env: process.env });
   }
 
   const wasmByteCode = fs
-    .readFileSync(`artifacts/${contract.replace(/-/g, "_")}.wasm`)
-    .toString("base64");
+    .readFileSync(`artifacts/${contract.replace(/-/g, '_')}.wasm`)
+    .toString('base64');
 
-  cli.action.start("storing wasm bytecode on chain");
+  cli.action.start('storing wasm bytecode on chain');
 
   const storeCodeTx = await signer.createAndSignTx({
     msgs: [
-      typeof codeId !== "undefined"
+      typeof codeId !== 'undefined'
         ? new MsgMigrateCode(signer.key.accAddress, codeId, wasmByteCode)
         : new MsgStoreCode(signer.key.accAddress, wasmByteCode),
     ],
@@ -71,7 +71,7 @@ export const storeCode = async ({
 
   const res = await waitForInclusionInBlock(lcd, result.txhash);
 
-  cli.action.stop()
+  cli.action.stop();
 
   if (typeof res === 'undefined') {
     return cli.error('transaction not included in a block before timeout');
@@ -79,14 +79,14 @@ export const storeCode = async ({
 
   try {
     const savedCodeId = JSON.parse((res && res.raw_log) || '')[0]
-      .events.find((msg: { type: string }) => msg.type === "store_code")
-      .attributes.find((attr: { key: string }) => attr.key === "code_id").value;
+      .events.find((msg: { type: string }) => msg.type === 'store_code')
+      .attributes.find((attr: { key: string }) => attr.key === 'code_id').value;
 
-    process.chdir("../..");
+    process.chdir('../..');
     const updatedRefs = setCodeId(
       network,
       contract,
-      savedCodeId
+      savedCodeId,
     )(loadRefs(refsPath));
     saveRefs(updatedRefs, refsPath);
     cli.log(`code is stored at code id: ${savedCodeId}`);
@@ -126,7 +126,7 @@ export const instantiate = async ({
   instanceId,
   sequence,
 }: InstantiateParams) => {
-  const instantiation = conf.instantiation;
+  const { instantiation } = conf;
 
   cli.action.start(`instantiating contract with code id: ${codeId}`);
 
@@ -140,7 +140,7 @@ export const instantiate = async ({
         signer.key.accAddress,
         admin, // can migrate
         codeId,
-        instantiation.instantiateMsg
+        instantiation.instantiateMsg,
       ),
     ],
   });
@@ -163,16 +163,16 @@ export const instantiate = async ({
   cli.action.stop();
 
   const contractAddress = log[0].events
-    .find((event: { type: string }) => event.type === "instantiate_contract")
+    .find((event: { type: string }) => event.type === 'instantiate_contract')
     .attributes.find(
-      (attr: { key: string }) => attr.key === "contract_address"
+      (attr: { key: string }) => attr.key === 'contract_address',
     ).value;
 
   const updatedRefs = setContractAddress(
     network,
     contract,
     instanceId,
-    contractAddress
+    contractAddress,
   )(loadRefs(refsPath));
   saveRefs(updatedRefs, refsPath);
 
@@ -200,7 +200,7 @@ export const migrate = async ({
   network,
   instanceId,
 }: MigrateParams) => {
-  const instantiation = conf.instantiation;
+  const { instantiation } = conf;
   const refs = loadRefs(refsPath);
 
   const contractAddress = refs[network][contract].contractAddresses[instanceId];
@@ -213,7 +213,7 @@ export const migrate = async ({
         signer.key.accAddress,
         contractAddress,
         codeId,
-        instantiation.instantiateMsg
+        instantiation.instantiateMsg,
       ),
     ],
   });
@@ -238,7 +238,7 @@ export const migrate = async ({
     network,
     contract,
     instanceId,
-    contractAddress
+    contractAddress,
   )(loadRefs(refsPath));
   saveRefs(updatedRefs, refsPath);
 
