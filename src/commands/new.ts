@@ -16,7 +16,7 @@ export default class New extends Command {
   static flags = {
     path: flags.string({ description: "path to keep the project" }),
     version: flags.string({
-      default: "0.16",
+      default: "1.0-beta6",
     }),
   };
 
