@@ -4,6 +4,8 @@ import * as fs from "fs-extra";
 import * as filesys from "fs";
 import { cli } from "cli-ux";
 import * as path from "path";
+import * as request from "superagent";
+import * as Zip from "adm-zip";
 
 export default class CodeNew extends Command {
   static description = "Generate new contract.";
