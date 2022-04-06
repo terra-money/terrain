@@ -9,7 +9,7 @@ export default class Test extends Command {
   ];
 
   static flags = {
-    "no-fail-fast": flags.boolean({ default: false, description: "Run all tests regardless of failure." })
+    "no-fail-fast": flags.boolean({ description: "Run all tests regardless of failure." })
   };
 
   static args = [{ name: "contract-name", required: true }];
