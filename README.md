@@ -43,7 +43,7 @@ For local developement environment, you need [LocalTerra](https://github.com/ter
 _**note:** if you are using m1 chip, you might need to update your Docker Desktop due to [qemu bug](https://github.com/docker/for-mac/issues/5561)_
 
 ```sh
-git clone --branch v0.5.2 --depth 1 https://github.com/terra-money/localterra
+git clone --branch v0.5.17 --depth 1 https://github.com/terra-money/localterra
 cd localterra
 docker-compose up
 ```
