@@ -2,4 +2,12 @@
 
 require('@oclif/command').run()
     .then(require('@oclif/command/flush'))
-    .catch(require('@oclif/errors/handle'))
+    .catch((error) => {
+        const oclifHandler = require('@oclif/errors/handle');
+        if (error?.response?.data?.message) {
+            // Append the response from LCD.
+            error.message += `\nResponse: ${error?.response?.data?.message}`;
+          
+        }
+        return oclifHandler(error);
+      })
