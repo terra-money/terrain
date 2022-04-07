@@ -20,6 +20,7 @@
     "@types/ramda": "^0.26.0",
     "@types/superagent": "^4.1.13",
     "babel-jest": "^27.3.1",
+    "degit": "^2.8.4",
     "eslint": "^5.16.0",
     "eslint-config-oclif": "^3.1.0",
     "eslint-config-oclif-typescript": "^0.1.0",
