@@ -1,3 +1,8 @@
+/* eslint-disable indent */
+/* eslint-disable arrow-parens */
+/* eslint-disable object-curly-spacing */
+/* eslint-disable semi */
+/* eslint-disable quotes */
 import { Command, flags } from "@oclif/command";
 import { execSync } from "child_process";
 import * as fs from "fs-extra";
@@ -6,7 +11,7 @@ import * as Zip from "adm-zip";
 import cli from "cli-ux";
 import * as path from "path";
 export default class New extends Command {
-  static description = "Create new dapp from template.";
+  static description = "Create new dapp from a frontend template.";
 
   static examples = [
     "$ terrain new awesome-dapp",
@@ -15,6 +20,12 @@ export default class New extends Command {
 
   static flags = {
     path: flags.string({ description: "path to keep the project" }),
+    framework: flags.string({
+      description: 'frontend framework template you want to use',
+      options: ['next', 'vue', 'vite', 'lit', 'svelte', 'create-react-app'],
+      default: 'create-react-app',
+      required: false,
+    }),
     version: flags.string({
       default: "0.16",
     }),
@@ -47,28 +58,8 @@ export default class New extends Command {
     process.chdir("..");
 
     cli.action.start("- frontend");
-    const file = fs.createWriteStream("frontend.zip");
-
-    await new Promise((resolve, reject) => {
-      request
-        .get(
-          "https://github.com/terra-money/terrain-frontend-template/archive/refs/heads/main.zip"
-        )
-        .on("error", (error) => {
-          reject(error);
-        })
-        .pipe(file)
-        .on("finish", () => {
-          cli.action.stop();
-          resolve(null);
-        });
-    });
-
-    const zip = new Zip("frontend.zip");
-    zip.extractAllTo(".", true);
-    fs.renameSync("terrain-frontend-template-main", "frontend");
-    fs.removeSync("frontend.zip");
-
+    execSync(`npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/${flags.framework} frontend`)
+    cli.action.stop();
     fs.copySync(path.join(__dirname, "..", "template"), process.cwd());
   }
 }
