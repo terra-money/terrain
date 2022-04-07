@@ -4,7 +4,7 @@ import * as fs from "fs-extra";
 import cli from "cli-ux";
 import * as path from "path";
 export default class New extends Command {
-  static description = "Create new dapp from a frontend template.";
+  static description = "Create new dapp from a template.";
 
   static examples = [
     "$ terrain new awesome-dapp",
