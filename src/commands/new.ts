@@ -14,7 +14,7 @@ export default class New extends Command {
   static flags = {
     path: flags.string({ description: "path to keep the project" }),
     framework: flags.string({
-      description: "frontend framework template you want to use",
+      description: "frontend framework you want to use",
       options: ["next", "vue", "vite", "lit", "svelte", "create-react-app"],
       default: "create-react-app",
     }),
