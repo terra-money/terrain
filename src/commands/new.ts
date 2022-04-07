@@ -8,15 +8,17 @@ export default class New extends Command {
 
   static examples = [
     "$ terrain new awesome-dapp",
+    "$ terrain new --framework vue awesome-dapp",
     "$ terrain new awesome-dapp --path path/to/dapp",
+    "$ terrain new --framework next awesome-dapp --path path/to/dapp",
   ];
 
   static flags = {
     path: flags.string({ description: "path to keep the project" }),
     framework: flags.string({
       description: "frontend framework you want to use",
-      options: ["next", "vue", "vite", "lit", "svelte", "create-react-app"],
-      default: "create-react-app",
+      options: ["next", "vue", "vite", "lit", "svelte", "react"],
+      default: "react",
     }),
     version: flags.string({
       default: "0.16",
@@ -52,6 +54,9 @@ export default class New extends Command {
     execSync(
       `npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/${flags.framework} frontend`
     )
+    process.chdir("frontend");
+
+    fs.removeSync("sandbox.config.json");
 
     cli.action.stop();
     fs.copySync(path.join(__dirname, "..", "template"), process.cwd());
