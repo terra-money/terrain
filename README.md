@@ -32,6 +32,7 @@ Terrain will help you:
 * [Migrating CosmWasm contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
 * [Usage](#usage)
 * [Commands](#commands)
+* [Use main branch in local.](#use-main-branch-in-local)
 <!-- tocstop -->
 
 # Setup
@@ -43,7 +44,7 @@ For local developement environment, you need [LocalTerra](https://github.com/ter
 _**note:** if you are using m1 chip, you might need to update your Docker Desktop due to [qemu bug](https://github.com/docker/for-mac/issues/5561)_
 
 ```sh
-git clone --branch v0.5.2 --depth 1 https://github.com/terra-money/localterra
+git clone --branch v0.5.17 --depth 1 https://github.com/terra-money/localterra
 cd localterra
 docker-compose up
 ```
@@ -369,7 +370,7 @@ $ npm install -g @terra-money/terrain
 $ terrain COMMAND
 running command...
 $ terrain (-v|--version|version)
-@terra-money/terrain/0.1.0 darwin-x64 node-v16.9.1
+@terra-money/terrain/0.2.0 darwin-x64 node-v16.9.1
 $ terrain --help [COMMAND]
 USAGE
   $ terrain COMMAND
@@ -385,12 +386,14 @@ USAGE
 * [`terrain console`](#terrain-console)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
 * [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
+* [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
 * [`terrain deploy CONTRACT`](#terrain-deploy-contract)
 * [`terrain help [COMMAND]`](#terrain-help-command)
 * [`terrain new NAME`](#terrain-new-name)
 * [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
 * [`terrain task:new [TASK]`](#terrain-tasknew-task)
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
+* [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
 
 ## `terrain code:new [NAME]`
 
@@ -408,7 +411,7 @@ DESCRIPTION
   Generate new contract.
 ```
 
-_See code: [src/commands/code/new.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/code/new.ts)_
+_See code: [src/commands/code/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/code/new.ts)_
 
 ## `terrain code:store CONTRACT`
 
@@ -432,7 +435,7 @@ DESCRIPTION
   Store code on chain.
 ```
 
-_See code: [src/commands/code/store.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/code/store.ts)_
+_See code: [src/commands/code/store.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/code/store.ts)_
 
 ## `terrain console`
 
@@ -453,7 +456,7 @@ DESCRIPTION
   contracts.
 ```
 
-_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/console.ts)_
+_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/console.ts)_
 
 ## `terrain contract:instantiate CONTRACT`
 
@@ -478,7 +481,7 @@ DESCRIPTION
   Instantiate the contract.
 ```
 
-_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/contract/instantiate.ts)_
+_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/instantiate.ts)_
 
 ## `terrain contract:migrate [CONTRACT]`
 
@@ -503,7 +506,30 @@ DESCRIPTION
   Migrate the contract.
 ```
 
-_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/contract/migrate.ts)_
+_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/migrate.ts)_
+
+## `terrain contract:updateAdmin CONTRACT ADMIN`
+
+Update the admin of a contract.
+
+```
+USAGE
+  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] --signer <value> [--network <value>] [--config-path <value>]
+    [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
+
+FLAGS
+  --config-path=<value>  [default: ./config.terrain.json]
+  --instance-id=<value>  [default: default]
+  --keys-path=<value>    [default: ./keys.terrain.js]
+  --network=<value>      [default: localterra]
+  --refs-path=<value>    [default: ./refs.terrain.json]
+  --signer=<value>       (required)
+
+DESCRIPTION
+  Update the admin of a contract.
+```
+
+_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/updateAdmin.ts)_
 
 ## `terrain deploy CONTRACT`
 
@@ -513,10 +539,12 @@ Build wasm bytecode, store code on chain and instantiate.
 USAGE
   $ terrain deploy [CONTRACT] --signer <value> [--no-rebuild] [--network <value>] [--config-path <value>]
     [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--set-signer-as-admin] [--admin-address
-    <value>] [--frontend-refs-path <value>]
+    <value>] [--frontend-refs-path <value>] [--arm64]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
+  --arm64                       use rust-optimizer-arm64 for optimization. Not recommended for production, but it will
+                                optimize quicker on arm64 hardware during development.
   --config-path=<value>         [default: ./config.terrain.json]
   --frontend-refs-path=<value>  [default: ./frontend/src/refs.terrain.json]
   --instance-id=<value>         [default: default]
@@ -531,7 +559,7 @@ DESCRIPTION
   Build wasm bytecode, store code on chain and instantiate.
 ```
 
-_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/deploy.ts)_
+_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/deploy.ts)_
 
 ## `terrain help [COMMAND]`
 
@@ -574,7 +602,7 @@ EXAMPLES
   $ terrain new awesome-dapp --path path/to/dapp
 ```
 
-_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/new.ts)_
+_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/new.ts)_
 
 ## `terrain sync-refs [FILE]`
 
@@ -592,7 +620,7 @@ DESCRIPTION
   Sync configuration with frontend app.
 ```
 
-_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/sync-refs.ts)_
+_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/sync-refs.ts)_
 
 ## `terrain task:new [TASK]`
 
@@ -606,7 +634,7 @@ DESCRIPTION
   create new task
 ```
 
-_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/task/new.ts)_
+_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/task/new.ts)_
 
 ## `terrain task:run [TASK]`
 
@@ -627,5 +655,48 @@ DESCRIPTION
   run predefined task
 ```
 
-_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/task/run.ts)_
+_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/task/run.ts)_
+
+## `terrain test CONTRACT-NAME`
+
+Runs unit tests for a contract directory.
+
+```
+USAGE
+  $ terrain test [CONTRACT-NAME] [--no-fail-fast]
+
+FLAGS
+  --no-fail-fast  Run all tests regardless of failure.
+
+DESCRIPTION
+  Runs unit tests for a contract directory.
+
+EXAMPLES
+  $ terrain test counter
+
+  $ terrain test counter --no-fail-fast
+```
+
+_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test.ts)_
 <!-- commandsstop -->
+
+
+# Use main branch in local.
+
+Sometimes the most new features or bugfixes are integrated into the main branch but not yet released to [npm repository](https://www.npmjs.com/package/@terra-money/terrain). In exceptional cases you may want to use the latest code of the library even before being released to [@terra-money/terrain](https://www.npmjs.com/package/@terra-money/terrain). 
+
+To use main branch in your local machine you must clone the repo and navigate to the project folder:
+
+```
+> git clone --branch main --depth 1 https://github.com/terra-money/terrain
+> cd terrain/
+```
+
+Inside the project folder execute [install](https://docs.npmjs.com/cli/v6/commands/npm-install), when it finish you can use [link](https://docs.npmjs.com/cli/v8/commands/npm-link) to setup the project as your global terrain instance:
+
+```
+> npm install
+> npm link
+```
+
+> Take in consideration that the process documented before sometimes will contain fixes and new features but is still being tested.

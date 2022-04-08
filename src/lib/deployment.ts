@@ -1,20 +1,14 @@
 /* eslint-disable no-await-in-loop */
 import {
   AccAddress,
-  Fee,
   LCDClient,
   MsgInstantiateContract,
   MsgMigrateCode,
   MsgMigrateContract,
   MsgStoreCode,
   Wallet,
-  TxError,
-} from '@terra-money/terra.js';
-import { execSync } from 'child_process';
-import * as fs from 'fs-extra';
-import { cli } from 'cli-ux';
-import * as YAML from 'yaml';
-import { waitForInclusionInBlock } from './waitForInclusionBlock';
+} from "@terra-money/terra.js";
+import { execSync } from "child_process";
 import {
   ContractConfig,
   loadRefs,
@@ -33,6 +27,7 @@ type StoreCodeParams = {
   contract: string;
   signer: Wallet;
   codeId?: number;
+  arm64?: boolean;
 };
 export const storeCode = async ({
   noRebuild,
@@ -42,17 +37,39 @@ export const storeCode = async ({
   refsPath,
   lcd,
   codeId,
+  arm64,
 }: StoreCodeParams) => {
   process.chdir(`contracts/${contract}`);
 
   if (!noRebuild) {
-    execSync('cargo wasm', { stdio: 'inherit', env: process.env });
-    execSync('cargo run-script optimize', { stdio: 'inherit', env: process.env });
+    execSync("cargo wasm", { stdio: "inherit" });
+
+    if (arm64) {
+      // Need to use the rust-optimizer-arm64 image on arm64 architecture.
+      execSync(`docker run --rm -v "$(pwd)":/code \
+        --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+        --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+        cosmwasm/rust-optimizer-arm64:0.12.5`, { stdio: "inherit" });
+    } else {
+      execSync(`docker run --rm -v "$(pwd)":/code \
+        --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+        --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+        cosmwasm/rust-optimizer:0.12.5`, { stdio: "inherit" });
+    }
   }
 
+  let wasmByteCodeFilename = `${contract.replace(/-/g, "_")}`;
+
+  // rust-optimizer-arm64 produces a file with the `-aarch64` suffix.
+  if (arm64) {
+    wasmByteCodeFilename += '-aarch64';
+  }
+
+  wasmByteCodeFilename += '.wasm';
+  
   const wasmByteCode = fs
-    .readFileSync(`artifacts/${contract.replace(/-/g, '_')}.wasm`)
-    .toString('base64');
+    .readFileSync(`artifacts/${wasmByteCodeFilename}`)
+    .toString("base64");
 
   cli.action.start('storing wasm bytecode on chain');
 
@@ -150,10 +167,10 @@ export const instantiate = async ({
 
   let log = [];
   try {
-    log = JSON.parse(res.raw_log);
+    log = JSON.parse(res!.raw_log);
   } catch (error) {
     cli.action.stop();
-    if (error instanceof SyntaxError) {
+    if (error instanceof SyntaxError && res) {
       cli.error(res.raw_log);
     } else {
       cli.error(`Unexpcted Error: ${error}`);
