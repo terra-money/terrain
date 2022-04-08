@@ -638,8 +638,8 @@ Sometimes the most new features or bugfixes are integrated into the main branch 
 To use main branch in your local machine you must clone the repo and navigate to the project folder:
 
 ```
-emi@computer_name:~$ git clone --branch main --depth 1 https://github.com/terra-money/terrain
-emi@computer_name:~$ cd terrain/
+> git clone --branch main --depth 1 https://github.com/terra-money/terrain
+> cd terrain/
 ```
 
 Inside the project folder execute [install](https://docs.npmjs.com/cli/v6/commands/npm-install), when it finish you can use [link](https://docs.npmjs.com/cli/v8/commands/npm-link) to setup the project as your global terrain instance:
