@@ -629,3 +629,24 @@ DESCRIPTION
 
 _See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.1.0/src/commands/task/run.ts)_
 <!-- commandsstop -->
+
+
+# Use main branch in local.
+
+Sometimes the most new features or bugfixes are integrated into the main branch but not yet released to [npm repository](https://www.npmjs.com/package/@terra-money/terrain). In exceptional cases you may want to use the latest code of the library even before being released to [@terra-money/terrain](https://www.npmjs.com/package/@terra-money/terrain). 
+
+To use main branch in your local machine you must clone the repo and navigate to the project folder:
+
+```
+emi@computer_name:~$ git clone --branch main --depth 1 https://github.com/terra-money/terrain
+emi@computer_name:~$ cd terrain/
+```
+
+Inside the project folder execute [install](https://docs.npmjs.com/cli/v6/commands/npm-install), when it finish you can use [link](https://docs.npmjs.com/cli/v8/commands/npm-link) to setup the project as your global terrain instance:
+
+```
+emi@computer_name:~/terrain$ npm install
+emi@computer_name:~/terrain$ npm link
+```
+
+> Take in consideration that the process documented before sometimes will contain fixes and new features but is still being tested. 
