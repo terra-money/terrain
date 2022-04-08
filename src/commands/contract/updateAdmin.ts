@@ -59,6 +59,10 @@ export default class ContractUpdateAdmin extends Command {
 
     cli.action.stop();
 
-    cli.log(YAML.stringify(JSON.parse(res.raw_log)));
+    if (res) {
+      cli.log(YAML.stringify(JSON.parse(res.raw_log)));
+    } else {
+      cli.error('transaction not included in block before timeout');
+    }
   }
 }
