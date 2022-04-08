@@ -171,10 +171,10 @@ export const instantiate = async ({
 
   let log = [];
   try {
-    log = JSON.parse(res.raw_log);
+    log = JSON.parse(res!.raw_log);
   } catch (error) {
     cli.action.stop();
-    if (error instanceof SyntaxError) {
+    if (error instanceof SyntaxError && res) {
       cli.error(res.raw_log);
     } else {
       cli.error(`Unexpcted Error: ${error}`);
