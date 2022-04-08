@@ -645,8 +645,8 @@ emi@computer_name:~$ cd terrain/
 Inside the project folder execute [install](https://docs.npmjs.com/cli/v6/commands/npm-install), when it finish you can use [link](https://docs.npmjs.com/cli/v8/commands/npm-link) to setup the project as your global terrain instance:
 
 ```
-emi@computer_name:~/terrain$ npm install
-emi@computer_name:~/terrain$ npm link
+> npm install
+> npm link
 ```
 
 > Take in consideration that the process documented before sometimes will contain fixes and new features but is still being tested. 
