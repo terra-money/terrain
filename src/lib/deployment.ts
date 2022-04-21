@@ -16,6 +16,10 @@ import {
   setCodeId,
   setContractAddress,
 } from '../config';
+import * as fs from 'fs-extra';
+import { cli } from 'cli-ux';
+import { waitForInclusionInBlock } from '../lib/waitForInclusionBlock';
+import * as YAML from "yaml";
 
 type StoreCodeParams = {
   conf: ContractConfig;
