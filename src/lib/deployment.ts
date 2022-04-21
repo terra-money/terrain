@@ -4,10 +4,11 @@ import {
   LCDClient,
   MsgInstantiateContract,
   MsgMigrateCode,
-  MsgMigrateContract,
+  MsgMigrateContract, 
   MsgStoreCode,
   Wallet,
 } from "@terra-money/terra.js";
+import { parse } from "toml";
 import { execSync } from "child_process";
 import {
   ContractConfig,
@@ -44,8 +45,11 @@ export const storeCode = async ({
   arm64,
 }: StoreCodeParams) => {
   process.chdir(`contracts/${contract}`);
-  execSync("cargo clean --package contract", { stdio: "inherit" });
-
+  const { package: pkg } = parse(fs.readFileSync('./cargo.toml', 'utf-8'));
+  if (contract !== pkg.name) {
+    cli.error(`Change the package name in cargo.toml to ${contract} to build`);
+  }
+  
   if (!noRebuild) {
     execSync("cargo wasm", { stdio: "inherit" });
 
