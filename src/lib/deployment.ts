@@ -44,6 +44,7 @@ export const storeCode = async ({
   arm64,
 }: StoreCodeParams) => {
   process.chdir(`contracts/${contract}`);
+  execSync("cargo clean --package contract", { stdio: "inherit" });
 
   if (!noRebuild) {
     execSync("cargo wasm", { stdio: "inherit" });
