@@ -33,6 +33,7 @@ Terrain will help you:
 * [Usage](#usage)
 * [Commands](#commands)
 * [Use main branch in local.](#use-main-branch-in-local)
+* [How to run project locally](#how-to-run-project-locally)
 <!-- tocstop -->
 
 # Setup
@@ -370,7 +371,7 @@ $ npm install -g @terra-money/terrain
 $ terrain COMMAND
 running command...
 $ terrain (-v|--version|version)
-@terra-money/terrain/0.2.0 darwin-x64 node-v16.9.1
+@terra-money/terrain/0.2.0 linux-x64 node-v16.14.2
 $ terrain --help [COMMAND]
 USAGE
   $ terrain COMMAND
@@ -700,3 +701,26 @@ Inside the project folder execute [install](https://docs.npmjs.com/cli/v6/comman
 ```
 
 > Take in consideration that the process documented before sometimes will contain fixes and new features but is still being tested.
+
+# How to run the project locally
+
+If you want to contribute to the project just take in consideration that after cloning the repo you need to build and run the built version each time you do a change in the source code because its a CLI tool:
+
+```
+// Clone the repo
+> git clone --branch main --depth 1 https://github.com/terra-money/terrain
+
+// Navigate to the project directory
+> cd terrain/
+
+// Install the dependencies
+> npm install
+
+// Build the project
+> npm run prepack
+
+// Execute the build version of the project with one of the available commands
+> npm run use [argument]
+```
+
+> Another available command is *npm run prepack:use [argument]* which will build the project and execute the command you like.
