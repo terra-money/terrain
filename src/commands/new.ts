@@ -60,7 +60,7 @@ export default class New extends Command {
         const file = fs.createWriteStream("frontend.zip");
         request
           .get(
-            "https://github.com/terra-money/terrain-frontend-template/archive/refs/heads/feat/typescript-conversion.zip"
+            "https://github.com/terra-money/terrain-frontend-template/archive/refs/heads/main.zip"
           )
           .on("error", (error) => {
             reject(error);
