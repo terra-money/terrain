@@ -370,7 +370,7 @@ $ npm install -g @terra-money/terrain
 $ terrain COMMAND
 running command...
 $ terrain (-v|--version|version)
-@terra-money/terrain/0.2.0 darwin-x64 node-v16.9.1
+@terra-money/terrain/0.2.0 darwin-arm64 node-v16.14.2
 $ terrain --help [COMMAND]
 USAGE
   $ terrain COMMAND
@@ -381,7 +381,7 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`terrain code:new [NAME]`](#terrain-codenew-name)
+* [`terrain code:new NAME`](#terrain-codenew-name)
 * [`terrain code:store CONTRACT`](#terrain-codestore-contract)
 * [`terrain console`](#terrain-console)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
@@ -395,7 +395,7 @@ USAGE
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
 
-## `terrain code:new [NAME]`
+## `terrain code:new NAME`
 
 Generate new contract.
 
@@ -583,23 +583,30 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1
 
 ## `terrain new NAME`
 
-Create new dapp from template.
+Create new dapp from a template.
 
 ```
 USAGE
-  $ terrain new [NAME] [--path <value>] [--version <value>]
+  $ terrain new [NAME] [--path <value>] [--framework next|vue|vite|lit|svelte|react] [--version <value>]
 
 FLAGS
-  --path=<value>     path to keep the project
-  --version=<value>  [default: 0.16]
+  --framework=<option>  [default: react] Choose the frontend framework you want to use. Non-react framework options have
+                        better wallet-provider support but less streamlined contract integration.
+                        <options: next|vue|vite|lit|svelte|react>
+  --path=<value>        path to keep the project
+  --version=<value>     [default: 0.16]
 
 DESCRIPTION
-  Create new dapp from template.
+  Create new dapp from a template.
 
 EXAMPLES
   $ terrain new awesome-dapp
 
+  $ terrain new --framework vue awesome-dapp
+
   $ terrain new awesome-dapp --path path/to/dapp
+
+  $ terrain new --framework next awesome-dapp --path path/to/dapp
 ```
 
 _See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/new.ts)_

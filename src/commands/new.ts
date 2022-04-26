@@ -24,18 +24,17 @@ export default class New extends Command {
       default: "react",
     }),
     version: flags.string({
-      default: '0.16',
+      default: "0.16",
     }),
   };
 
-  static args = [{ name: 'name', required: true }];
+  static args = [{ name: "name", required: true }];
 
   async run() {
-    cli.log("CORRECT TESTING ONE: ");
     const { args, flags } = this.parse(New);
 
-    cli.log('generating: ');
-    cli.action.start('- contract');
+    cli.log("generating: ");
+    cli.action.start("- contract");
 
     if (flags.path) {
       process.chdir(flags.path);
@@ -44,8 +43,8 @@ export default class New extends Command {
     fs.mkdirSync(args.name);
     process.chdir(args.name);
 
-    fs.mkdirSync('contracts');
-    process.chdir('contracts');
+    fs.mkdirSync("contracts");
+    process.chdir("contracts");
 
     execSync(
       `cargo generate --git https://github.com/CosmWasm/cw-template.git --branch ${flags.version} --name counter`,
@@ -55,7 +54,7 @@ export default class New extends Command {
     process.chdir("..");
 
     cli.action.start("- frontend");
-    if (flags.framework === 'react') {
+    if (flags.framework === "react") {
       await new Promise((resolve, reject) => {
         const file = fs.createWriteStream("frontend.zip");
         request
@@ -71,13 +70,13 @@ export default class New extends Command {
             resolve(null);
           });
       });
-      const zip = new Zip('frontend.zip');
-      zip.extractAllTo('.', true);
-      fs.renameSync('terrain-frontend-template-feat-typescript-conversion', 'frontend');
-      fs.removeSync('frontend.zip');
+      const zip = new Zip("frontend.zip");
+      zip.extractAllTo(".", true);
+      fs.renameSync("terrain-frontend-template-main", "frontend");
+      fs.removeSync("frontend.zip");
     } else {
       execSync(
-        `npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/${flags.framework} frontend`
+        `npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/${flags.framework} frontend`,
       );
       process.chdir("frontend");
       fs.removeSync("sandbox.config.json");
