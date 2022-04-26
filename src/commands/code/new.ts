@@ -15,7 +15,7 @@ export default class CodeNew extends Command {
     }),
   };
 
-  static args = [{ name: 'name' }];
+  static args = [{ name: 'name', required: true }];
 
   async run() {
     const { args, flags } = this.parse(CodeNew);

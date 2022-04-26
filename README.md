@@ -33,7 +33,7 @@ Terrain will help you:
 * [Usage](#usage)
 * [Commands](#commands)
 * [Use main branch in local.](#use-main-branch-in-local)
-* [How to run project locally](#how-to-run-project-locally)
+* [How to run the project locally](#how-to-run-the-project-locally)
 <!-- tocstop -->
 
 # Setup
