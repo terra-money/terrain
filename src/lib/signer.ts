@@ -1,7 +1,7 @@
-import { LCDClient, LocalTerra, Wallet } from "@terra-money/terra.js";
-import { cli } from "cli-ux";
-import * as path from "path";
-import { loadKeys } from "../config";
+import { LCDClient, LocalTerra, Wallet } from '@terra-money/terra.js';
+import { cli } from 'cli-ux';
+import * as path from 'path';
+import { loadKeys } from '../config';
 
 export const getSigner = ({
   network,
@@ -16,8 +16,8 @@ export const getSigner = ({
 }): Wallet => {
   const localterra = new LocalTerra();
   if (
-    network === "localterra" &&
-    Object.prototype.hasOwnProperty.call(localterra.wallets, signerId)
+    network === 'localterra'
+    && Object.prototype.hasOwnProperty.call(localterra.wallets, signerId)
   ) {
     cli.log(`using pre-baked '${signerId}' wallet on localterra as signer`);
     // @ts-ignore

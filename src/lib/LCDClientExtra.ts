@@ -6,8 +6,8 @@ import {
   LCDClientConfig,
   MsgExecuteContract,
   Wallet,
-} from "@terra-money/terra.js";
-import { ContractRef } from "../config";
+} from '@terra-money/terra.js';
+import { ContractRef } from '../config';
 
 export type ContractRefs = { [contractName: string]: ContractRef };
 export class LCDClientExtra extends LCDClient {
@@ -18,10 +18,10 @@ export class LCDClientExtra extends LCDClient {
     this.refs = refs;
   }
 
-  query(contract: string, msg: Object, instanceId = "default") {
+  query(contract: string, msg: Object, instanceId = 'default') {
     return this.wasm.contractQuery(
       this.refs[contract].contractAddresses[instanceId],
-      msg
+      msg,
     );
   }
 
@@ -31,14 +31,14 @@ export class LCDClientExtra extends LCDClient {
     msg: Object,
     coins?: Coins.Input,
     options?: CreateTxOptions,
-    instanceId = "default"
+    instanceId = 'default',
   ): Promise<BlockTxBroadcastResult> {
     const msgs = [
       new MsgExecuteContract(
         wallet.key.accAddress,
         this.refs[contract].contractAddresses[instanceId],
         msg,
-        coins
+        coins,
       ),
     ];
     const _options = options ? { ...options, msgs } : { msgs };

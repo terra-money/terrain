@@ -24,18 +24,18 @@ export default class New extends Command {
       default: "react",
     }),
     version: flags.string({
-      default: "0.16",
+      default: '0.16',
     }),
   };
 
-  static args = [{ name: "name", required: true }];
+  static args = [{ name: 'name', required: true }];
 
   async run() {
     cli.log("CORRECT TESTING ONE: ");
     const { args, flags } = this.parse(New);
 
-    cli.log("generating: ");
-    cli.action.start("- contract");
+    cli.log('generating: ');
+    cli.action.start('- contract');
 
     if (flags.path) {
       process.chdir(flags.path);
@@ -44,11 +44,11 @@ export default class New extends Command {
     fs.mkdirSync(args.name);
     process.chdir(args.name);
 
-    fs.mkdirSync("contracts");
-    process.chdir("contracts");
+    fs.mkdirSync('contracts');
+    process.chdir('contracts');
 
     execSync(
-      `cargo generate --git https://github.com/CosmWasm/cw-template.git --branch ${flags.version} --name counter`
+      `cargo generate --git https://github.com/CosmWasm/cw-template.git --branch ${flags.version} --name counter`,
     );
 
     cli.action.stop();

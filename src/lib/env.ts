@@ -1,4 +1,5 @@
-import { LocalTerra, RawKey, Wallet } from "@terra-money/terra.js";
+import { LocalTerra, RawKey, Wallet } from '@terra-money/terra.js';
+import * as R from 'ramda';
 import {
   ContractConfig,
   ContractRef,
@@ -6,9 +7,8 @@ import {
   loadConnections,
   loadKeys,
   loadRefs,
-} from "../config";
-import { LCDClientExtra } from "./LCDClientExtra";
-import * as R from "ramda";
+} from '../config';
+import { LCDClientExtra } from './LCDClientExtra';
 
 export type Env = {
   config: (contract: string) => ContractConfig;
@@ -21,7 +21,7 @@ export const getEnv = (
   configPath: string,
   keysPath: string,
   refsPath: string,
-  network: string
+  network: string,
 ): Env => {
   const connections = loadConnections(configPath);
   const config = loadConfig(configPath);
