@@ -33,6 +33,7 @@ Terrain will help you:
 * [Usage](#usage)
 * [Commands](#commands)
 * [Use main branch in local.](#use-main-branch-in-local)
+* [How to run the project locally](#how-to-run-the-project-locally)
 <!-- tocstop -->
 
 # Setup
@@ -125,7 +126,20 @@ npx terrain deploy counter --signer validator
 
 note that signer `validator` is one of a [pre-configured accounts with balances on LocalTerra](https://github.com/terra-money/LocalTerra#accounts).
 
-Deploy command will build and optimize wasm code, store it on the blockchain and instantiate the contract.
+Deploy command will build and optimize wasm code, store it on the blockchain and instantiate the contract._
+
+_**note:** if you are using m1 chip, you might encounter a docker run error such as_
+```
+Error: Command failed: docker run --rm -v "$(pwd)":/code         --mount 
+    type=volume,source="$(basename "$(pwd)")_cache",target=/code/target       
+      --mount 
+    type=volume,source=registry_cache,target=/usr/local/cargo/registry        
+     cosmwasm/rust-optimizer:0.12.5
+```
+_in this case, you should run the following:_ 
+```sh
+npx terrain deploy counter --signer validator --arm64
+```
 
 You can deploy to different network defined in the `config.terrain.json` (`mainnet` and `testnet`). But you can not use the pre-configured accounts anymore. So you need to first update your `keys.terrain.js`
 
@@ -370,7 +384,7 @@ $ npm install -g @terra-money/terrain
 $ terrain COMMAND
 running command...
 $ terrain (-v|--version|version)
-@terra-money/terrain/0.2.0 darwin-arm64 node-v16.14.2
+@terra-money/terrain/0.2.0 linux-x64 node-v16.14.2
 $ terrain --help [COMMAND]
 USAGE
   $ terrain COMMAND
@@ -707,3 +721,26 @@ Inside the project folder execute [install](https://docs.npmjs.com/cli/v6/comman
 ```
 
 > Take in consideration that the process documented before sometimes will contain fixes and new features but is still being tested.
+
+# How to run the project locally
+
+If you want to contribute to the project just take in consideration that after cloning the repo you need to build and run the built version each time you do a change in the source code because its a CLI tool:
+
+```
+// Clone the repo
+> git clone --branch main --depth 1 https://github.com/terra-money/terrain
+
+// Navigate to the project directory
+> cd terrain/
+
+// Install the dependencies
+> npm install
+
+// Build the project
+> npm run prepack
+
+// Execute the build version of the project with one of the available commands
+> npm run use [argument]
+```
+
+> Another available command is *npm run prepack:use [argument]* which will build the project and execute the command you like.
