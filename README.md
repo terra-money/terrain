@@ -12,14 +12,15 @@
 
 ---
 
-Terrain will help you:
+Terrain help you:
 
-- scaffold your dapp project
-- ease the development and deployment process
-- create custom task for blockchain and contract interaction with less boilerplate code
-  - using terra.js directly could be cumbersome, Terrain gives you extensions and utilities to help you
-- console to terra blockchain, an interactive repl which have the same extensions and utilities as custom task
-- ability to predefine functions to be used in task and console
+- scaffold both the smart contract and the frontend of your app
+- dramatically simplify the development and deployment process
+
+Terrain is not:
+
+- a fully-featured Terra CLI. Take a look at [terrad](https://docs.terra.money/docs/develop/how-to/terrad/using-terrad.html).
+- an LCD. You will still need an RPC endpoint to deploy your contract. [LocalTerra](https://github.com/terra-money/LocalTerra) is a good development option for this.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/terrain.svg)](https://npmjs.org/package/terrain)
