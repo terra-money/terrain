@@ -408,6 +408,7 @@ USAGE
 * [`terrain task:new [TASK]`](#terrain-tasknew-task)
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+* [`terrain wallet:new`](#terrain-wallet-new)
 
 ## `terrain code:new [NAME]`
 
@@ -692,6 +693,24 @@ EXAMPLES
 ```
 
 _See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test.ts)_
+
+## `terrain wallet:new`
+
+Generate a new wallet to use for signing contracts
+```
+USAGE
+  $ terrain wallet:new [--outfile <value>]
+
+FLAGS
+  --index=<value>    key index to use, default value is 0
+  --outfile=<value>  absolute path to store the mnemonic key to. If omitted, output to stdout
+
+DESCRIPTION
+  Generate a new wallet.
+```
+
+_See code: [src/commands/task/run.ts](./src/commands/wallet/new.ts)_
+
 <!-- commandsstop -->
 
 
