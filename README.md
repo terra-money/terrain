@@ -12,15 +12,38 @@
 
 ---
 
-Terrain help you:
+Terrain is a development tool that simplifies Terra dApp development and deployment by providing scaffolding for both your smart contract(s) and your frontend. The Terrain tool generates the following resources:
 
-- scaffold both the smart contract and the frontend of your app
-- dramatically simplify the development and deployment process
+| Resource          | Description                                                                       | 
+|-------------------|-----------------------------------------------------------------------------------|
+| contracts         | A directory for cosmWasm smart contracts, with an example counter contract        | 
+| frontend          | A directory containing the frontend components for the dApp                       | 
+| tasks             | A directory containing predefined tasks                                           | 
+| lib               | A directory containing predefined functions used by tasks and the Terrain console | 
+| keys.terrain.js   | A file containing keys for signing transactions                                   | 
+| config.terrain.js | A file that defines connection and contract deployment configuration              | 
+| refs.terrain.js   | A file specifying smart contract references                                       |  
+
+
+The project structure is as follows:
+
+```
+.
+├── contracts              
+│   ├── counter
+│   └── ...                
+├── frontend              
+├── lib                    
+├── tasks                  
+├── keys.terrain.js        
+├── config.terrain.json    
+└── refs.terrain.json      
+```
 
 Terrain is not:
 
-- a fully-featured Terra CLI. Take a look at [terrad](https://docs.terra.money/docs/develop/how-to/terrad/using-terrad.html).
-- an LCD. You will still need an RPC endpoint to deploy your contract. [LocalTerra](https://github.com/terra-money/LocalTerra) is a good development option for this.
+- a fully-featured Terra CLI. Use [terrad] instead. (https://docs.terra.money/docs/develop/how-to/terrad/using-terrad.html).
+- a lite client daemon (LCD). You will still need an RPC endpoint to deploy your contract. [LocalTerra](https://github.com/terra-money/LocalTerra) is a good development option for this.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/terrain.svg)](https://npmjs.org/package/terrain)
@@ -28,7 +51,7 @@ Terrain is not:
 
 <!-- toc -->
 * [Terrain](#terrain)
-* [Setup](#setup)
+* [Prerequisites](#prerequisites)
 * [Getting Started](#getting-started)
 * [Migrating CosmWasm contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
 * [Usage](#usage)
@@ -37,13 +60,21 @@ Terrain is not:
 * [How to run the project locally](#how-to-run-the-project-locally)
 <!-- tocstop -->
 
-# Setup
+# Prerequisites
 
-## Download LocalTerra
+## Set up LocalTerra
 
-For local developement environment, you need [LocalTerra](https://github.com/terra-money/localterra).
+For your local developement environment, you will need [LocalTerra](https://github.com/terra-money/localterra).
+Before you can install and run LocalTerra, you must install:
 
-_**note:** if you are using m1 chip, you might need to update your Docker Desktop due to [qemu bug](https://github.com/docker/for-mac/issues/5561)_
+- The latest version of [Docker](https://docs.docker.com/get-docker/)
+- The latest version of [Docker Compose](https://docs.docker.com/compose/) 
+- [NPM 8.5.0](https://www.npmjs.com/)
+- [Node JS v16](https://nodejs.org/download/release/latest-v16.x/)
+
+_**note:** If you are using an m1 chip, you might need to update your Docker Desktop due to the [qemu bug](https://github.com/docker/for-mac/issues/5561)_
+
+To install LocalTerra, run the following commands:
 
 ```sh
 git clone --branch v0.5.17 --depth 1 https://github.com/terra-money/localterra
@@ -51,42 +82,36 @@ cd localterra
 docker-compose up
 ```
 
-## Setup Rust
+## Set up Rust
 
-While WASM smart contracts can theoretically be written in any programming language, we currently only recommend using Rust as it is the only language for which mature libraries and tooling exist for CosmWasm. For this tutorial, you'll need to also install the latest version of Rust by following the instructions [here](https://www.rust-lang.org/tools/install).
+While WASM smart contracts can theoretically be written in any programming language, **we only recommend using Rust** because it is the only language for which mature libraries and tooling exist for CosmWasm. For this tutorial, you'll need to [install the latest version of Rust](https://www.rust-lang.org/tools/install).
 
-Then run the following commands
+After you've installed the latest version of Rust, set up your Rust environment:
 
-**set `stable` as default release channel (used when updating rust)**
+1. Set `stable` as the default release channel:
 
 ```sh
 rustup default stable
 ```
 
-**add wasm as compilation target**
+2. Set `wasm` as the compilation target:
 
 ```sh
 rustup target add wasm32-unknown-unknown
 ```
 
-**for generating contracts**
+3. Install the `cargo` libraries for generating contracts:
 
 ```sh
 cargo install cargo-generate --features vendored-openssl
 cargo install cargo-run-script
 ```
 
-## Setup Node
-
-To run Terrain you need to install Node.js and NPM. We recommend the **[Node.js LTS 16](https://nodejs.org/en/download/)** and **Node Package Manager** (NPM) 8.5.0 which is the default installed version for Node.js LTS 16.
-
-> If you encounter the next error code: <b>error:0308010C:digital envelope routines::unsupported</b> use LTS Node.js 16.
-
 # Getting Started
 
-Assumed that you have setup the node env, let's generate our first app
+Generate your first Terrain app using the following commands:
 
-For the first time, you will need to run `npm install -g @terra-money/terrain`
+> If this is your first time, you will need to run `npm install -g @terra-money/terrain`
 or `npx @terra-money/terrain new my-terra-dapp`
 since `terrain` npm module name is occupied by another module.
 
@@ -96,40 +121,22 @@ cd my-terra-dapp
 npm install
 ```
 
-## Project Structure
+## Deploy the `counter` contract on LocalTerra
 
-The project structure will look like this:
-
-```
-.
-├── contracts              # contracts' source code
-│   ├── counter
-│   └── ...                # more contract can be added here
-├── frontend               # frontend application
-├── lib                    # predefined functions for task and console
-├── tasks                  # predefined tasks
-├── keys.terrain.js        # keys for signing transacitons
-├── config.terrain.json    # config for connections and contract deployments
-└── refs.terrain.json      # deployed code and contract referecnes
-```
-
-You will now have counter example contract (no pun intended).
-
-## Deployment
-
-We can right away deploy the contract on LocalTerra. Not specifying network will be defaulted to `localterra`.
+You can now deploy the `counter` contract on LocalTerra. **For machines that are not using an m1 chip**, the following command deploys the `counter` contract to `localTerra` using the `terrain` binary and the [pre-configured, LocalTerra signer `validator` account](https://github.com/terra-money/LocalTerra#accounts):
 
 ```sh
 npx terrain deploy counter --signer validator
 ```
 
-> `npx` will use project's `terrain` binary instead of the global one.
+***If you are using an m1 chip***, use the following command instead:
 
-note that signer `validator` is one of a [pre-configured accounts with balances on LocalTerra](https://github.com/terra-money/LocalTerra#accounts).
+```sh
+npx terrain deploy counter --signer validator --arm64
+```
 
-Deploy command will build and optimize wasm code, store it on the blockchain and instantiate the contract._
+If you do not specify `--arm64`, the following error occurs upon deployment:
 
-_**note:** if you are using m1 chip, you might encounter a docker run error such as_
 ```
 Error: Command failed: docker run --rm -v "$(pwd)":/code         --mount 
     type=volume,source="$(basename "$(pwd)")_cache",target=/code/target       
@@ -137,10 +144,7 @@ Error: Command failed: docker run --rm -v "$(pwd)":/code         --mount
     type=volume,source=registry_cache,target=/usr/local/cargo/registry        
      cosmwasm/rust-optimizer:0.12.5
 ```
-_in this case, you should run the following:_ 
-```sh
-npx terrain deploy counter --signer validator --arm64
-```
+
 
 You can deploy to different network defined in the `config.terrain.json` (`mainnet` and `testnet`). But you can not use the pre-configured accounts anymore. So you need to first update your `keys.terrain.js`
 
