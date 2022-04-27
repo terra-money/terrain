@@ -126,7 +126,20 @@ npx terrain deploy counter --signer validator
 
 note that signer `validator` is one of a [pre-configured accounts with balances on LocalTerra](https://github.com/terra-money/LocalTerra#accounts).
 
-Deploy command will build and optimize wasm code, store it on the blockchain and instantiate the contract.
+Deploy command will build and optimize wasm code, store it on the blockchain and instantiate the contract._
+
+_**note:** if you are using m1 chip, you might encounter a docker run error such as_
+```
+Error: Command failed: docker run --rm -v "$(pwd)":/code         --mount 
+    type=volume,source="$(basename "$(pwd)")_cache",target=/code/target       
+      --mount 
+    type=volume,source=registry_cache,target=/usr/local/cargo/registry        
+     cosmwasm/rust-optimizer:0.12.5
+```
+_in this case, you should run the following:_ 
+```sh
+npx terrain deploy counter --signer validator --arm64
+```
 
 You can deploy to different network defined in the `config.terrain.json` (`mainnet` and `testnet`). But you can not use the pre-configured accounts anymore. So you need to first update your `keys.terrain.js`
 
