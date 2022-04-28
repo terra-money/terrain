@@ -12,10 +12,10 @@
 
 ---
 
-Terrain helps you:
+Terrain:
 
-- scaffold both the smart contract and the frontend of your app
-- dramatically simplify the development and deployment process
+- helps you scaffold both the smart contracts and the frontend of your app
+- dramatically simplifies the development and deployment process
 
 ###### Terrain is __not__:
 
