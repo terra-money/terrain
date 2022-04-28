@@ -12,12 +12,12 @@
 
 ---
 
-Terrain help you:
+Terrain helps you:
 
 - scaffold both the smart contract and the frontend of your app
 - dramatically simplify the development and deployment process
 
-Terrain is not:
+###### Terrain is __not__:
 
 - a fully-featured Terra CLI. Take a look at [terrad](https://docs.terra.money/docs/develop/how-to/terrad/using-terrad.html).
 - an LCD. You will still need an RPC endpoint to deploy your contract. [LocalTerra](https://github.com/terra-money/LocalTerra) is a good development option for this.
