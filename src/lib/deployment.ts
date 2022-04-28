@@ -7,6 +7,8 @@ import {
   MsgMigrateContract,
   MsgStoreCode,
   Wallet,
+  SignerData,
+  CreateTxOptions
 } from "@terra-money/terra.js";
 import { execSync } from "child_process";
 import {
@@ -154,8 +156,13 @@ export const instantiate = async ({
   // Allow manual account sequences.
   const manualSequence = sequence || (await signer.sequence());
 
-  const instantiateTx = await signer.createAndSignTx({
-    sequence: manualSequence,
+  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress);
+  const signerData: [SignerData] = [{
+    sequenceNumber: manualSequence,
+    publicKey: accountInfo.getPublicKey()
+  }];
+
+  const txOptions: CreateTxOptions = {
     msgs: [
       new MsgInstantiateContract(
         signer.key.accAddress,
@@ -164,6 +171,18 @@ export const instantiate = async ({
         instantiation.instantiateMsg,
       ),
     ],
+  };
+
+  // Prompt user to accept gas fee for contract initialization if network is mainnet.
+  if (network === 'mainnet') {
+    const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
+    const gasFee = Number(feeEstimate.amount.get('uusd')!.amount) / 1000000;
+    await cli.anykey(`\n\nThe gas estimate to deploy your contract is ${gasFee} UST. Press any key to continue or "ctl+c" to exit`);
+  }
+
+  const instantiateTx = await signer.createAndSignTx({
+    sequence: manualSequence,
+    ...txOptions,
   });
 
   const result = await lcd.tx.broadcastSync(instantiateTx);
