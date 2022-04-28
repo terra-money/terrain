@@ -41,9 +41,8 @@ export default class Run extends Command {
   async run() {
     const { args, flags } = this.parse(Run);
     const fromCwd = (p: string) => path.join(process.cwd(), p);
-
     runScript(
-      fromCwd(`tasks/${args.task}.js`),
+      fromCwd(`${args.task}`),
       {
         configPath: fromCwd(flags['config-path']),
         keysPath: fromCwd(flags['keys-path']),
@@ -70,7 +69,10 @@ function runScript(
   // keep track of whether callback has been invoked to prevent multiple invocations
   let invoked = false;
 
-  const cProcess = childProcess.fork(scriptPath, { env: { ...process.env, ...env } });
+  const cProcess = childProcess.fork(scriptPath, {
+    env: { ...process.env, ...env },
+    execArgv: ['--require', 'ts-node/register'],
+  });
 
   // listen for errors as they may prevent the exit event from firing
   cProcess.on('error', (err) => {
