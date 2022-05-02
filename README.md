@@ -333,7 +333,7 @@ pub fn migrate(_deps: DepsMut, _env: Env, _msg: MigrateMsg) -> StdResult<Respons
 }
 ```
 
-## Calling migrate
+## Migrating Contract
 
 In the previous Terrain tutorial, we showed you how to deploy the contract, but we did not initilize it as migratable.
 
@@ -403,7 +403,7 @@ DESCRIPTION
   Generate new contract.
 ```
 
-_See code: [src/commands/code/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/code/new.ts)_
+_View code: [src/commands/code/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/code/new.ts)_
 
 ## `terrain code:store CONTRACT`
 
@@ -427,7 +427,7 @@ DESCRIPTION
   Store code on chain.
 ```
 
-_See code: [src/commands/code/store.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/code/store.ts)_
+_View code: [src/commands/code/store.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/code/store.ts)_
 
 ## `terrain console`
 
@@ -448,7 +448,7 @@ DESCRIPTION
   contracts.
 ```
 
-_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/console.ts)_
+_View code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/console.ts)_
 
 ## `terrain contract:instantiate CONTRACT`
 
@@ -473,7 +473,7 @@ DESCRIPTION
   Instantiate the contract.
 ```
 
-_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/instantiate.ts)_
+_View code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/instantiate.ts)_
 
 ## `terrain contract:migrate [CONTRACT]`
 
@@ -498,7 +498,7 @@ DESCRIPTION
   Migrate the contract.
 ```
 
-_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/migrate.ts)_
+_View code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/migrate.ts)_
 
 ## `terrain contract:updateAdmin CONTRACT ADMIN`
 
@@ -521,7 +521,7 @@ DESCRIPTION
   Update the admin of a contract.
 ```
 
-_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/updateAdmin.ts)_
+_View code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/updateAdmin.ts)_
 
 ## `terrain deploy CONTRACT`
 
@@ -551,11 +551,11 @@ DESCRIPTION
   Build wasm bytecode, store code on chain and instantiate.
 ```
 
-_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/deploy.ts)_
+_View code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/deploy.ts)_
 
 ## `terrain help [COMMAND]`
 
-display help for terrain
+Display help for terrain.
 
 ```
 USAGE
@@ -571,7 +571,7 @@ DESCRIPTION
   display help for terrain
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.18/src/commands/help.ts)_
+_View code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.18/src/commands/help.ts)_
 
 ## `terrain new NAME`
 
@@ -594,7 +594,7 @@ EXAMPLES
   $ terrain new awesome-dapp --path path/to/dapp
 ```
 
-_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/new.ts)_
+_View code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/new.ts)_
 
 ## `terrain sync-refs [FILE]`
 
@@ -612,7 +612,7 @@ DESCRIPTION
   Sync configuration with frontend app.
 ```
 
-_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/sync-refs.ts)_
+_View code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/sync-refs.ts)_
 
 ## `terrain task:new [TASK]`
 
@@ -626,11 +626,11 @@ DESCRIPTION
   create new task
 ```
 
-_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/task/new.ts)_
+_View code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/task/new.ts)_
 
 ## `terrain task:run [TASK]`
 
-run predefined task
+Run predefined task.
 
 ```
 USAGE
@@ -647,7 +647,7 @@ DESCRIPTION
   run predefined task
 ```
 
-_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/task/run.ts)_
+_View code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/task/run.ts)_
 
 ## `terrain test CONTRACT-NAME`
 
@@ -669,7 +669,7 @@ EXAMPLES
   $ terrain test counter --no-fail-fast
 ```
 
-_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test.ts)_
+_View code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test.ts)_
 
 <!-- commandsstop -->
 
@@ -680,15 +680,15 @@ In some cases, the latest features or bug fixes may be integrated into the main 
 To use the main branch of the Terrain repo on your local machine, you must clone the repo and navigate to the project folder.
 
 ```
-> git clone --branch main --depth 1 https://github.com/terra-money/terrain
-> cd terrain
+git clone --branch main --depth 1 https://github.com/terra-money/terrain
+cd terrain
 ```
 
 Inside the project folder, install all necessary node dependencies and run the `npm link` command to link the project to your global terrain instance.
 
 ```
-> npm install
-> npm link
+npm install
+npm link
 ```
 
 <sub>**Note:** _It is important to take into consideration that features and bug fixes that are implemented on the newest versions of Terrain may still be subject to testing._</sub>
