@@ -29,8 +29,8 @@ export default class Deploy extends Command {
     'frontend-refs-path': flags.string({
       default: './frontend/src/refs.terrain.json',
     }),
-    "arm64": flags.boolean({
-      description: "use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.",
+    arm64: flags.boolean({
+      description: 'use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.',
       default: false,
     }),
   };
@@ -60,10 +60,10 @@ export default class Deploy extends Command {
       lcd,
       conf,
       signer,
-      noRebuild: flags["no-rebuild"],
+      noRebuild: flags['no-rebuild'],
       contract: args.contract,
       network: flags.network,
-      refsPath: flags["refs-path"],
+      refsPath: flags['refs-path'],
       arm64: flags.arm64,
     });
 
