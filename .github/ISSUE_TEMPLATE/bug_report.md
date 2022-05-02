@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Information about unexpected behavior utilizing the tool
+about: Information about unexpected behavior or bug while using Terrain
 title: "[BUG]"
 labels: bug
 assignees: ''
