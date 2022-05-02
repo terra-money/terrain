@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Information about a new feature that improve tool usage
+about: Information about a new feature that improves Terrain
 title: "[FEATURE]"
 labels: feature request
 assignees: ''
