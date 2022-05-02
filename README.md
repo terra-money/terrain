@@ -87,7 +87,9 @@ To run Terrain, you will need to install Node.js and NPM. We recommend installin
 
 Assuming you have successfully set up your node environment, you can then generate your first smart contract. Run the following command in your terminal to install terrain globally.
 
-`npm install -g @terra-money/terrain`
+```sh
+npm install -g @terra-money/terrain
+```
 
 <sub>**Note:** _If you would like to install terrain locally, you can execute the command `npm install @terra-money/terrain`, without the `-g` flag, while in the directory in which you would like to be able to use the package. You can then execute any terrain commands by prefixing them with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed terrain package, you would utilize the command `npx terrain new my-terra-dapp`._</sub>
 
