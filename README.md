@@ -7,67 +7,70 @@
 </p>
 
 <p align="center" >
-<b>Terrain</b> – Terra development environment for better smart contract development experience
+<b>Terrain</b> – A Terra development environment for seamless smart contract development.
 </p>
+
+> [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/terrain.svg)](https://npmjs.org/package/terrain) [![Downloads/week](https://img.shields.io/npm/dw/terrain.svg)](https://npmjs.org/package/terrain)
 
 ---
 
-Terrain will help you:
+Terrain helps you:
 
-- scaffold your dapp project
-- ease the development and deployment process
-- create custom task for blockchain and contract interaction with less boilerplate code
-  - using terra.js directly could be cumbersome, Terrain gives you extensions and utilities to help you
-- console to terra blockchain, an interactive repl which have the same extensions and utilities as custom task
-- ability to predefine functions to be used in task and console
+- Scaffold a template smart contract and frontend for app development.
+- Dramatically simplify the development and deployment process.
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/terrain.svg)](https://npmjs.org/package/terrain)
-[![Downloads/week](https://img.shields.io/npm/dw/terrain.svg)](https://npmjs.org/package/terrain)
+Terrain is **not**:
+
+- A fully-featured Terra command-line interface (CLI). For this, take a look at <a href="https://docs.terra.money/docs/develop/how-to/terrad/using-terrad.html" target="_blank">terrad</a>.
+- A Light Client Daemon (LCD). You will still need an RPC endpoint to deploy your contract. <a href="https://github.com/terra-money/LocalTerra#readme" target="_blank">LocalTerra</a> is the recommended option for this.
+
+---
+
+# Table of contents
 
 <!-- toc -->
-* [Terrain](#terrain)
-* [Setup](#setup)
-* [Getting Started](#getting-started)
-* [Migrating CosmWasm contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
-* [Usage](#usage)
-* [Commands](#commands)
-* [Use main branch in local.](#use-main-branch-in-local)
+
+- [Setup](#setup)
+- [Getting Started](#getting-started)
+- [Migrating CosmWasm Contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
+- [Usage](#usage)
+- [Commands](#commands)
+- [Use Terrain Main Branch Locally](#use-terrain-main-branch-locally)
 <!-- tocstop -->
 
 # Setup
 
 ## Download LocalTerra
 
-For local developement environment, you need [LocalTerra](https://github.com/terra-money/localterra).
+For testing purposes, we recommend to install and run LocalTerra on your personal computer. Instructions on how to get LocalTerra up and running may be found in the <a href="https://github.com/terra-money/LocalTerra#readme" target="_blank">LocalTerra documentation</a>.
 
-_**note:** if you are using m1 chip, you might need to update your Docker Desktop due to [qemu bug](https://github.com/docker/for-mac/issues/5561)_
+To summarize, once all dependencies are installed, you may then clone the LocalTerra repo, change into the new directory and spin up an instance of the environment utilizing Docker.
 
-```sh
-git clone --branch v0.5.17 --depth 1 https://github.com/terra-money/localterra
-cd localterra
+```
+git clone https://github.com/terra-money/LocalTerra.git
+cd LocalTerra
 docker-compose up
 ```
 
+<sub>**Note:** _If you are using a Mac with an M1 chip, you might need to update your Docker Desktop due to the <a href="https://github.com/docker/for-mac/issues/5561" target="_blank">qemu bug</a>._</sub>
+
 ## Setup Rust
 
-While WASM smart contracts can theoretically be written in any programming language, we currently only recommend using Rust as it is the only language for which mature libraries and tooling exist for CosmWasm. For this tutorial, you'll need to also install the latest version of Rust by following the instructions [here](https://www.rust-lang.org/tools/install).
+While WASM smart contracts can theoretically be written in any programming language, it is recommended to utilize Rust as it is the only language in which mature libraries and tooling exist for CosmWasm. For this tutorial, you will need to install the latest version of Rust by following the instructions <a href="https://www.rust-lang.org/tools/install" target="_blank">here</a>. Once Rust is properly installed on your computer, you will need to...
 
-Then run the following commands
-
-**set `stable` as default release channel (used when updating rust)**
+Set the default release channel used to update Rust to `stable`:
 
 ```sh
 rustup default stable
 ```
 
-**add wasm as compilation target**
+Add wasm as the compilation target:
 
 ```sh
 rustup target add wasm32-unknown-unknown
 ```
 
-**for generating contracts**
+Install necessary dependencies for generating contracts:
 
 ```sh
 cargo install cargo-generate --features vendored-openssl
@@ -76,58 +79,64 @@ cargo install cargo-run-script
 
 ## Setup Node
 
-To run Terrain you need to install Node.js and NPM. We recommend the **[Node.js LTS 16](https://nodejs.org/en/download/)** and **Node Package Manager** (NPM) 8.5.0 which is the default installed version for Node.js LTS 16.
+To run Terrain, you will need to install Node.js and NPM. We recommend installing <a href="https://nodejs.org/en/download/" target="_blank">Node.js v16 (LTS)</a>. Node Package Manager (NPM) will be automatically installed along with the Node.js download.
 
-> If you encounter the next error code: <b>error:0308010C:digital envelope routines::unsupported</b> use LTS Node.js 16.
+<sub>**Note:** _Use Node.js v16 (LTS) if you encounter the following error code: </br>error:0308010C:digital envelope routines::unsupported_</sub>
 
 # Getting Started
 
-Assumed that you have setup the node env, let's generate our first app
+Assuming you have successfully set up your node environment, you can then generate your first smart contract. Run the following command in your terminal to install terrain globally.
 
-For the first time, you will need to run `npm install -g @terra-money/terrain`
-or `npx @terra-money/terrain new my-terra-dapp`
-since `terrain` npm module name is occupied by another module.
+`npm install -g @terra-money/terrain`
+
+<sub>**Note:** _If you would like to install terrain locally, you may execute the command `npm install @terra-money/terrain`, without the `-g` tag, while in the directory in which you would like to be able to use the package. You may then execute any terrain commands by prefixing them with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed terrain package, you would utilize the command `npx terrain new my-terra-dapp`._</sub>
+
+Next, you may run the following commands to generate your smart contract and corresponding frontend templates as well as install all necessary node dependencies in your project.
 
 ```sh
-npx terrain new my-terra-dapp
+terrain new my-terra-dapp
 cd my-terra-dapp
 npm install
 ```
 
 ## Project Structure
 
-The project structure will look like this:
+The `terrain new` command will generate a project containing a template smart contract, `counter`, and corresponding frontend. The structure of the project may be viewed below.
 
 ```
 .
-├── contracts              # contracts' source code
-│   ├── counter
-│   └── ...                # more contract can be added here
-├── frontend               # frontend application
-├── lib                    # predefined functions for task and console
+├── contracts              # contract directory
+│   ├── counter            # template contract
+│   └── ...                # added contracts
+├── frontend               # template frontend application
+├── lib                    # predefined task and console functions
 ├── tasks                  # predefined tasks
-├── keys.terrain.js        # keys for signing transacitons
+├── keys.terrain.js        # keys for signing transactions
 ├── config.terrain.json    # config for connections and contract deployments
-└── refs.terrain.json      # deployed code and contract referecnes
+└── refs.terrain.json      # deployed code and contract references
 ```
-
-You will now have counter example contract (no pun intended).
 
 ## Deployment
 
-We can right away deploy the contract on LocalTerra. Not specifying network will be defaulted to `localterra`.
+The `terrain deploy` command will build, optimize and store the wasm code on the blockchain as well as instantiate the contract. To deploy your new counter smart contract, you may run the below command in your terminal.
 
 ```sh
-npx terrain deploy counter --signer validator
+terrain deploy counter --signer validator
 ```
 
-> `npx` will use project's `terrain` binary instead of the global one.
+<sub> **Note:** _You can also store the wasm code and instantiate the contract separately using the command [`terrain code:store CONTRACT`](#terrain-codestore-contract) followed by [`terrain contract:instantiate CONTRACT`](#terrain-contractmigrate-contract). In this case, you must also run the command `terrain sync-refs` in your project directory to update the `refs.terrain.json` file which references contract deployments on all networks._</sub>
 
-note that signer `validator` is one of a [pre-configured accounts with balances on LocalTerra](https://github.com/terra-money/LocalTerra#accounts).
+In this case, we specify one of the <a href="https://github.com/terra-money/LocalTerra#accounts" target="_blank">preconfigured accounts</a> with balances on LocalTerra, `validator`, as our signer. The signer account will be responsible for paying the gas fee associated with deploying the contract to the Terra blockchain and will be assigned as the owner of the project.
 
-Deploy command will build and optimize wasm code, store it on the blockchain and instantiate the contract.
+You may also specify the network on which you would like to deploy your contract by adding the `--network` tag. If the network is not specified, as is the case in our above example, your contract will be deployed to `localterra` by default. You may also deploy to `mainnet`, the live Terra blockchain, as well as `testnet`, a network similar to mainnet used for testing.
 
-You can deploy to different network defined in the `config.terrain.json` (`mainnet` and `testnet`). But you can not use the pre-configured accounts anymore. So you need to first update your `keys.terrain.js`
+<br/>
+
+### Deploying on Testnet or Mainnet
+
+The predefined accounts in the `keys.terrain.js` file shown below may be utilized as signers on `testnet`. We will demonstrate how to deploy your smart contract utilizing the preconfigured `custom_tester_1` account. You may also add a personal account to the `keys.terrain.js` file by adding the account name as well as its corresponding private key. You may then use that account as the signer specifying the account name after the `--signer` tag in the `terrain deploy` command.
+
+<sub>**Warning:** _Utilizing a personal account for deployment requires the use of a private key or mnemonic. These are private keys that are generated upon the creation of your personal wallet. Saving or utilizing these keys on your personal computer may expose them to malicious actors who could gain access to your personal wallet if they are able to obtain them. You may create a wallet solely for testing purposes to eliminate risk. Alternatively, you may store your private keys as secret enviroment variables which you can then reference utilizing `process.env.SECRET_VAR` in `keys.terrain.json`. Use your private key or mnemonic at your own disgretion._</sub>
 
 ```js
 // can use `process.env.SECRET_MNEMONIC` or `process.env.SECRET_PRIV_KEY`
@@ -144,43 +153,32 @@ module.exports = {
 };
 ```
 
-Apparently, there are some example accounts pre-defined in there. But **DON'T USE THEM ON MAINNET** since it is not a secret anymore.
+Prior to deploying your contract, you will first have to ensure that your signer wallet contains the funds needed to pay for associated transaction fees. You may request funds from the <a href="https://faucet.terra.money/" target="_blank">Terra Testnet Faucet</a> by submitting the wallet address of the account where you would like to receive the funds and clicking on the `Send me tokens` button.
 
-For demonstration purpose, we are going to use `custom_tester_1`.
-
-First, get some Luna from [the faucet](https://faucet.terra.money/) to pay for gas. Notice that it requires address but you only have `mnenomic` or `private_key` in `keys.terrain.js`.
-
-The easiest way to retrive the address is to use console:
+You may retrieve the wallet address associated with the custom_tester_1 account by utilizing the terrain console in your terminal.
 
 ```sh
-npx terrain console
+terrain console
 
 terrain > wallets.custom_tester_1.key.accAddress
 'terra1qd9fwwgnwmwlu2csv49fgtum3rgms64s8tcavp'
 ```
 
-Now you can request for Luna on the faucet then check your balance in console.
+After you receive the Luna tokens from the Terra Testnet Faucet, you may query the balance of your account by utilizing the following command in the terrain console.
 
 ```sh
 terrain > (await client.bank.balance(wallets.custom_tester_1.key.accAddress))[0]
 ```
 
-`client` is an [LCDClient](https://terra-money.github.io/terra.js/classes/client_lcd_LCDClient.LCDClient.html) (LCD stands for "Light Client Daemon" as opposed to FCD a "Fulll Client Daemon", if you are curious) with some extra utility function. And `wallets` contains list of [Wallet](https://terra-money.github.io/terra.js/classes/client_lcd_Wallet.Wallet.html).
+Finally, you may exit the terrain console to deploy your counter smart contract to testnet utilizing the custom_tester_1 account as the signer.
 
 ```sh
-npx terrain deploy counter --signer custom_tester_1 --network testnet
+terrain deploy counter --signer custom_tester_1 --network testnet
 ```
 
-Same goes for mainnet deployment, you might want to store your secrets in enviroment variable instead, which you can populate them through `process.env.SOME_SECRET` in `keys.terrain.json`.
+## Initializing the Frontend Template
 
-You can also separate storing code
-from contract instantiation
-as using:
-
-- [`terrain code:store CONTRACT`](#terrain-codestore-contract)
-- [`terrain contract:instantiate CONTRACT`](#terrain-contractmigrate-contract)
-
-After deployment, `refs.terrain.json` will get updated. Refs file contains contract references on all network.
+After deployment, the `refs.terrain.json` file will be updated in the project directory as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template.
 
 ```json
 {
@@ -201,45 +199,26 @@ After deployment, `refs.terrain.json` will get updated. Refs file contains contr
     }
   }
 }
-
 ```
 
-This information is used by terrain's utility functions and also the frontend template.
-
-But in order to use it with frontend, You sync this in to `frontend/src` since it can not import file outside its rootDir (`src`). Todo so, run:
+In the case that you have initialized the contract without the `terrain deploy` command or if you have manually changed the `refs.terrain.json` file in the project directory, you will need to sync the references to the `fontend/src` directory in order to ensure frontend functionality.
 
 ```sh
-npx terrain sync-refs
+terrain sync-refs
 ```
 
-> This is not ideal, ideas and contribution are more than welcome
-
-With this, we can now start frontend:
+After you have synced the contract references, you may change into the `frontend` directory and start the application.
 
 ```sh
 cd frontend
 npm run start
 ```
 
-Switching network in your terra wallet extension will result in referencing to different contract address in the respective network.
+Switching networks in your Terra Station extension will result in a change in reference to the contract address which corresponds with the new network.
 
-## Lib, Console and Task
+## Run Contract Functions with Terrain
 
-With the template setup, you can do this
-
-```sh
-npx terrain console
-terrain > await lib.increment()
-...
-terrain > await lib.getCount()
-{ count: 0 }
-```
-
-> `npx terrain console --network <NETWORK>` is also possible
-
-Where does this lib functions comes from?
-
-The answer is here:
+Once you have successfully deployed your project, you may interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions.
 
 ```js
 // lib/index.js
@@ -251,9 +230,24 @@ module.exports = ({ wallets, refs, config, client }) => ({
 });
 ```
 
-With this, you can interact with your contract or the blockchain interactively with your own abstractions.
+You can call the functions defined above inside of the `terrain console` as shown below.
 
-You can use the lib to create task as well:
+```sh
+terrain console
+terrain > await lib.getCount()
+{ count: 0 }
+terrain > await lib.increment()
+terrain > await lib.getCount()
+{ count: 1 }
+```
+
+You can also specify which network you would like to interact with by utilizing the `--network` tag.
+
+`terrain console --network NETWORK`
+
+## Creating Tasks
+
+You may also utilize the functions available inside of the `lib/index.js` file to create tasks. Tasks are utilized in order to automate the execution of sequential functions or commands.
 
 ```js
 // tasks/example-with-lib.js
@@ -269,21 +263,19 @@ task(async (env) => {
 });
 ```
 
-To run this task:
+To run the above example task, located in the `tasks/example-with-lib.js` file, you would run the following command in the terminal.
 
 ```sh
-npx terrain task:run example-with-lib
+terrain task:run example-with-lib
 ```
 
-To create new task, run:
+In order to create a new task, run the following command replacing `task-name` with your desired name for your new task.
 
 ```sh
-npx terrain task:new task-name
+terrain task:new task-name
 ```
 
-You might noticed by now that the `env` (`wallets`, `refs`, `config`, `client`) in task and lib are the ones that available in the console context.
-
-Also, you can access `terrajs` in the console or import it in the lib or task to create custom interaction like in `tasks/example-custom-logic.js` or more complex one, if you are willing to do so, please consult [terra.js doc](https://terra-money.github.io/terra.js/).
+If you would like to utilize JavaScript in your functions or tasks, you may import `terrajs`. The `tasks/example-custom-logic.js` file contains an example of a task utilizing Terra.js functionality. If you would like to learn more about how to utilize Terra.js, you may reference the <a href="https://terra-money.github.io/terra.js/" target="_blank">Terra.js documentation</a>.
 
 ```js
 // tasks/example-custom-logic.js
@@ -298,43 +290,41 @@ task(async ({ wallets, refs, config, client }) => {
   console.log("private key", key.privateKey.toString("base64"));
   console.log("mnemonic", key.mnemonic);
 });
-
 ```
+
 ---
 
-# Migrating CosmWasm contracts on Terra
+# Migrating CosmWasm Contracts on Terra
 
 (Thanks to @octalmage)
 
-On Terra it is possible to initilize contracts as migratable. This functionallity allows the adminstrator to upload a new version of the contract, then send a migrate message to move to the new code.
+On Terra, it is possible to initilize contracts as migratable. This functionality allows an adminstrator to upload a new version of a contract and then send a migrate message to move to the new code.
 
-We'll be using Terrain, a Terra development suite to ease the scaffolding, deployment, and migration of our contracts. 
+In this example, we will be utilizing Terrain, a Terra development suite to ease the scaffolding, deployment, and migration of smart contracts.
 
-[This tutorial](https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html) builds on top of the Terrain Quick Start Guide.
+<a href="https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html" target="_blank">This tutorial</a> builds on top of the Terrain Quick Start Guide.
 
-## Adding MigrateMsg to contract
+## Adding MigrateMsg to the Contract
 
-There's two steps required to make a contract migratable: 
+In order for a contract to be migratable, it must satisfy the following two requirements:
 
-1. Smart contract handles the MigrateMsg transaction. 
-2. Smart contract has an admin set, which is the address that's allowed to perform migrations. 
+1. The smart contract handles the MigrateMsg transaction.
+2. The smart contract has an admin set as only an Administrator is allowed to perform migrations.
 
-To implement support for MigrateMsg you will need to add the message to `msg.rs`: 
+To implement support for MigrateMsg you will need to add the message to the `msg.rs` file. You may place the following code just above the `InstantiateMsg` struct.
 
 ```rust
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct MigrateMsg {}
 ```
 
-You can place this anywhere, I usually stick it above the InstantiateMsg struct.
-
-With MigrateMsg defined we need to update `contract.rs`. First update the import from `crate::msg` to include `MigrateMsg`:
+With MigrateMsg defined, you can then update the `contract.rs` file. First, you will need to update the import from `crate::msg` to include `MigrateMsg`.
 
 ```rust
 use crate::msg::{CountResponse, ExecuteMsg, InstantiateMsg, QueryMsg, MigrateMsg};
 ```
 
-Then add the following method above `instantiate`: 
+Next, add the following method above `instantiate`.
 
 ```rust
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -345,19 +335,18 @@ pub fn migrate(_deps: DepsMut, _env: Env, _msg: MigrateMsg) -> StdResult<Respons
 
 ## Calling migrate
 
-In the previous Terrain tutorial we showed you how to deploy the contract, but we did not initilize it as migratable. 
+In the previous Terrain tutorial, we showed you how to deploy the contract, but we did not initilize it as migratable.
 
-After adding MigrateMsg to the smart contract we can redeploy and add the `--set-signer-as-admin` flag. This tells Terra that the transaction signer is allowed to migrate the contract in the future. 
-
+After adding MigrateMsg to the smart contract, we can redeploy and add the `--set-signer-as-admin` flag. This tells Terra that the transaction signer is allowed to migrate the contract in the future.
 
 ```sh
-npx terrain deploy counter --signer validator --set-signer-as-admin
+terrain deploy counter --signer validator --set-signer-as-admin
 ```
 
-With the new contract deployed you can make some changes, then migrate to the new code with the following command: 
+If you decide to make changes to the deployed contract, you can migrate to the updated code by executing the following command.
 
 ```sh
-npx terrain contract:migrate counter --signer validator
+terrain contract:migrate counter --signer validator
 ```
 
 ---
@@ -365,6 +354,7 @@ npx terrain contract:migrate counter --signer validator
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @terra-money/terrain
 $ terrain COMMAND
@@ -376,24 +366,26 @@ USAGE
   $ terrain COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`terrain code:new [NAME]`](#terrain-codenew-name)
-* [`terrain code:store CONTRACT`](#terrain-codestore-contract)
-* [`terrain console`](#terrain-console)
-* [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
-* [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
-* [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
-* [`terrain deploy CONTRACT`](#terrain-deploy-contract)
-* [`terrain help [COMMAND]`](#terrain-help-command)
-* [`terrain new NAME`](#terrain-new-name)
-* [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
-* [`terrain task:new [TASK]`](#terrain-tasknew-task)
-* [`terrain task:run [TASK]`](#terrain-taskrun-task)
-* [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+
+- [`terrain code:new [NAME]`](#terrain-codenew-name)
+- [`terrain code:store CONTRACT`](#terrain-codestore-contract)
+- [`terrain console`](#terrain-console)
+- [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
+- [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
+- [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
+- [`terrain deploy CONTRACT`](#terrain-deploy-contract)
+- [`terrain help [COMMAND]`](#terrain-help-command)
+- [`terrain new NAME`](#terrain-new-name)
+- [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
+- [`terrain task:new [TASK]`](#terrain-tasknew-task)
+- [`terrain task:run [TASK]`](#terrain-taskrun-task)
+- [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
 
 ## `terrain code:new [NAME]`
 
@@ -678,25 +670,25 @@ EXAMPLES
 ```
 
 _See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test.ts)_
+
 <!-- commandsstop -->
 
+# Use Terrain Main Branch Locally
 
-# Use main branch in local.
+In some cases, the latest features or bug fixes may be integrated into the main branch on the <a href="https://github.com/terra-money/terrain" target="_blank">Terrain Github repo</a>, but not yet released to the corresponding <a href="https://www.npmjs.com/package/@terra-money/terrain" target="_blank">npm package</a>. In exceptional cases, you may want to use the latest version of Terrain available on Github, even before being released to npm.
 
-Sometimes the most new features or bugfixes are integrated into the main branch but not yet released to [npm repository](https://www.npmjs.com/package/@terra-money/terrain). In exceptional cases you may want to use the latest code of the library even before being released to [@terra-money/terrain](https://www.npmjs.com/package/@terra-money/terrain). 
-
-To use main branch in your local machine you must clone the repo and navigate to the project folder:
+To use the main branch of the Terrain repo on your local machine, you must clone the repo and navigate to the project folder.
 
 ```
 > git clone --branch main --depth 1 https://github.com/terra-money/terrain
-> cd terrain/
+> cd terrain
 ```
 
-Inside the project folder execute [install](https://docs.npmjs.com/cli/v6/commands/npm-install), when it finish you can use [link](https://docs.npmjs.com/cli/v8/commands/npm-link) to setup the project as your global terrain instance:
+Inside the project folder, install all necessary node dependencies and run the `npm link` command to link the project to your global terrain instance.
 
 ```
 > npm install
 > npm link
 ```
 
-> Take in consideration that the process documented before sometimes will contain fixes and new features but is still being tested.
+<sub>**Note:** _It is important to take into consideration that features and bug fixes that are implemented on the newest versions of Terrain may still be subject to testing._</sub>
