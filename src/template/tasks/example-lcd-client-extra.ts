@@ -1,6 +1,8 @@
-const { task } = require("@terra-money/terrain");
+import { Env, task } from "@terra-money/terrain";
 
-task(async ({ wallets, refs, config, client }) => {
+task(async (env: Env) => {
+  const { client, wallets } = env;
+  
   // query is a thin wrapper of contract query
   const count = await client.query("counter", { get_count: {} });
   console.log("prev count = ", count);

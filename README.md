@@ -396,7 +396,7 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`terrain code:new [NAME]`](#terrain-codenew-name)
+* [`terrain code:new NAME`](#terrain-codenew-name)
 * [`terrain code:store CONTRACT`](#terrain-codestore-contract)
 * [`terrain console`](#terrain-console)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
@@ -410,7 +410,7 @@ USAGE
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
 
-## `terrain code:new [NAME]`
+## `terrain code:new NAME`
 
 Generate new contract.
 
