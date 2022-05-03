@@ -95,7 +95,8 @@ cargo install cargo-run-script
 
 To run Terrain, you will need to install Node.js and NPM. We recommend that you install <a href="https://nodejs.org/en/download/" target="_blank">Node.js v16 (LTS)</a>. Node Package Manager (NPM) is automatically installed along with your Node.js download.
 
-<sub>**Note:** _Use Node.js v16 (LTS) if you encounter the following error code: &emsp; error:0308010C:digital envelope routines::unsupported_</sub>
+<sub>**Note:** _Use Node.js v16 (LTS) if you encounter the following error code: 
+  `&emsp; error:0308010C:digital envelope routines::unsupported`_</sub>
 
 # Getting Started
 
@@ -162,7 +163,7 @@ The `terrain deploy` command does the following:
 - Builds, optimizes and store the wasm code on the blockchain.
 - Instantiates the contract. 
 
-To deploy your new counter smart contract, you can run the below command in your terminal.
+To deploy your new counter smart contract, run the following command in the terminal:
 
 ```sh
 terrain deploy counter --signer validator
@@ -222,7 +223,7 @@ terrain deploy counter --signer custom_tester_1 --network testnet
 
 ## Initializing the Frontend Template
 
-After deployment, the `refs.terrain.json` file is updated in the project directory, as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. AN example of `refs.terrain.json` can be found below:
+After deployment, the `refs.terrain.json` file is updated in the project directory, as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
 
 ```json
 {
@@ -281,7 +282,7 @@ module.exports = ({ wallets, refs, config, client }) => ({
 });
 ```
 
-You can call the functions defined above inside of the `terrain console`. An example using the `counter` contract as shown below.
+You can call the functions defined above inside of the `terrain console`. An example using the `counter` contract is shown below:
 
 ```sh
 terrain console
@@ -326,7 +327,7 @@ In order to create a new task, run the following command, replacing `<task-name>
 terrain task:new <task-name>
 ```
 
-If you would like to utilize JavaScript in your functions or tasks, you can import Terra.js The `tasks/example-custom-logic.js` file contains an example of a task that utilizes Terra.js functionality. To learn more about Terra.js, see the <a href="https://terra-money.github.io/terra.js/" target="_blank">Terra.js documentation</a>.
+If you would like to utilize JavaScript in your functions or tasks, you can import Terra.js. The `tasks/example-custom-logic.js` file contains an example of a task that utilizes Terra.js functionality. To learn more about Terra.js, see the <a href="https://terra-money.github.io/terra.js/" target="_blank">Terra.js documentation</a>.
 
 ```js
 // tasks/example-custom-logic.js
