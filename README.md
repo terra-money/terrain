@@ -123,7 +123,7 @@ npm install @terra-money/terrain
 
 2. Next, generate your smart contract and corresponding frontend templates:
 
-<sub>**Note: ** _If you installed Terrain in a specific directory in the previous step, you must prefix all `terrain` commands with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed Terrain package, you would run `npx terrain new my-terra-dapp`._</sub>
+<sub>**Note:** _If you installed Terrain in a specific directory in the previous step, you must prefix all `terrain` commands with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed Terrain package, you would run `npx terrain new my-terra-dapp`._</sub>
 
 ```sh
 terrain new my-terra-dapp
@@ -143,7 +143,7 @@ npm install
 
 ## Project Structure
 
-The `terrain new` generates a project with the following structure:
+The `terrain new` command generates a project with the following structure:
 
 ```
 .
@@ -429,7 +429,7 @@ npm install
 npm link
 ```
 
-To unlink the terrain command from the cloned repository and revert back to the default functionality, you can run the command below.
+To unlink the terrain command from the cloned repository and revert back to the default functionality you can run the command below.
 
 ```
 npm unlink terrain
