@@ -33,43 +33,44 @@ Terrain is **not**:
 - [Setup](#setup)
 - [Getting Started](#getting-started)
 - [Migrating CosmWasm Contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
-- [Usage](#usage)
-- [Commands](#commands)
 - [Use Terrain Main Branch Locally](#use-terrain-main-branch-locally)
+- [Terrain Commands](#terrain-commands)
 <!-- tocstop -->
 
 # Setup
 
 ## Download LocalTerra
 
-For testing purposes, follow the instructions to <a href="https://github.com/terra-money/LocalTerra#readme" target="_blank">
-install and run LocalTerra on your personal computer.</a>.
+For testing purposes, we recommend to install and run LocalTerra on your personal computer. Instructions on how to get LocalTerra up and running can be found in the <a href="https://github.com/terra-money/LocalTerra#readme" target="_blank">
+LocalTerra documentation</a>.
 
 <sub>**Note:** _If you are using a Mac with an M1 chip, you might need to update your Docker Desktop due to the <a href="https://github.com/docker/for-mac/issues/5561" target="_blank">qemu bug</a>._</sub>
 
 Once all dependencies have been installed, do the following:
 
 1. Clone the LocalTerra repo.
+
 ```
 git clone https://github.com/terra-money/LocalTerra.git
 ```
 
 2. Navigate to the newly created `LocalTerra` directory.
+
 ```
 cd LocalTerra
 ```
 
 3. Spin up an instance of the environment with `docker-compose`:
+
 ```
 docker-compose up
 ```
-
 
 ## Setup Rust
 
 While WASM smart contracts can be written in any programming language, **it is strongly recommended that you utilize Rust**, as it is the only language for which mature libraries and tooling exist for CosmWasm. To complete this tutorial, install the latest version of Rust by following the instructions <a href="https://www.rust-lang.org/tools/install" target="_blank">here</a>. Once Rust is installed on your computer, do the following:
 
-1. Set the default release channel used to update Rust to `stable`:
+1. Set the default release channel used to update Rust to stable:
 
 ```sh
 rustup default stable
@@ -95,8 +96,7 @@ cargo install cargo-run-script
 
 To run Terrain, you will need to install Node.js and NPM. We recommend that you install <a href="https://nodejs.org/en/download/" target="_blank">Node.js v16 (LTS)</a>. Node Package Manager (NPM) is automatically installed along with your Node.js download.
 
-<sub>**Note:** _Use Node.js v16 (LTS) if you encounter the following error code: 
-  `&emsp; error:0308010C:digital envelope routines::unsupported`_</sub>
+<sub>**Note:** _Use Node.js v16 (LTS) if you encounter the following error code: `error:0308010C:digital envelope routines::unsupported`_</sub>
 
 # Getting Started
 
@@ -104,17 +104,19 @@ Now that you have completed the initial setup, generate your first smart contrac
 
 1. Install Terrain globally or in a specific directory.
 
-***To install Terrain globally***, run the following command in your terminal:
+**_To install Terrain globally_**, run the following command in your terminal:
+
 ```sh
 npm install -g @terra-money/terrain
 ```
 
-***To install Terrain in a specific directory***, 
+**_To install Terrain in a specific directory_**,
 do the following:
 
 a. Navigate to the directory in which you wish to install Terrain.
 
 b. Run the following command in your terminal:
+
 ```sh
 npm install @terra-money/terrain
 ```
@@ -127,13 +129,13 @@ npm install @terra-money/terrain
 terrain new my-terra-dapp
 ```
 
-4. Navigate to the new `my-terra-dapp` directory.
+3. Navigate to the new `my-terra-dapp` directory.
 
 ```sh
 cd my-terra-dapp
 ```
 
-6. Install all necessary Node dependencies in your project.
+4. Install all necessary Node dependencies in your project.
 
 ```sh
 npm install
@@ -145,9 +147,9 @@ The `terrain new` generates a project with the following structure:
 
 ```
 .
-├── contracts              # The smart contract directory
+├── contracts              # the smart contract directory
 │   ├── counter            # template smart contract
-│   └── ...                
+│   └── ...
 ├── frontend               # template frontend application
 ├── lib                    # predefined task and console functions
 ├── tasks                  # predefined tasks
@@ -161,7 +163,7 @@ The `terrain new` generates a project with the following structure:
 The `terrain deploy` command does the following:
 
 - Builds, optimizes and store the wasm code on the blockchain.
-- Instantiates the contract. 
+- Instantiates the contract.
 
 To deploy your new counter smart contract, run the following command in the terminal:
 
@@ -246,27 +248,23 @@ After deployment, the `refs.terrain.json` file is updated in the project directo
 }
 ```
 
-<sub> **Important:** _If you have initialized the contract without using the `terrain deploy` command or have manually changed the `refs.terrain.json` file in the project directory, you will need to sync the references to the `fontend/src` directory in order to ensure frontend functionality. To do so, use the following command:
-
-```sh
-terrain sync-refs
-```_</sub>
-
+<sub> **Important:** _If you have initialized the contract without using the `terrain deploy` command or have manually changed the `refs.terrain.json` file in the project directory, you will need to sync the references to the `fontend/src` directory in order to ensure frontend functionality. To do so, use the following command: `terrain sync-refs`_</sub>
 
 After you have synced the contract references, navigate to the `frontend` directory and start the application.
 
 1. Navigate to the `frontend` directory:
+
 ```sh
 cd frontend
 ```
 
 2. Start the application:
+
 ```sh
 npm run start
 ```
 
 <sub> **Note:** _Switching networks in your Terra Station extension will result in a change in reference to the contract address which corresponds with the new network._</sub>
-
 
 ## Run Contract Functions with Terrain
 
@@ -350,7 +348,7 @@ task(async ({ wallets, refs, config, client }) => {
 
 (Thanks to @octalmage)
 
-On Terra, it is possible to initilize contracts as ***migratable***. A migratable contract allows an adminstrator to upload a new version of a contract and then send a migrate message to move to the new code.
+On Terra, it is possible to initilize contracts as **_migratable_**. A migratable contract allows an adminstrator to upload a new version of a contract and then send a migrate message to move to the new code.
 
 <a href="https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html" target="_blank">This tutorial</a> builds on top of the Terrain Quick Start Guide and walks you through a contract migration.
 
@@ -399,27 +397,49 @@ If you decide to make changes to the deployed contract, you can migrate to the u
 terrain contract:migrate counter --signer validator
 ```
 
----
+# Use Terrain Main Branch Locally
 
-# Usage
+In some cases, the latest features or bug fixes may be integrated into the main branch of the <a href="https://github.com/terra-money/terrain" target="_blank">Terrain Github repo</a>, but not yet released to the corresponding <a href="https://www.npmjs.com/package/@terra-money/terrain" target="_blank">npm package</a>. In rare cases, you may want to use this latest version of Terrain available on Github before it has been released to npm.
 
-<!-- usage -->
+<sub>**Warning:** _Features and bug fixes that are implemented on the latest version of Terrain may still be subject to testing. As such, you should only use the main branch of the Terrain github repo in exceptional circumstances. In all other cases, use the npm package._</sub>
 
-```sh-session
-$ npm install -g @terra-money/terrain
-$ terrain COMMAND
-running command...
-$ terrain (-v|--version|version)
-@terra-money/terrain/0.2.0 darwin-x64 node-v16.9.1
-$ terrain --help [COMMAND]
-USAGE
-  $ terrain COMMAND
-...
+To use the main branch of the Terrain repo on your local machine, do the following:
+
+1. Clone the repo:
+
+```
+git clone --branch main --depth 1 https://github.com/terra-money/terrain
 ```
 
-<!-- usagestop -->
+2. Navigate to the project folder:
 
-# Commands
+```
+cd terrain
+```
+
+3. Inside the project folder, install all necessary node dependencies:
+
+```
+npm install
+```
+
+4.  Run the `npm link` command to link the project to your global terrain instance.
+
+```
+npm link
+```
+
+To unlink the terrain command from the cloned repository and revert back to the default functionality, you can run the command below.
+
+```
+npm unlink terrain
+```
+
+<sub>**Note:** _It is important to take into consideration that features and bug fixes that are implemented on the newest versions of Terrain may still be subject to testing._</sub>
+
+---
+
+# Terrain Commands
 
 <!-- commands -->
 
@@ -722,43 +742,3 @@ EXAMPLES
 _View code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test.ts)_
 
 <!-- commandsstop -->
-
-# Use Terrain Main Branch Locally
-
-In some cases, the latest features or bug fixes may be integrated into the main branch of the <a href="https://github.com/terra-money/terrain" target="_blank">Terrain Github repo</a>, but not yet released to the corresponding <a href="https://www.npmjs.com/package/@terra-money/terrain" target="_blank">npm package</a>. In rare cases, you may want to use this latest version of Terrain available on Github before it has been released to npm.
-
-<sub>**Warning:** _Features and bug fixes that are implemented on the latest version of Terrain may still be subject to testing. As such, you should only use the main branch of the Terrain github repo in exceptional circumstances. In all other cases, use the npm package._</sub>
-
-To use the main branch of the Terrain repo on your local machine, do the following:
-
-1. Clone the repo:
-
-```
-git clone --branch main --depth 1 https://github.com/terra-money/terrain
-```
-
-2. Navigate to the project folder:
-
-```
-cd terrain
-```
-
-3. Inside the project folder, install all necessary node dependencies:
-
-```
-npm install
-```
-
-4.  Run the `npm link` command to link the project to your global terrain instance.
-
-```
-npm link
-```
-
-To unlink the terrain command from the cloned repository and revert back to the default functionality, you can run the command below.
-
-```
-npm unlink terrain
-```
-
-<sub>**Note:** _It is important to take into consideration that features and bug fixes that are implemented on the newest versions of Terrain may still be subject to testing._</sub>
