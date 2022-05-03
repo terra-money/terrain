@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as childProcess from 'child_process';
 import { cli } from 'cli-ux';
 import { Env, getEnv } from '../../lib/env';
+import * as fs from 'fs-extra';
 
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
@@ -38,16 +39,22 @@ export default class Run extends Command {
 
   static args = [{ name: 'task' }];
 
+  fromCwd = (p: string) => path.join(process.cwd(), p);
+
   async run() {
     const { args, flags } = this.parse(Run);
-    const fromCwd = (p: string) => path.join(process.cwd(), p);
+    let scriptPath = this.fromCwd(`tasks/${args.task}.ts`);
+
+    if(!fs.existsSync(scriptPath)) {
+      scriptPath = this.fromCwd(`tasks/${args.task}.js`);
+    }
 
     runScript(
-      fromCwd(`tasks/${args.task}.js`),
+      scriptPath,
       {
-        configPath: fromCwd(flags['config-path']),
-        keysPath: fromCwd(flags['keys-path']),
-        refsPath: fromCwd(flags['refs-path']),
+        configPath: this.fromCwd(flags['config-path']),
+        keysPath: this.fromCwd(flags['keys-path']),
+        refsPath: this.fromCwd(flags['refs-path']),
         network: flags.network,
       },
       (err) => {
@@ -56,6 +63,7 @@ export default class Run extends Command {
     );
   }
 }
+
 
 function runScript(
   scriptPath: string,
@@ -70,7 +78,15 @@ function runScript(
   // keep track of whether callback has been invoked to prevent multiple invocations
   let invoked = false;
 
-  const cProcess = childProcess.fork(scriptPath, { env: { ...process.env, ...env } });
+  const cProcess = childProcess.fork(scriptPath,
+    {
+      env: {
+        ...process.env,
+        ...env
+      },
+      execArgv: ['-r', 'ts-node/register']
+    }
+  );
 
   // listen for errors as they may prevent the exit event from firing
   cProcess.on('error', (err) => {

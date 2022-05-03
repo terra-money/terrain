@@ -12,14 +12,15 @@
 
 ---
 
-Terrain will help you:
+Terrain:
 
-- scaffold your dapp project
-- ease the development and deployment process
-- create custom task for blockchain and contract interaction with less boilerplate code
-  - using terra.js directly could be cumbersome, Terrain gives you extensions and utilities to help you
-- console to terra blockchain, an interactive repl which have the same extensions and utilities as custom task
-- ability to predefine functions to be used in task and console
+- helps you scaffold both the smart contracts and the frontend of your app
+- dramatically simplifies the development and deployment process
+
+###### Terrain is __not__:
+
+- a fully-featured Terra CLI. Take a look at [terrad](https://docs.terra.money/docs/develop/how-to/terrad/using-terrad.html).
+- an LCD. You will still need an RPC endpoint to deploy your contract. [LocalTerra](https://github.com/terra-money/LocalTerra) is a good development option for this.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/terrain.svg)](https://npmjs.org/package/terrain)
@@ -33,6 +34,7 @@ Terrain will help you:
 * [Usage](#usage)
 * [Commands](#commands)
 * [Use main branch in local.](#use-main-branch-in-local)
+* [How to run the project locally](#how-to-run-the-project-locally)
 <!-- tocstop -->
 
 # Setup
@@ -125,7 +127,20 @@ npx terrain deploy counter --signer validator
 
 note that signer `validator` is one of a [pre-configured accounts with balances on LocalTerra](https://github.com/terra-money/LocalTerra#accounts).
 
-Deploy command will build and optimize wasm code, store it on the blockchain and instantiate the contract.
+Deploy command will build and optimize wasm code, store it on the blockchain and instantiate the contract._
+
+_**note:** if you are using m1 chip, you might encounter a docker run error such as_
+```
+Error: Command failed: docker run --rm -v "$(pwd)":/code         --mount 
+    type=volume,source="$(basename "$(pwd)")_cache",target=/code/target       
+      --mount 
+    type=volume,source=registry_cache,target=/usr/local/cargo/registry        
+     cosmwasm/rust-optimizer:0.12.5
+```
+_in this case, you should run the following:_ 
+```sh
+npx terrain deploy counter --signer validator --arm64
+```
 
 You can deploy to different network defined in the `config.terrain.json` (`mainnet` and `testnet`). But you can not use the pre-configured accounts anymore. So you need to first update your `keys.terrain.js`
 
@@ -370,7 +385,7 @@ $ npm install -g @terra-money/terrain
 $ terrain COMMAND
 running command...
 $ terrain (-v|--version|version)
-@terra-money/terrain/0.2.0 darwin-x64 node-v16.9.1
+@terra-money/terrain/0.2.0 linux-x64 node-v16.14.2
 $ terrain --help [COMMAND]
 USAGE
   $ terrain COMMAND
@@ -381,7 +396,7 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`terrain code:new [NAME]`](#terrain-codenew-name)
+* [`terrain code:new NAME`](#terrain-codenew-name)
 * [`terrain code:store CONTRACT`](#terrain-codestore-contract)
 * [`terrain console`](#terrain-console)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
@@ -394,8 +409,9 @@ USAGE
 * [`terrain task:new [TASK]`](#terrain-tasknew-task)
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+* [`terrain wallet:new`](#terrain-wallet-new)
 
-## `terrain code:new [NAME]`
+## `terrain code:new NAME`
 
 Generate new contract.
 
@@ -678,6 +694,24 @@ EXAMPLES
 ```
 
 _See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test.ts)_
+
+## `terrain wallet:new`
+
+Generate a new wallet to use for signing contracts
+```
+USAGE
+  $ terrain wallet:new [--outfile <value>]
+
+FLAGS
+  --index=<value>    key index to use, default value is 0
+  --outfile=<value>  absolute path to store the mnemonic key to. If omitted, output to stdout
+
+DESCRIPTION
+  Generate a new wallet.
+```
+
+_See code: [src/commands/task/run.ts](./src/commands/wallet/new.ts)_
+
 <!-- commandsstop -->
 
 
@@ -700,3 +734,26 @@ Inside the project folder execute [install](https://docs.npmjs.com/cli/v6/comman
 ```
 
 > Take in consideration that the process documented before sometimes will contain fixes and new features but is still being tested.
+
+# How to run the project locally
+
+If you want to contribute to the project just take in consideration that after cloning the repo you need to build and run the built version each time you do a change in the source code because its a CLI tool:
+
+```
+// Clone the repo
+> git clone --branch main --depth 1 https://github.com/terra-money/terrain
+
+// Navigate to the project directory
+> cd terrain/
+
+// Install the dependencies
+> npm install
+
+// Build the project
+> npm run prepack
+
+// Execute the build version of the project with one of the available commands
+> npm run use [argument]
+```
+
+> Another available command is *npm run prepack:use [argument]* which will build the project and execute the command you like.

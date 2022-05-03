@@ -4,10 +4,57 @@
   "version": "0.2.0",
   "__comment": "^ update template package.json to the same version when publish",
   "author": "Supanat Potiwarakorn @iboss-ptk",
+  "bugs": "https://github.com/terra-money/terrain/issues",
+  "homepage": "https://github.com/terra-money/terrain",
+  "repository": "https://github.com/terra-money/terrain",
   "bin": {
     "terrain": "./bin/run"
   },
-  "bugs": "https://github.com/terra-money/terrain/issues",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "oclif": {
+    "commands": "./lib/commands",
+    "helpClass": "./lib/lib/help",
+    "bin": "terrain",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-not-found"
+    ]
+  },
+  "scripts": {
+    "use": "node ./bin/run",
+    "prepack:use" : "npm run prepack && npm run use",
+    "prepack": "rm -rf lib && tsc -b && cp -R src/template lib/template && oclif-dev manifest && oclif-dev readme",
+    "postpack": "rm -f oclif.manifest.json",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "fixlint": "eslint . --ext .ts --config .eslintrc.js --fix",
+    "lint": "eslint . --ext .ts --config .eslintrc.js",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "dependencies": {
+    "@oclif/command": "^1.8.0",
+    "@oclif/config": "^1.17.0",
+    "@oclif/core": "^1.0.11",
+    "@oclif/plugin-help": "^5.1.12",
+    "@oclif/plugin-not-found": "^2.3.1",
+    "@terra-money/terra.js": "^3.0.9",
+    "adm-zip": "^0.5.9",
+    "cli-ux": "^5.6.3",
+    "fs-extra": "^8.1.0",
+    "ramda": "^0.26.1",
+    "json-schema-to-typescript": "^10.1.5",
+    "superagent": "^6.1.0",
+    "tslib": "^1.14.1",
+    "yaml": "^1.10.2",
+    "ts-node": "^8.10.2",
+    "toml": "^3.0.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
@@ -28,7 +75,6 @@
     "globby": "^10.0.2",
     "jest": "^27.3.1",
     "prettier": "2.4.1",
-    "ts-node": "^8.10.2",
     "typescript": "^3.9.10"
   },
   "engines": {
@@ -39,46 +85,5 @@
     "/lib",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
-  ],
-  "homepage": "https://github.com/terra-money/terrain",
-  "keywords": [
-    "oclif"
-  ],
-  "license": "MIT",
-  "main": "lib/index.js",
-  "oclif": {
-    "commands": "./lib/commands",
-    "bin": "terrain",
-    "plugins": [
-      "@oclif/plugin-help"
-    ],
-    "helpClass": "./src/lib/help"
-  },
-  "repository": "https://github.com/terra-money/terrain",
-  "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint . --ext .ts --config .eslintrc",
-    "lint": "eslint . --ext .ts --config .eslintrc.js",
-    "fixlint": "eslint . --ext .ts --config .eslintrc.js --fix",
-    "prepack": "rm -rf lib && tsc -b && cp -R src/template lib/template && oclif-dev manifest && oclif-dev readme",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "version": "oclif-dev readme && git add README.md"
-  },
-  "types": "lib/index.d.ts",
-  "dependencies": {
-    "@oclif/command": "^1.8.0",
-    "@oclif/config": "^1.17.0",
-    "@oclif/core": "^1.0.11",
-    "@oclif/plugin-help": "^3.2.3",
-    "@terra-money/terra.js": "^3.0.9",
-    "adm-zip": "^0.5.9",
-    "cli-ux": "^5.6.3",
-    "fs-extra": "^8.1.0",
-    "json-schema-to-typescript": "^10.1.5",
-    "ramda": "^0.26.1",
-    "superagent": "^6.1.0",
-    "tslib": "^1.14.1",
-    "yaml": "^1.10.2"
-  }
+  ]
 }
