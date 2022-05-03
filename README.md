@@ -693,4 +693,10 @@ npm install
 npm link
 ```
 
+To unlink the terrain command from the cloned repository and revert back to the default functionality, you can run the command below.
+
+```
+npm unlink terrain
+```
+
 <sub>**Note:** _It is important to take into consideration that features and bug fixes that are implemented on the newest versions of Terrain may still be subject to testing._</sub>
