@@ -15,8 +15,8 @@ export default class TaskNew extends Command {
 
     cli.action.start(`Creating task: ${args.task}`);
     copyFileSync(
-      path.join(__dirname, '..', '..', 'template', 'tasks', 'template.js'),
-      path.join(process.cwd(), 'tasks', `${args.task}.js`),
+      path.join(__dirname, '..', '..', 'template', 'tasks', 'template.ts'),
+      path.join(process.cwd(), 'tasks', `${args.task}.ts`),
     );
     cli.action.stop();
   }
