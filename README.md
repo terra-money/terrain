@@ -599,23 +599,30 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1
 
 ## `terrain new NAME`
 
-Create new dapp from template.
+Create new dapp from a template.
 
 ```
 USAGE
-  $ terrain new [NAME] [--path <value>] [--version <value>]
+  $ terrain new [NAME] [--path <value>] [--framework next|vue|vite|lit|svelte|react] [--version <value>]
 
 FLAGS
-  --path=<value>     path to keep the project
-  --version=<value>  [default: 0.16]
+  --framework=<option>  [default: react] Choose the frontend framework you want to use. Non-react framework options have
+                        better wallet-provider support but less streamlined contract integration.
+                        <options: next|vue|vite|lit|svelte|react>
+  --path=<value>        path to keep the project
+  --version=<value>     [default: 0.16]
 
 DESCRIPTION
-  Create new dapp from template.
+  Create new dapp from a template.
 
 EXAMPLES
   $ terrain new awesome-dapp
 
+  $ terrain new --framework vue awesome-dapp
+
   $ terrain new awesome-dapp --path path/to/dapp
+
+  $ terrain new --framework next awesome-dapp --path path/to/dapp
 ```
 
 _See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/new.ts)_
