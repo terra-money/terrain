@@ -409,7 +409,7 @@ USAGE
 * [`terrain task:new [TASK]`](#terrain-tasknew-task)
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
-* [`terrain wallet:new`](#terrain-wallet-new)
+* [`terrain wallet:new`](#terrain-walletnew)
 
 ## `terrain code:new NAME`
 
@@ -697,10 +697,11 @@ _See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0
 
 ## `terrain wallet:new`
 
-Generate a new wallet to use for signing contracts
+Generate a new wallet.
+
 ```
 USAGE
-  $ terrain wallet:new [--outfile <value>]
+  $ terrain wallet:new [--outfile <value>] [--index <value>]
 
 FLAGS
   --index=<value>    key index to use, default value is 0
@@ -710,8 +711,7 @@ DESCRIPTION
   Generate a new wallet.
 ```
 
-_See code: [src/commands/task/run.ts](./src/commands/wallet/new.ts)_
-
+_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/wallet/new.ts)_
 <!-- commandsstop -->
 
 
