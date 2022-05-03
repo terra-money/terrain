@@ -45,9 +45,9 @@ export const storeCode = async ({
   arm64,
 }: StoreCodeParams) => {
   process.chdir(`contracts/${contract}`);
-  const { package: pkg } = parse(fs.readFileSync('./cargo.toml', 'utf-8'));
+  const { package: pkg } = parse(fs.readFileSync('./Cargo.toml', 'utf-8'));
   if (contract !== pkg.name) {
-    cli.error(`Change the package name in cargo.toml to ${contract} to build`);
+    cli.error(`Change the package name in Cargo.toml to ${contract} to build`);
   }
   
   if (!noRebuild) {
