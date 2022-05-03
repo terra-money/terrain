@@ -245,7 +245,7 @@ After deployment, the `refs.terrain.json` file is updated in the project directo
 }
 ```
 
-<sub> **Important:** _If you have initialized the contract without using the `terrain deploy` command or have manually changed the `refs.terrain.json` file in the project directory, you will need to sync the references to the `fontend/src` directory in order to ensure frontend functionality. To do so, use the following command: `terrain sync-refs`_</sub>
+<sub> **Important:** _If you have initialized the contract without using the `terrain deploy` command or have manually changed the `refs.terrain.json` file in the project directory, you will need to sync the references to the `frontend/src` directory in order to ensure frontend functionality. To do so, use the following command: `terrain sync-refs`_</sub>
 
 After you have synced the contract references, navigate to the `frontend` directory and start the application.
 
