@@ -1,3 +1,4 @@
+import { BlockTxBroadcastResult } from "@terra-money/terra.js";
 import { Env } from "@terra-money/terrain";
 
 export class Lib {
@@ -11,11 +12,11 @@ export class Lib {
     return env.client.query("counter", { get_count: {} })
   }
 
-  increment = (env = this.env) => {
+  increment = (env = this.env) : Promise<BlockTxBroadcastResult> => {
     return env.client.execute(env.wallets.validator, "counter", { increment: {} })
   }
   
-  reset = (env = this.env, count: number ) => {
+  reset = (env = this.env, count: number ) : Promise<BlockTxBroadcastResult> => {
     return env.client.execute(env.wallets.validator, "counter", { reset: { count } })
   }
 };
