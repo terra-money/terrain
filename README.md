@@ -14,7 +14,7 @@
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/terrain.svg)](https://npmjs.org/package/terrain) [![Downloads/week](https://img.shields.io/npm/dw/terrain.svg)](https://npmjs.org/package/terrain)
 
-Terrain allows you to you:
+Terrain allows you to:
 
 - Scaffold a template smart contract and frontend for app development.
 - Dramatically simplify the development and deployment process.
