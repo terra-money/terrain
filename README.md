@@ -99,9 +99,7 @@ To run Terrain, you will need to install Node.js and NPM. We recommend that you 
 
 Now that you have completed the initial setup, generate your first smart contract using the procedure described below:
 
-1. Install Terrain.
-
-To install Terrain globally, run the following command in your terminal:
+1. Install the terrain package globally.
 
 ```sh
 npm install -g @terra-money/terrain
@@ -148,10 +146,10 @@ The `terrain new` command generates a project with the following structure:
 
 The `terrain deploy` command does the following:
 
-- Builds, optimizes and store the wasm code on the blockchain.
+- Builds, optimizes and stores the wasm code on the blockchain.
 - Instantiates the contract.
 
-To deploy your new counter smart contract, run the following command in the terminal:
+To deploy your new counter smart contract, run the following command in the terminal.
 
 ```sh
 terrain deploy counter --signer validator
@@ -188,7 +186,7 @@ module.exports = {
 
 Prior to deploying your contract, ensure that your signer wallet contains the funds needed to pay for associated transaction fees. You can request funds from the <a href="https://faucet.terra.money/" target="_blank">Terra Testnet Faucet</a> by submitting the wallet address of the account where you would like to receive the funds and clicking on the `Send me tokens` button.
 
-You can retrieve the wallet address associated with the `custom_tester_1` account by utilizing the `terrain console` in your terminal. For example:
+You can retrieve the wallet address associated with the `custom_tester_1` account by utilizing the `terrain console` in your terminal.
 
 ```sh
 terrain console
@@ -197,7 +195,7 @@ terrain > wallets.custom_tester_1.key.accAddress
 'terra1qd9fwwgnwmwlu2csv49fgtum3rgms64s8tcavp'
 ```
 
-After you have received the Luna tokens from the Terra Testnet Faucet, query the balance of your account by utilizing the following command in the terrain console:
+After you have received the Luna tokens from the Terra Testnet Faucet, query the balance of your account by utilizing the following command in the terrain console.
 
 ```sh
 terrain > (await client.bank.balance(wallets.custom_tester_1.key.accAddress))[0]
@@ -238,13 +236,13 @@ After deployment, the `refs.terrain.json` file is updated in the project directo
 
 After you have synced the contract references, navigate to the `frontend` directory and start the application.
 
-1. Navigate to the `frontend` directory:
+1. Navigate to the `frontend` directory.
 
 ```sh
 cd frontend
 ```
 
-2. Start the application:
+2. Start the application.
 
 ```sh
 npm run start
@@ -266,7 +264,7 @@ module.exports = ({ wallets, refs, config, client }) => ({
 });
 ```
 
-You can call the functions defined above inside of the `terrain console`. An example of this using the `counter` contract is shown below:
+You can call the functions defined above inside of the `terrain console`. An example of this using the `counter` contract is shown below.
 
 ```sh
 terrain console
@@ -277,7 +275,7 @@ terrain > await lib.getCount()
 { count: 1 }
 ```
 
-You can also specify which network you would like to interact with by utilizing the `--network` flag:
+You can also specify which network you would like to interact with by utilizing the `--network` flag.
 
 ```
 terrain console --network NETWORK
@@ -285,7 +283,7 @@ terrain console --network NETWORK
 
 ## Creating Tasks
 
-You can also utilize the functions available inside of the `lib/index.js` file to create tasks. Tasks are utilized in order to automate the execution of sequential functions or commands. An example task is provided for you in the `tasks/example-with-lib.js` file in your project directory:
+You can also utilize the functions available inside of the `lib/index.js` file to create tasks. Tasks are utilized in order to automate the execution of sequential functions or commands. An example task is provided for you in the `tasks/example-with-lib.js` file in your project directory.
 
 ```js
 // tasks/example-with-lib.js
@@ -354,13 +352,13 @@ To implement support for `MigrateMsg`, add the message to the `msg.rs` file. To 
 pub struct MigrateMsg {}
 ```
 
-With `MigrateMsg` defined, update the `contract.rs` file. First, update the import from `crate::msg` to include `MigrateMsg`:
+With `MigrateMsg` defined, update the `contract.rs` file. First, update the import from `crate::msg` to include `MigrateMsg`.
 
 ```rust
 use crate::msg::{CountResponse, ExecuteMsg, InstantiateMsg, QueryMsg, MigrateMsg};
 ```
 
-Next, add the following method above `instantiate`:
+Next, add the following method above `instantiate`.
 
 ```rust
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -373,13 +371,13 @@ pub fn migrate(_deps: DepsMut, _env: Env, _msg: MigrateMsg) -> StdResult<Respons
 
 In the previous Terrain tutorial, we deployed the contract, but did not initilize it as migratable.
 
-After adding MigrateMsg to the smart contract, we can redeploy the contract and add the `--set-signer-as-admin` flag. This allows the transaction signer to migrate the contract in the future:
+After adding MigrateMsg to the smart contract, we can redeploy the contract and add the `--set-signer-as-admin` flag. This allows the transaction signer to migrate the contract in the future.
 
 ```sh
 terrain deploy counter --signer validator --set-signer-as-admin
 ```
 
-If you decide to make changes to the deployed contract, you can migrate to the updated code by executing the following command:
+If you decide to make changes to the deployed contract, you can migrate to the updated code by executing the following command.
 
 ```sh
 terrain contract:migrate counter --signer validator
@@ -393,19 +391,19 @@ In some cases, the latest features or bug fixes may be integrated into the main 
 
 To use the main branch of the Terrain repo on your local machine, do the following:
 
-1. Clone the repo:
+1. Clone the repo.
 
 ```
 git clone --branch main --depth 1 https://github.com/terra-money/terrain
 ```
 
-2. Navigate to the project folder:
+2. Navigate to the project folder.
 
 ```
 cd terrain
 ```
 
-3. Inside the project folder, install all necessary node dependencies:
+3. Inside the project folder, install all necessary node dependencies.
 
 ```
 npm install
