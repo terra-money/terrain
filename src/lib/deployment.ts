@@ -4,12 +4,16 @@ import {
   LCDClient,
   MsgInstantiateContract,
   MsgMigrateCode,
-  MsgMigrateContract, 
+  MsgMigrateContract,
   MsgStoreCode,
   Wallet,
-} from "@terra-money/terra.js";
-import { parse } from "toml";
-import { execSync } from "child_process";
+} from '@terra-money/terra.js';
+import { parse } from 'toml';
+import { execSync } from 'child_process';
+import * as fs from 'fs-extra';
+import { cli } from 'cli-ux';
+import * as YAML from 'yaml';
+import { waitForInclusionInBlock } from '../lib/waitForInclusionBlock';
 import {
   ContractConfig,
   loadRefs,
@@ -17,17 +21,12 @@ import {
   setCodeId,
   setContractAddress,
 } from '../config';
-import * as fs from 'fs-extra';
-import { cli } from 'cli-ux';
-import { waitForInclusionInBlock } from '../lib/waitForInclusionBlock';
-import * as YAML from "yaml";
 
 type StoreCodeParams = {
   conf: ContractConfig;
   network: string;
   refsPath: string;
   lcd: LCDClient;
-
   noRebuild: boolean;
   contract: string;
   signer: Wallet;
@@ -49,25 +48,25 @@ export const storeCode = async ({
   if (contract !== pkg.name) {
     cli.error(`Change the package name in Cargo.toml to ${contract} to build`);
   }
-  
+
   if (!noRebuild) {
-    execSync("cargo wasm", { stdio: "inherit" });
+    execSync('cargo wasm', { stdio: 'inherit' });
 
     if (arm64) {
       // Need to use the rust-optimizer-arm64 image on arm64 architecture.
-      execSync(`docker run --rm -v "$(pwd)":/code \
+      execSync('docker run --rm -v "$(pwd)":/code \
         --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
         --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-        cosmwasm/rust-optimizer-arm64:0.12.5`, { stdio: "inherit" });
+        cosmwasm/rust-optimizer-arm64:0.12.5', { stdio: 'inherit' });
     } else {
-      execSync(`docker run --rm -v "$(pwd)":/code \
+      execSync('docker run --rm -v "$(pwd)":/code \
         --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
         --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-        cosmwasm/rust-optimizer:0.12.5`, { stdio: "inherit" });
+        cosmwasm/rust-optimizer:0.12.5', { stdio: 'inherit' });
     }
   }
 
-  let wasmByteCodeFilename = `${contract.replace(/-/g, "_")}`;
+  let wasmByteCodeFilename = `${contract.replace(/-/g, '_')}`;
 
   // rust-optimizer-arm64 produces a file with the `-aarch64` suffix.
   if (arm64) {
@@ -75,10 +74,10 @@ export const storeCode = async ({
   }
 
   wasmByteCodeFilename += '.wasm';
-  
+
   const wasmByteCode = fs
     .readFileSync(`artifacts/${wasmByteCodeFilename}`)
-    .toString("base64");
+    .toString('base64');
 
   cli.action.start('storing wasm bytecode on chain');
 
