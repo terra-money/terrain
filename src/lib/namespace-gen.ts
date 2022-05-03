@@ -15,7 +15,15 @@ import * as path from 'path';
  * then the user could also share namespaces in multi-contract code for example.
  */
 
-
+/**
+ * Given a CosmWasm smart contract directory with a schema folders, generate type declrataions
+ * corresponding to the json schema.
+ * @param {number} namespaceName Name to assign to the containing file and the namespace.
+ * under which the declaraction are exported.
+ * @param {number} contractPath path to the CosmWasm smart contract. This ought to contain 
+ * a 'schema' folder.
+ * @returns {string}  the generated declarations.
+ */
 
 const namespaceGen = async (
     namespaceName: string,
