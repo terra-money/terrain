@@ -60,7 +60,7 @@ git clone https://github.com/terra-money/LocalTerra.git
 cd LocalTerra
 ```
 
-3. Spin up an instance of the environment with `docker-compose`:
+3. Spin up an instance of the environment with `docker-compose`.
 
 ```
 docker-compose up
@@ -121,9 +121,9 @@ b. Run the following command in your terminal:
 npm install @terra-money/terrain
 ```
 
-2. Next, generate your smart contract and corresponding frontend templates:
+<sub>**Note:** _If you installed Terrain in a specific directory, you must prefix all `terrain` commands with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed Terrain package, you would run `npx terrain new my-terra-dapp`._</sub>
 
-<sub>**Note:** _If you installed Terrain in a specific directory in the previous step, you must prefix all `terrain` commands with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed Terrain package, you would run `npx terrain new my-terra-dapp`._</sub>
+2. Next, generate your smart contract and corresponding frontend templates:
 
 ```sh
 terrain new my-terra-dapp
@@ -211,7 +211,7 @@ terrain > wallets.custom_tester_1.key.accAddress
 'terra1qd9fwwgnwmwlu2csv49fgtum3rgms64s8tcavp'
 ```
 
-After you have receive the Luna tokens from the Terra Testnet Faucet, query the balance of your account by utilizing the following command in the terrain console:
+After you have received the Luna tokens from the Terra Testnet Faucet, query the balance of your account by utilizing the following command in the terrain console:
 
 ```sh
 terrain > (await client.bank.balance(wallets.custom_tester_1.key.accAddress))[0]
@@ -225,7 +225,7 @@ terrain deploy counter --signer custom_tester_1 --network testnet
 
 ## Initializing the Frontend Template
 
-After deployment, the `refs.terrain.json` file is updated in the project directory, as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
+After deployment, the `refs.terrain.json` file is updated in the project directory as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
 
 ```json
 {
@@ -268,7 +268,7 @@ npm run start
 
 ## Run Contract Functions with Terrain
 
-Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. For example:
+Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. The default contents of the `lib/index.js` file are presented below:
 
 ```js
 // lib/index.js
@@ -280,7 +280,7 @@ module.exports = ({ wallets, refs, config, client }) => ({
 });
 ```
 
-You can call the functions defined above inside of the `terrain console`. An example using the `counter` contract is shown below:
+You can call the functions defined above inside of the `terrain console`. An example of this using the `counter` contract is shown below:
 
 ```sh
 terrain console
@@ -293,11 +293,13 @@ terrain > await lib.getCount()
 
 You can also specify which network you would like to interact with by utilizing the `--network` flag:
 
-`terrain console --network NETWORK`
+```
+terrain console --network NETWORK
+```
 
 ## Creating Tasks
 
-You can also utilize the functions available inside of the `lib/index.js` file to create tasks. Tasks are utilized in order to automate the execution of sequential functions or commands. For example:
+You can also utilize the functions available inside of the `lib/index.js` file to create tasks. Tasks are utilized in order to automate the execution of sequential functions or commands. An example task is provided for you in the `tasks/example-with-lib.js` file in your project directory:
 
 ```js
 // tasks/example-with-lib.js
@@ -325,7 +327,7 @@ In order to create a new task, run the following command, replacing `<task-name>
 terrain task:new <task-name>
 ```
 
-If you would like to utilize JavaScript in your functions or tasks, you can import Terra.js. The `tasks/example-custom-logic.js` file contains an example of a task that utilizes Terra.js functionality. To learn more about Terra.js, see the <a href="https://terra-money.github.io/terra.js/" target="_blank">Terra.js documentation</a>.
+If you would like to utilize JavaScript in your functions or tasks, you can import Terra.js. The `tasks/example-custom-logic.js` file contains an example of a task that utilizes Terra.js functionality. To learn more about Terra.js, view the <a href="https://terra-money.github.io/terra.js/" target="_blank">Terra.js documentation</a>.
 
 ```js
 // tasks/example-custom-logic.js
@@ -399,7 +401,7 @@ terrain contract:migrate counter --signer validator
 
 # Use Terrain Main Branch Locally
 
-In some cases, the latest features or bug fixes may be integrated into the main branch of the <a href="https://github.com/terra-money/terrain" target="_blank">Terrain Github repo</a>, but not yet released to the corresponding <a href="https://www.npmjs.com/package/@terra-money/terrain" target="_blank">npm package</a>. In rare cases, you may want to use this latest version of Terrain available on Github before it has been released to npm.
+In some cases, the latest features or bug fixes may be integrated into the main branch of the <a href="https://github.com/terra-money/terrain" target="_blank">Terrain Github repo</a>, but not yet released to the corresponding <a href="https://www.npmjs.com/package/@terra-money/terrain" target="_blank">npm package</a>. Subsequently, you may want to use the latest version of Terrain available on Github before it has been released to npm.
 
 <sub>**Warning:** _Features and bug fixes that are implemented on the latest version of Terrain may still be subject to testing. As such, you should only use the main branch of the Terrain github repo in exceptional circumstances. In all other cases, use the npm package._</sub>
 
@@ -434,8 +436,6 @@ To unlink the terrain command from the cloned repository and revert back to the 
 ```
 npm unlink terrain
 ```
-
-<sub>**Note:** _It is important to take into consideration that features and bug fixes that are implemented on the newest versions of Terrain may still be subject to testing._</sub>
 
 ---
 
