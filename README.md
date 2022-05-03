@@ -99,28 +99,17 @@ To run Terrain, you will need to install Node.js and NPM. We recommend that you 
 
 Now that you have completed the initial setup, generate your first smart contract using the procedure described below:
 
-1. Install Terrain globally or in a specific directory.
+1. Install Terrain.
 
-**_To install Terrain globally_**, run the following command in your terminal:
+To install Terrain globally, run the following command in your terminal:
 
 ```sh
 npm install -g @terra-money/terrain
 ```
 
-**_To install Terrain in a specific directory_**,
-do the following:
+<sub>**Note:** _If you would like to install terrain locally, you can execute the command `npm install @terra-money/terrain`, without the `-g` flag, while in the directory in which you would like to be able to use the package. You can then execute any terrain commands by prefixing them with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed terrain package, you would utilize the command `npx terrain new my-terra-dapp`._</sub>
 
-a. Navigate to the directory in which you wish to install Terrain.
-
-b. Run the following command in your terminal:
-
-```sh
-npm install @terra-money/terrain
-```
-
-<sub>**Note:** _If you installed Terrain in a specific directory, you must prefix all `terrain` commands with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed Terrain package, you would run `npx terrain new my-terra-dapp`._</sub>
-
-2. Next, generate your smart contract and corresponding frontend templates:
+2. Generate your smart contract and corresponding frontend templates.
 
 ```sh
 terrain new my-terra-dapp
@@ -398,7 +387,7 @@ terrain contract:migrate counter --signer validator
 
 # Use Terrain Main Branch Locally
 
-In some cases, the latest features or bug fixes may be integrated into the main branch of the <a href="https://github.com/terra-money/terrain" target="_blank">Terrain Github repo</a>, but not yet released to the corresponding <a href="https://www.npmjs.com/package/@terra-money/terrain" target="_blank">npm package</a>. Subsequently, you may want to use the latest version of Terrain available on Github before it has been released to npm.
+In some cases, the latest features or bug fixes may be integrated into the main branch of the <a href="https://github.com/terra-money/terrain" target="_blank">Terrain Github repo</a>, but not yet released to the corresponding <a href="https://www.npmjs.com/package/@terra-money/terrain" target="_blank">npm package</a>. Subsequently, you may want to use the latest version of Terrain available on Github before it has been released to npm. The below described method may also be utilized if you are interested in developing on and contributing to Terrain.
 
 <sub>**Warning:** _Features and bug fixes that are implemented on the latest version of Terrain may still be subject to testing. As such, you should only use the main branch of the Terrain github repo in exceptional circumstances. In all other cases, use the npm package._</sub>
 
