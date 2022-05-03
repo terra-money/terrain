@@ -12,6 +12,5 @@
 <!-- Include details of your testing environment, and the tests you ran to -->
 <!-- see how your change affects other areas of the code, etc. -->
 
-### Screenshots:
-
-<!-- if needed -->
+### Screenshots or videos:
+<!-- This is not required but recommended e.g: video using the feature or screenshots for bugfixes...  -->
