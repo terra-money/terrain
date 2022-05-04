@@ -46,10 +46,42 @@ export default class New extends Command {
     fs.mkdirSync("contracts");
     process.chdir("contracts");
 
-    execSync(
-      `cargo generate --git https://github.com/CosmWasm/cw-template.git --branch ${flags.version} --name counter`,
-    );
 
+    // Contract 
+
+    const repoName     = "cw-template"
+    const branch       = "0.16";
+    const contractName = "counter";
+    const contractFile = fs.createWriteStream("contract.zip");
+    await new Promise((resolve, reject) => {
+      request
+        .get(`https://github.com/InterWasm/${repoName}/archive/refs/heads/${branch}.zip`)
+        .on("error", (error) => {reject(error);})
+        .pipe(contractFile)
+        .on("finish", () => {cli.action.stop();resolve(null);});
+    });
+
+    const contractZip = new Zip("contract.zip");
+    contractZip.extractAllTo(".", true);
+
+    fs.renameSync(`${repoName}-${branch}`, `${contractName}`);
+    fs.removeSync("contract.zip");
+    // Postprocess Cargo.toml - name & authors
+    const Cargotoml = path.resolve(process.cwd(), `${contractName}`,'Cargo.toml')
+    fs.readFile(Cargotoml, {encoding: 'utf8'},  (e:any,data:any) =>{
+      if (e) { throw e };
+
+      var _ = data
+      .replace(/name = "{{project-name}}"/g, 'name = "terrain-counter-template"')
+      .replace(/authors = \["{{authors}}"\]/g, 'authors = ["terrain-developer"]')
+      
+      fs.writeFile(Cargotoml, _, 'utf-8', function (err) {
+          if (err) throw err;
+      });
+    });
+
+
+    // -------------------------------------- Frontend
     cli.action.stop();
     process.chdir("..");
 
