@@ -51,7 +51,7 @@ export default class Test extends Command {
       contractPath = '../' + contractPath;
     }
 
-    // If contractPath not found after moving back 4 directories, 
+    // If contractPath not found after stepping back 4 directories, 
     // tell user to run command in a terrain project directory.
     console.error(
       `${sep}\nERROR: Please ensure that you are in a terrain project directory.\n${sep}`
