@@ -7,7 +7,6 @@ require('@oclif/command').run()
         if (error?.response?.data?.message) {
             // Append the response from LCD.
             error.message += `\nResponse: ${error?.response?.data?.message}`;
-          
         }
         return oclifHandler(error);
       })
