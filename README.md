@@ -152,12 +152,12 @@ The `terrain deploy` command does the following:
 To deploy your new counter smart contract, run the following command in the terminal.
 
 ```sh
-terrain deploy counter --signer validator
+terrain deploy counter --signer test1
 ```
 
 <sub> **Note:** _You can also store the wasm code and instantiate the contract separately using the command [`terrain code:store CONTRACT`](#terrain-codestore-contract) followed by [`terrain contract:instantiate CONTRACT`](#terrain-contractmigrate-contract). In this case, you must also run the command `terrain sync-refs` in your project directory to update the `refs.terrain.json` file which references contract deployments on all networks._</sub>
 
-In this case, we specify one of the <a href="https://github.com/terra-money/LocalTerra#accounts" target="_blank">preconfigured accounts</a> with balances on LocalTerra, `validator`, as our signer. The signer account will be responsible for paying the gas fee associated with deploying the contract to the Terra blockchain and will be assigned as the owner of the project.
+In this case, we specify one of the <a href="https://github.com/terra-money/LocalTerra#accounts" target="_blank">preconfigured accounts</a> with balances on LocalTerra, `test1`, as our signer. The signer account will be responsible for paying the gas fee associated with deploying the contract to the Terra blockchain and will be assigned as the owner of the project.
 
 You can also specify the network on which you would like to deploy your contract by adding the `--network` flag. If the network is not specified, as is the case in our above example, your contract will be deployed to `localterra` by default. You may also deploy to `mainnet`, the live Terra blockchain, as well as `testnet`, a network similar to mainnet used for testing.
 
@@ -259,7 +259,7 @@ Once you have successfully deployed your project, you can interact with the depl
 
 module.exports = ({ wallets, refs, config, client }) => ({
   getCount: () => client.query("counter", { get_count: {} }),
-  increment: (signer = wallets.validator) =>
+  increment: (signer = wallets.test1) =>
     client.execute(signer, "counter", { increment: {} }),
 });
 ```
@@ -374,13 +374,13 @@ In the previous Terrain tutorial, we deployed the contract, but did not initiliz
 After adding MigrateMsg to the smart contract, we can redeploy the contract and add the `--set-signer-as-admin` flag. This allows the transaction signer to migrate the contract in the future.
 
 ```sh
-terrain deploy counter --signer validator --set-signer-as-admin
+terrain deploy counter --signer test1 --set-signer-as-admin
 ```
 
 If you decide to make changes to the deployed contract, you can migrate to the updated code by executing the following command.
 
 ```sh
-terrain contract:migrate counter --signer validator
+terrain contract:migrate counter --signer test1
 ```
 
 # Use Terrain Main Branch Locally
