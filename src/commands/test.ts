@@ -53,7 +53,7 @@ export default class Test extends Command {
     // If contractPath not found after stepping back 4 directories, 
     // tell user to run command in a terrain project directory.
     TerrainCLI.error(
-      `Please ensure that you are in a terrain project directory.\x1b[0m\n`
+      `Please ensure that you are in a terrain project directory.`
     );
     process.exit();
   }
