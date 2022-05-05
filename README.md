@@ -35,6 +35,7 @@ Terrain is **not**:
 - [Migrating CosmWasm Contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
 - [Use Terrain Main Branch Locally](#use-terrain-main-branch-locally)
 - [Terrain Commands](#terrain-commands)
+- 
 <!-- tocstop -->
 
 # Setup
@@ -427,21 +428,22 @@ npm unlink terrain
 
 <!-- commands -->
 
-- [`terrain code:new [NAME]`](#terrain-codenew-name)
-- [`terrain code:store CONTRACT`](#terrain-codestore-contract)
-- [`terrain console`](#terrain-console)
-- [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
-- [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
-- [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
-- [`terrain deploy CONTRACT`](#terrain-deploy-contract)
-- [`terrain help [COMMAND]`](#terrain-help-command)
-- [`terrain new NAME`](#terrain-new-name)
-- [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
-- [`terrain task:new [TASK]`](#terrain-tasknew-task)
-- [`terrain task:run [TASK]`](#terrain-taskrun-task)
-- [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+* [`terrain code:new NAME`](#terrain-codenew-name)
+* [`terrain code:store CONTRACT`](#terrain-codestore-contract)
+* [`terrain console`](#terrain-console)
+* [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
+* [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
+* [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
+* [`terrain deploy CONTRACT`](#terrain-deploy-contract)
+* [`terrain help [COMMAND]`](#terrain-help-command)
+* [`terrain new NAME`](#terrain-new-name)
+* [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
+* [`terrain task:new [TASK]`](#terrain-tasknew-task)
+* [`terrain task:run [TASK]`](#terrain-taskrun-task)
+* [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+* [`terrain wallet:new`](#terrain-walletnew)
 
-## `terrain code:new [NAME]`
+## `terrain code:new NAME`
 
 Generate new contract.
 
@@ -622,30 +624,37 @@ FLAGS
   --all  see all commands in CLI
 
 DESCRIPTION
-  display help for terrain
+  Display help for terrain.
 ```
 
 _View code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.18/src/commands/help.ts)_
 
 ## `terrain new NAME`
 
-Create new dapp from template.
+Create new dapp from a template.
 
 ```
 USAGE
-  $ terrain new [NAME] [--path <value>] [--version <value>]
+  $ terrain new [NAME] [--path <value>] [--framework next|vue|vite|lit|svelte|react] [--version <value>]
 
 FLAGS
-  --path=<value>     path to keep the project
-  --version=<value>  [default: 0.16]
+  --framework=<option>  [default: react] Choose the frontend framework you want to use. Non-react framework options have
+                        better wallet-provider support but less streamlined contract integration.
+                        <options: next|vue|vite|lit|svelte|react>
+  --path=<value>        path to keep the project
+  --version=<value>     [default: 0.16]
 
 DESCRIPTION
-  Create new dapp from template.
+  Create new dapp from a template.
 
 EXAMPLES
   $ terrain new awesome-dapp
 
+  $ terrain new --framework vue awesome-dapp
+
   $ terrain new awesome-dapp --path path/to/dapp
+
+  $ terrain new --framework next awesome-dapp --path path/to/dapp
 ```
 
 _View code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/new.ts)_
@@ -670,14 +679,14 @@ _View code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/b
 
 ## `terrain task:new [TASK]`
 
-create new task
+Create new task.
 
 ```
 USAGE
   $ terrain task:new [TASK]
 
 DESCRIPTION
-  create new task
+  Create new task.
 ```
 
 _View code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/task/new.ts)_
@@ -698,7 +707,7 @@ FLAGS
   --refs-path=<value>    [default: refs.terrain.json]
 
 DESCRIPTION
-  run predefined task
+  Run predefined task.
 ```
 
 _View code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/task/run.ts)_
@@ -724,5 +733,23 @@ EXAMPLES
 ```
 
 _View code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test.ts)_
+
+## `terrain wallet:new`
+
+Generate a new wallet.
+
+```
+USAGE
+  $ terrain wallet:new [--outfile <value>] [--index <value>]
+
+FLAGS
+  --index=<value>    key index to use, default value is 0
+  --outfile=<value>  absolute path to store the mnemonic key to. If omitted, output to stdout
+
+DESCRIPTION
+  Generate a new wallet.
+```
+
+_View code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/wallet/new.ts)_
 
 <!-- commandsstop -->

@@ -22,6 +22,10 @@ export default class ContractMigrate extends Command {
       description:
         'target code id for migration',
     }),
+    arm64: flags.boolean({
+      description: 'use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.',
+      default: false,
+    }),
   };
 
   static args = [{ name: 'contract' }];
@@ -50,6 +54,7 @@ export default class ContractMigrate extends Command {
       network: flags.network,
       refsPath: flags['refs-path'],
       lcd,
+      arm64: flags.arm64,
     });
 
     migrate({
