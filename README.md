@@ -35,7 +35,7 @@ Terrain is **not**:
 - [Migrating CosmWasm Contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
 - [Use Terrain Main Branch Locally](#use-terrain-main-branch-locally)
 - [Terrain Commands](#terrain-commands)
-- 
+
 <!-- tocstop -->
 
 # Setup
