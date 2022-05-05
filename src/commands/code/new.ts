@@ -1,9 +1,14 @@
 import { Command, flags } from '@oclif/command';
-import { execSync } from 'child_process';
 import { cli } from 'cli-ux';
+import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 
 export default class CodeNew extends Command {
   static description = 'Generate new contract.';
+  
+  static examples = [
+    '$ terrain code:new helloworld',
+    '$ terrain code:new helloworld --authors ExampleAuthor<example@email.domain>',
+  ];
 
   static flags = {
     path: flags.string({
@@ -13,19 +18,37 @@ export default class CodeNew extends Command {
     version: flags.string({
       default: '0.16',
     }),
+    authors: flags.string({
+      default: 'Terra Money <core@terra.money>',
+    }),
   };
 
-  static args = [{ name: 'name', required: true }];
+  static args = [{ 
+    name: 'name', 
+    required: true 
+  }];
 
   async run() {
     const { args, flags } = this.parse(CodeNew);
 
-    process.chdir(flags.path);
+    cli.log('generating:');
+    cli.action.start('- contract');
 
-    cli.action.start('generating contract');
-    execSync(
-      `cargo generate --git https://github.com/CosmWasm/cw-template.git --branch ${flags.version} --name ${args.name}`,
-    );
+    TemplateScaffolding.from({
+      remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/heads/${flags.version}`,
+      localOptions: {
+        folderUrl: `./contracts/${args.name}`,
+        toRootFolderUrl: true
+      },
+      replace: {
+        entries: {
+          "project-name" : "counter",
+          "crate_name" : "counter",
+          "authors" : flags.authors,
+          " \"now\" | date: \"%Y\" ": `${new Date().getFullYear()}`
+        }
+      }
+    });
 
     cli.action.stop();
   }
