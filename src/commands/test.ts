@@ -1,7 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import { execSync } from "child_process";
-import { range } from "ramda";
 import { existsSync } from 'fs';
+import TerrainCLI from '../TerrainCLI';
 
 export default class Test extends Command {
   static description = "Runs unit tests for a contract directory.";
@@ -18,19 +18,18 @@ export default class Test extends Command {
   static args = [{ name: "contract-name", required: true }];
 
   async run() {
-    const sep = '\n=================================================================\n';
     const { args, flags } = this.parse(Test);
 
     // Specify default contract path from terrain project root directory.
     let contractPath = `contracts/${args["contract-name"]}`;
 
     // Backtrack through file tree to find contract directory.
-    for (let step_back = 1; step_back <=4; step_back++) {
+    for (let stepBack = 1; stepBack <= 4; stepBack++) {
 
       // If contractPath available, alert user of testing initialization, 
       // change working directory to contractPath and execute cargo test command.
       if (existsSync(contractPath)) {
-        console.log(`${sep}\nTesting '${args["contract-name"]}' contract.\n${sep}`);
+        TerrainCLI.log(`Testing '${args["contract-name"]}' contract.`);
         process.chdir(contractPath);
         execSync(
           `cargo test ${flags["no-fail-fast"] ? "--no-fail-fast" : ""}`, { stdio: "inherit" }
@@ -38,11 +37,11 @@ export default class Test extends Command {
         process.exit();
       }
   
-      // If contracts directory available, but contractPath is not, 
-      // then contract name referenced in terrain test command is invalid.
+      // If contracts directory exists, but contractPath does not, 
+      // then contract referenced in terrain test command does not exist.
       if (existsSync('contracts/') && !existsSync(contractPath)) {
-        console.error(
-          `${sep}\nERROR: Contract '${args["contract-name"]}' not available in contracts directory.\n${sep}`
+        TerrainCLI.error(
+          `Contract '${args["contract-name"]}' not available in contracts directory.`
         );
         process.exit();
       }
@@ -53,8 +52,8 @@ export default class Test extends Command {
 
     // If contractPath not found after stepping back 4 directories, 
     // tell user to run command in a terrain project directory.
-    console.error(
-      `${sep}\nERROR: Please ensure that you are in a terrain project directory.\n${sep}`
+    TerrainCLI.error(
+      `Please ensure that you are in a terrain project directory.\x1b[0m\n`
     );
     process.exit();
   }
