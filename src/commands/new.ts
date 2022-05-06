@@ -30,14 +30,13 @@ export default class New extends Command {
   async run() {
     const { args, flags } = this.parse(New);
 
-    cli.log(`generating ${args.name}:`);
-
+    cli.log(`generating app ${args.name}:`);
     cli.action.start('- workspace');
     await TemplateScaffolding.from({
       remoteUrl: `https://codeload.github.com/terra-money/terrain-core-template/zip/refs/heads/main`,
+      subFolder: 'terrain-core-template-main',
       localOptions: {
-        folderUrl: path.join(process.cwd(), flags.path, args.name),
-        toRootFolderUrl: true
+        folderUrl: path.join(process.cwd(), flags.path, args.name)
       },
       replace: {
         entries: {
@@ -81,9 +80,9 @@ export default class New extends Command {
     cli.action.start('- contract');
     await TemplateScaffolding.from({
       remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/heads/${flags.version}`,
+      subFolder: `cw-template-${flags.version}`,
       localOptions: {
-        folderUrl: path.join(process.cwd(), flags.path, args.name, "contracts", args.name),
-        toRootFolderUrl: true
+        folderUrl: path.join(process.cwd(), flags.path, args.name, "contracts", args.name)
       },
       replace: {
         entries: {
@@ -100,9 +99,9 @@ export default class New extends Command {
 
     await TemplateScaffolding.from({
       remoteUrl: `https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main`,
+      subFolder: 'terrain-frontend-template-main',
       localOptions: {
-        folderUrl: path.join(process.cwd(), flags.path, args.name, "frontend"),
-        toRootFolderUrl: true
+        folderUrl: path.join(process.cwd(), flags.path, args.name, "frontend")
       },
       replace: {
         entries: {
