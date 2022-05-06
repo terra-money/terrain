@@ -11,10 +11,10 @@ type Fee = {
 export type InstantiateMessage = Record<string, any>;
 
 export type ContractConfig = {
-  // TODO: Remove since fee in config is deprecated. 
+  // TODO: Remove since fee in config is deprecated.
   store?: { fee: Fee };
   instantiation: {
-    // TODO: Remove since fee in config is deprecated. 
+    // TODO: Remove since fee in config is deprecated.
     fee?: Fee;
     instantiateMsg: InstantiateMessage;
   };
