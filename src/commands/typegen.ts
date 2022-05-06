@@ -51,8 +51,9 @@ export default class GenerateTypes extends Command {
     };
 
     static args = [{
-        name    : "contractDir",
-        required: true,
+        name       : "contractDir",
+        required   : true,
+        description: "Provide a path to a CosmWasm contract directory containing a 'schema' folder."
     }];
 
     async run() {
@@ -88,13 +89,20 @@ https://docs.cosmwasm.com/tutorials/simple-option/develop/#schema`)
             }
         } else {
             // ? TODO: Implement a Terain master namespace reimporting types for all registered contracts.
-            console.log("Freeform invocation unimplemented. use --outdir for now")
+            console.log("[Terrain] Freeform invocation unimplemented. Use with '--outdir [DIR]' for now")
             process.exit(1)
         }
 
 
         let   namespaceName = OUT_NAME || snakeToCamel(path.basename(CONTRACT_DIR))
         const result        = await namespaceGen(namespaceName, args.contractDir)
-        fs.writeFileSync(path.resolve(OUT_DIR, `${namespaceName}.ts`), result)
+
+        try{
+            fs.writeFileSync(path.resolve(OUT_DIR, `${namespaceName}.ts`), result)
+            console.warn(`[Terrain]: Wrote to ${hl(path.resolve(OUT_DIR, `${namespaceName}.ts`))} successfully.`)
+        } catch (_){
+            console.warn(`[Terrain]: Could not write to ${path.resolve(OUT_DIR, `${namespaceName}.ts`)}.`)
+            throw _
+        }
     }
 }
