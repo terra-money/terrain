@@ -3,21 +3,19 @@ import { LCDClient } from '@terra-money/terra.js';
 import { loadConfig, loadConnections } from '../../config';
 import { migrate, storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
+import * as flag from '../../lib/flag';
 
 export default class ContractMigrate extends Command {
   static description = 'Migrate the contract.';
 
   static flags = {
-    'no-rebuild': flags.boolean({
-      description: 'deploy the wasm bytecode as is.',
-      default: false,
-    }),
+    signer: flag.signer,
+    'no-rebuild': flag.noRebuild,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: './config.terrain.json' }),
     'refs-path': flags.string({ default: './refs.terrain.json' }),
     'keys-path': flags.string({ default: './keys.terrain.js' }),
     'instance-id': flags.string({ default: 'default' }),
-    signer: flags.string({ required: true }),
     'code-id': flags.integer({
       description:
         'target code id for migration',

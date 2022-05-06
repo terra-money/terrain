@@ -3,18 +3,19 @@ import { LCDClient } from '@terra-money/terra.js';
 import { loadConfig, loadConnections } from '../../config';
 import { storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
+import * as flag from '../../lib/flag';
 
 export default class CodeStore extends Command {
   static description = 'Store code on chain.';
 
   static flags = {
-    'no-rebuild': flags.boolean({ default: false }),
+    signer: flag.signer,
+    'no-rebuild': flag.noRebuild,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: './config.terrain.json' }),
     'refs-path': flags.string({ default: './refs.terrain.json' }),
     'keys-path': flags.string({ default: './keys.terrain.js' }),
     'code-id': flags.integer({}),
-    signer: flags.string({ required: true }),
   };
 
   static args = [{ name: 'contract', required: true }];
