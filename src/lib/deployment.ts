@@ -8,9 +8,9 @@ import {
   MsgStoreCode,
   Wallet,
   SignerData,
-  CreateTxOptions
-} from "@terra-money/terra.js";
-import { execSync } from "child_process";
+  CreateTxOptions,
+} from '@terra-money/terra.js';
+import { execSync } from 'child_process';
 import {
   ContractConfig,
   loadRefs,
@@ -21,7 +21,7 @@ import {
 import * as fs from 'fs-extra';
 import { cli } from 'cli-ux';
 import { waitForInclusionInBlock } from '../lib/waitForInclusionBlock';
-import * as YAML from "yaml";
+import * as YAML from 'yaml';
 
 type StoreCodeParams = {
   conf: ContractConfig;
@@ -48,7 +48,7 @@ export const storeCode = async ({
   process.chdir(`contracts/${contract}`);
 
   if (!noRebuild) {
-    execSync("cargo wasm", { stdio: "inherit" });
+    execSync('cargo wasm', { stdio: 'inherit' });
 
     if (arm64) {
       // Need to use the rust-optimizer-arm64 image on arm64 architecture.
@@ -64,7 +64,7 @@ export const storeCode = async ({
     }
   }
 
-  let wasmByteCodeFilename = `${contract.replace(/-/g, "_")}`;
+  let wasmByteCodeFilename = `${contract.replace(/-/g, '_')}`;
 
   // rust-optimizer-arm64 produces a file with the `-aarch64` suffix.
   if (arm64) {
@@ -72,10 +72,10 @@ export const storeCode = async ({
   }
 
   wasmByteCodeFilename += '.wasm';
-  
+
   const wasmByteCode = fs
     .readFileSync(`artifacts/${wasmByteCodeFilename}`)
-    .toString("base64");
+    .toString('base64');
 
   cli.action.start('storing wasm bytecode on chain');
 
@@ -156,12 +156,12 @@ export const instantiate = async ({
   // Allow manual account sequences.
   const manualSequence = sequence || (await signer.sequence());
 
+  // Create signerData and txOptions for fee estimation.
   const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress);
   const signerData: [SignerData] = [{
     sequenceNumber: manualSequence,
-    publicKey: accountInfo.getPublicKey()
+    publicKey: accountInfo.getPublicKey(),
   }];
-
   const txOptions: CreateTxOptions = {
     msgs: [
       new MsgInstantiateContract(
@@ -173,11 +173,17 @@ export const instantiate = async ({
     ],
   };
 
+  // Set default feeDenoms value if not specified and translate to terraDenom.
+  if (!txOptions.feeDenoms) {
+    txOptions.feeDenoms = ['uusd'];
+  }
+  const terraDenom = `${txOptions.feeDenoms[0].slice(1, -1).toUpperCase()}T`;
+
   // Prompt user to accept gas fee for contract initialization if network is mainnet.
   if (network === 'mainnet') {
     const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
-    const gasFee = Number(feeEstimate.amount.get('uusd')!.amount) / 1000000;
-    await cli.anykey(`\n\nThe gas estimate to deploy your contract is ${gasFee} UST. Press any key to continue or "ctl+c" to exit`);
+    const gasFee = Number(feeEstimate.amount.get(txOptions.feeDenoms[0])!.amount) / 1000000;
+    await cli.anykey(`\n\nThe gas estimate to deploy your contract is ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`);
   }
 
   const instantiateTx = await signer.createAndSignTx({
