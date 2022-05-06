@@ -328,7 +328,7 @@ task(async ({ wallets, refs, config, client }) => {
 });
 ```
 
-As of Terrain 0.3.0 it is possible to deploy and instantiate contracts from tasks. This can be useful for multi-contract, or multi-stage deployments. 
+As of Terrain 0.4.0 it is possible to deploy and instantiate contracts from tasks. This can be useful for multi-contract, or multi-stage deployments. 
 
 ```js
 const { task } = require("@terra-money/terrain");
@@ -384,7 +384,7 @@ task(async ({ wallets, client, deploy }) => {
 
 # Migrating CosmWasm Contracts on Terra
 
-On Terra it is possible to initilize contracts as migratable. This functionallity allows the adminstrator to upload a new version of the contract, then send a migrate message to move to the new code.
+On Terra it is possible to initalize contracts as migratable. This functionallity allows the adminstrator to upload a new version of the contract, then send a migrate message to move to the new code.
 
 <a href="https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html" target="_blank">This tutorial</a> builds on top of the Terrain Quick Start Guide and walks you through a contract migration.
 
@@ -443,29 +443,6 @@ To use the main branch of the Terrain repo on your local machine, do the followi
 
 1. Clone the repo.
 
-<!-- usage -->
-```sh-session
-$ npm install -g @terra-money/terrain
-$ terrain COMMAND
-running command...
-$ terrain (-v|--version|version)
-@terra-money/terrain/0.2.0 darwin-x64 node-v16.9.1
-$ terrain --help [COMMAND]
-USAGE
-  $ terrain COMMAND
-...
-```
-<!-- usagestop -->
-```sh-session
-$ npm install -g @terra-money/terrain
-$ terrain COMMAND
-running command...
-$ terrain (-v|--version|version)
-@terra-money/terrain/0.2.0 darwin-x64 node-v16.9.1
-$ terrain --help [COMMAND]
-USAGE
-  $ terrain COMMAND
-...
 ```
 git clone --branch main --depth 1 https://github.com/terra-money/terrain
 ```
