@@ -1,6 +1,8 @@
 import { Command, flags } from '@oclif/command';
 import { cli } from 'cli-ux';
 import { TemplateScaffolding } from '@terra-money/template-scaffolding';
+import * as path from 'path';
+import * as fs from 'fs';
 
 export default class CodeNew extends Command {
   static description = 'Generate new contract.';
@@ -12,7 +14,7 @@ export default class CodeNew extends Command {
 
   static flags = {
     path: flags.string({
-      description: 'path to keep the contracts',
+      description: 'Path to create the contracts',
       default: './contracts',
     }),
     version: flags.string({
@@ -30,14 +32,21 @@ export default class CodeNew extends Command {
 
   async run() {
     const { args, flags } = this.parse(CodeNew);
+    const contractPath = path.join(process.cwd(), flags.path, args.name);
 
-    cli.log('generating:');
+    if(fs.existsSync(contractPath)){
+      throw Error(
+        `Folder '${args.name}' already exists under path '${flags.path}'.\nTip: Use another contract name`
+      );
+    }
+
+    cli.log(`generating ${args.name}:`);
     cli.action.start('- contract');
 
     TemplateScaffolding.from({
       remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/heads/${flags.version}`,
       localOptions: {
-        folderUrl: `./contracts/${args.name}`,
+        folderUrl: path.join(process.cwd(), flags.path, args.name),
         toRootFolderUrl: true
       },
       replace: {
