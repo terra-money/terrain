@@ -2,6 +2,7 @@ import { Command, flags } from '@oclif/command';
 import { cli } from 'cli-ux';
 import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export default class CodeNew extends Command {
   static description = 'Generate new contract.';
@@ -29,6 +30,10 @@ export default class CodeNew extends Command {
 
   async run() {
     const { args, flags } = this.parse(CodeNew);
+
+    if(fs.existsSync(path.join(flags.path, args.name))) { 
+      throw Error(`Folder '${args.name}' already exists under path '${flags.path}'.\nTip: Use another path or contract name`);
+    }
 
     cli.log(`generating contract ${args.name}:`);
     cli.action.start('- contract');
