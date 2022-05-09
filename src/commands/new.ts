@@ -6,12 +6,14 @@ import * as fs from 'fs';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
+
   static examples = [
     '$ terrain new awesome-dapp',
     '$ terrain new awesome-dapp --path path/to/dapp',
     '$ terrain new awesome-dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
     '$ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"'
   ];
+
   static flags = {
     path: flags.string({
       description: 'Path to create the workspace',
@@ -29,6 +31,7 @@ export default class New extends Command {
       default: 'Terra Money <core@terra.money>',
     }),
   };
+
   static args = [{ name: 'name', required: true }];
 
   async run() {
