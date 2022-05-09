@@ -41,7 +41,7 @@ export default class CodeNew extends Command {
       remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/heads/${flags.version}`,
       subFolder: `cw-template-${flags.version}`,
       localOptions: {
-        folderUrl: path.join(process.cwd(), flags.path, args.name, "contracts", args.name)
+        folderUrl: path.join(process.cwd(), flags.path, args.name)
       },
       replace: {
         entries: {
