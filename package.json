@@ -44,6 +44,7 @@
     "@oclif/plugin-help": "^5.1.12",
     "@oclif/plugin-not-found": "^2.3.1",
     "@terra-money/terra.js": "^3.0.9",
+    "@terra-money/template-scaffolding": "1.0.1",
     "adm-zip": "^0.5.9",
     "cli-ux": "^5.6.3",
     "fs-extra": "^8.1.0",
