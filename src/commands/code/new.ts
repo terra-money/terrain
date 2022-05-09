@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import { execSync } from 'child_process';
 import { cli } from 'cli-ux';
 import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import * as path from 'path';
