@@ -9,13 +9,19 @@ export default class New extends Command {
   static examples = [
     '$ terrain new awesome-dapp',
     '$ terrain new awesome-dapp --path path/to/dapp',
-    '$ terrain new awesome-dapp --path path/to/dapp --authors ExampleAuthor<example@email.domain>',
+    '$ terrain new awesome-dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
+    '$ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"'
   ];
 
   static flags = {
     path: flags.string({
       description: 'Path to create the workspace',
       default: '.'
+    }),
+    framework: flags.string({
+      description: "Choose the frontend framework you want to use. Non-react framework options have better wallet-provider support but less streamlined contract integration.",
+      options: ["react", "vue", "svelte", "next", "vite", "lit"],
+      default: "react",
     }),
     version: flags.string({
       default: '0.16',
@@ -30,6 +36,13 @@ export default class New extends Command {
   async run() {
     const { args, flags } = this.parse(New);
 
+    const templateEntries = {
+      "project-name": args.name,
+      "crate_name": args.name,
+      "authors": flags.authors,
+      " \"now\" | date: \"%Y\" ": `${new Date().getFullYear()}`
+    }
+
     cli.log(`generating app ${args.name}:`);
     cli.action.start('- workspace');
     await TemplateScaffolding.from({
@@ -39,10 +52,7 @@ export default class New extends Command {
         folderUrl: path.join(process.cwd(), flags.path, args.name)
       },
       replace: {
-        entries: {
-          "project-name": args.name,
-          "authors": flags.authors
-        }
+        entries: templateEntries
       }
     });
     cli.action.stop();
@@ -55,31 +65,33 @@ export default class New extends Command {
         folderUrl: path.join(process.cwd(), flags.path, args.name, "contracts", args.name)
       },
       replace: {
-        entries: {
-          "project-name" : args.name,
-          "crate_name" : args.name,
-          "authors" : flags.authors,
-          " \"now\" | date: \"%Y\" ": `${new Date().getFullYear()}`
-        }
+        entries: templateEntries
       }
     });
     cli.action.stop();
 
     cli.action.start('- frontend');
-
-    await TemplateScaffolding.from({
-      remoteUrl: `https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main`,
-      subFolder: 'terrain-frontend-template-main',
-      localOptions: {
-        folderUrl: path.join(process.cwd(), flags.path, args.name, "frontend")
-      },
-      replace: {
-        entries: {
-          "project-name" : args.name,
-          "authors" : flags.authors
+    if( flags.framework === "react"){
+      await TemplateScaffolding.from({
+        remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/heads/${flags.version}`,
+        subFolder: `cw-template-${flags.version}`,
+        localOptions: {
+          folderUrl: path.join(process.cwd(), flags.path, args.name, "contracts", args.name)
+        },
+        replace: {
+          entries: templateEntries
         }
-      }
-    });
+      });
+    }
+    else {
+      await TemplateScaffolding.from({
+        remoteUrl: `https://codeload.github.com/terra-money/wallet-provider/zip/refs/heads/main`,
+        subFolder: `wallet-provider-main/templates/${flags.framework}`,
+        localOptions: {
+          folderUrl: path.join(process.cwd(), flags.path, args.name, "frontend")
+        }
+      });
+    }
     cli.action.stop();
   }
 }

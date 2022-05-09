@@ -9,7 +9,7 @@ export default class CodeNew extends Command {
   static examples = [
     '$ terrain code:new awesome_contract',
     '$ terrain code:new awesome_contract --path path/to/dapp',
-    '$ terrain code:new awesome_contract --path path/to/dapp --authors ExampleAuthor<example@email.domain>',
+    '$ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
   ];
 
   static flags = {
