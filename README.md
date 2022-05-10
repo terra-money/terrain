@@ -753,8 +753,6 @@ EXAMPLES
   $ terrain test:coverage
 
   $ terrain test:coverage counter
-
-  $ terrain test:coverage counter --no-fail-fast
 ```
 
 _See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/test/coverage.ts)_
