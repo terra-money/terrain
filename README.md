@@ -428,20 +428,20 @@ npm unlink terrain
 
 <!-- commands -->
 
-- [`terrain code:new NAME`](#terrain-codenew-name)
-- [`terrain code:store CONTRACT`](#terrain-codestore-contract)
-- [`terrain console`](#terrain-console)
-- [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
-- [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
-- [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
-- [`terrain deploy CONTRACT`](#terrain-deploy-contract)
-- [`terrain help [COMMAND]`](#terrain-help-command)
-- [`terrain new NAME`](#terrain-new-name)
-- [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
-- [`terrain task:new [TASK]`](#terrain-tasknew-task)
-- [`terrain task:run [TASK]`](#terrain-taskrun-task)
-- [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
-- [`terrain wallet:new`](#terrain-walletnew)
+* [`terrain code:new NAME`](#terrain-codenew-name)
+* [`terrain code:store CONTRACT`](#terrain-codestore-contract)
+* [`terrain console`](#terrain-console)
+* [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
+* [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
+* [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
+* [`terrain deploy CONTRACT`](#terrain-deploy-contract)
+* [`terrain help [COMMAND]`](#terrain-help-command)
+* [`terrain new NAME`](#terrain-new-name)
+* [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
+* [`terrain task:new [TASK]`](#terrain-tasknew-task)
+* [`terrain task:run [TASK]`](#terrain-taskrun-task)
+* [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+* [`terrain wallet:new`](#terrain-walletnew)
 
 ## `terrain code:new NAME`
 
