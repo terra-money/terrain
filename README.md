@@ -71,19 +71,19 @@ docker-compose up
 
 While WASM smart contracts can be written in any programming language, **it is strongly recommended that you utilize Rust**, as it is the only language for which mature libraries and tooling exist for CosmWasm. To complete this tutorial, install the latest version of Rust by following the instructions <a href="https://www.rust-lang.org/tools/install" target="_blank">here</a>. Once Rust is installed on your computer, do the following:
 
-1. Set the default release channel used to update Rust to stable:
+1. Set the default release channel used to update Rust to stable.
 
 ```sh
 rustup default stable
 ```
 
-2. Add wasm as the compilation target:
+2. Add wasm as the compilation target.
 
 ```sh
 rustup target add wasm32-unknown-unknown
 ```
 
-3. Install the necessary dependencies for generating contracts:
+3. Install the necessary dependencies for generating contracts.
 
 ```sh
 cargo install cargo-generate --features vendored-openssl
@@ -98,7 +98,7 @@ To run Terrain, you will need to install Node.js and NPM. We recommend that you 
 
 # Getting Started
 
-Now that you have completed the initial setup, generate your first smart contract using the procedure described below:
+Now that you have completed the initial setup, generate your first smart contract using the procedure described below.
 
 1. Install the terrain package globally.
 
@@ -106,7 +106,7 @@ Now that you have completed the initial setup, generate your first smart contrac
 npm install -g @terra-money/terrain
 ```
 
-<sub>**Note:** _If you would like to install terrain locally, you can execute the command `npm install @terra-money/terrain`, without the `-g` flag, while in the directory in which you would like to be able to use the package. You can then execute any terrain commands by prefixing them with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed terrain package, you would utilize the command `npx terrain new my-terra-dapp`._</sub>
+<sub>**Note:** _If you would like to install terrain locally, you can execute the command `npm install @terra-money/terrain`, without the `-g` flag, while in the directory in which you would like to be able to utilize the package. You can then execute any terrain commands by prefixing them with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed terrain package, you would utilize the command `npx terrain new my-terra-dapp`._</sub>
 
 2. Generate your smart contract and corresponding frontend templates.
 
@@ -128,7 +128,7 @@ npm install
 
 ## Project Structure
 
-The `terrain new` command generates a project with the following structure:
+The `terrain new` command generates a project that contains a template smart contract called `counter` and a corresponding frontend. Other supporting files are generated to provide further functionality. You may view the project structure below.
 
 ```
 .
@@ -168,7 +168,7 @@ You can also specify the network on which you would like to deploy your contract
 
 The predefined accounts in the `keys.terrain.js` file shown below can be utilized as signers on `testnet`. We will demonstrate how to deploy your smart contract utilizing the preconfigured `custom_tester_1` account. You may also add a personal account to the `keys.terrain.js` file by adding the account name as well as its corresponding private key. You can then use that account as the signer specifying the account name after the `--signer` flag in the `terrain deploy` command.
 
-<sub>**Warning:** _Utilizing a personal account for deployment requires the use of a private key or mnemonic. These are private keys that are generated upon creation of your personal wallet. Saving or utilizing these keys on your personal computer may expose them to malicious actors who could gain access to your personal wallet if they are able to obtain them. You can create a wallet solely for testing purposes to eliminate risk. Alternatively, you can store your private keys as secret enviroment variables which you can then reference utilizing `process.env.SECRET_VAR` in `keys.terrain.json`. Use your private key or mnemonic at your own discretion._</sub>
+<sub>**Warning:** _Utilizing a personal account for deployment requires the use of a private key or mnemonic. These are private keys that are generated upon the creation of your personal wallet. Saving or utilizing these keys on your personal computer may expose them to malicious actors who could gain access to your personal wallet if they are able to obtain them. You can create a wallet solely for testing purposes to eliminate risk. Alternatively, you can store your private keys as secret enviroment variables which you can then reference utilizing `process.env.SECRET_VAR` in `keys.terrain.json`. Use your private key or mnemonic at your own discretion._</sub>
 
 ```js
 // can use `process.env.SECRET_MNEMONIC` or `process.env.SECRET_PRIV_KEY`
@@ -210,7 +210,7 @@ terrain deploy counter --signer custom_tester_1 --network testnet
 
 ## Initializing the Frontend Template
 
-After deployment, the `refs.terrain.json` file is updated in the project directory as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
+After deployment, the `refs.terrain.json` file will be updated in the project directory as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
 
 ```json
 {
@@ -253,7 +253,7 @@ npm run start
 
 ## Run Contract Functions with Terrain
 
-Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. The default contents of the `lib/index.js` file are presented below:
+Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. The default contents of the `lib/index.js` file are presented below.
 
 ```js
 // lib/index.js
@@ -265,7 +265,7 @@ module.exports = ({ wallets, refs, config, client }) => ({
 });
 ```
 
-You can call the functions defined above inside of the `terrain console`. An example of this using the `counter` contract is shown below.
+You can call the functions defined above inside of the `terrain console`. An example using the `counter` smart contract is shown below.
 
 ```sh
 terrain console
@@ -276,7 +276,7 @@ terrain > await lib.getCount()
 { count: 1 }
 ```
 
-You can also specify which network you would like to interact with by utilizing the `--network` flag.
+You may also specify which network you would like to interact with by utilizing the `--network` flag with the `terrain console` command.
 
 ```
 terrain console --network NETWORK
@@ -306,7 +306,7 @@ To run the example task shown above, which is located in the `tasks/example-with
 terrain task:run example-with-lib
 ```
 
-In order to create a new task, run the following command, replacing `<task-name>` with the desired name for your new task.
+In order to create a new task, run the following command replacing `<task-name>` with the desired name for your new task.
 
 ```sh
 terrain task:new <task-name>
@@ -428,20 +428,20 @@ npm unlink terrain
 
 <!-- commands -->
 
-* [`terrain code:new NAME`](#terrain-codenew-name)
-* [`terrain code:store CONTRACT`](#terrain-codestore-contract)
-* [`terrain console`](#terrain-console)
-* [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
-* [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
-* [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
-* [`terrain deploy CONTRACT`](#terrain-deploy-contract)
-* [`terrain help [COMMAND]`](#terrain-help-command)
-* [`terrain new NAME`](#terrain-new-name)
-* [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
-* [`terrain task:new [TASK]`](#terrain-tasknew-task)
-* [`terrain task:run [TASK]`](#terrain-taskrun-task)
-* [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
-* [`terrain wallet:new`](#terrain-walletnew)
+- [`terrain code:new NAME`](#terrain-codenew-name)
+- [`terrain code:store CONTRACT`](#terrain-codestore-contract)
+- [`terrain console`](#terrain-console)
+- [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
+- [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
+- [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
+- [`terrain deploy CONTRACT`](#terrain-deploy-contract)
+- [`terrain help [COMMAND]`](#terrain-help-command)
+- [`terrain new NAME`](#terrain-new-name)
+- [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
+- [`terrain task:new [TASK]`](#terrain-tasknew-task)
+- [`terrain task:run [TASK]`](#terrain-taskrun-task)
+- [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+- [`terrain wallet:new`](#terrain-walletnew)
 
 ## `terrain code:new NAME`
 
