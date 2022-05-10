@@ -31,7 +31,7 @@ export default class CodeNew extends Command {
   async run() {
     const { args, flags } = this.parse(CodeNew);
 
-    if(fs.existsSync(path.join(flags.path, args.name))) { 
+    if (fs.existsSync(path.join(flags.path, args.name))) {
       throw Error(`Folder '${args.name}' already exists under path '${flags.path}'.\nTip: Use another path or contract name`);
     }
 
@@ -41,16 +41,16 @@ export default class CodeNew extends Command {
       remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/heads/${flags.version}`,
       subFolder: `cw-template-${flags.version}`,
       localOptions: {
-        folderUrl: path.join(process.cwd(), flags.path, args.name)
+        folderUrl: path.join(process.cwd(), flags.path, args.name),
       },
       replace: {
         entries: {
-          "project-name": args.name,
-          "crate_name": args.name,
-          "authors": flags.authors,
-          " \"now\" | date: \"%Y\" ": `${new Date().getFullYear()}`
-        }
-      }
+          'project-name': args.name,
+          crate_name: args.name,
+          authors: flags.authors,
+          ' "now" | date: "%Y" ': `${new Date().getFullYear()}`,
+        },
+      },
     });
     cli.action.stop();
   }
