@@ -6,17 +6,11 @@ export default class Test extends Command {
   static description = "Runs unit tests for a contract directory.";
 
   static examples = [
-    "$ terrain test",
-    "$ terrain test counter",
-    "$ terrain test counter --no-fail-fast",
+    "$ terrain test:coverage",
+    "$ terrain test:coverage counter"
   ];
 
-  static flags = {
-    "no-fail-fast": flags.boolean({
-      description: "Run all tests regardless of failure.",
-      default: false
-    })
-  };
+  static flags = { };
 
   static args = [{ name: "contract-name" }];
 
@@ -29,7 +23,7 @@ export default class Test extends Command {
     }
 
     execSync(
-      `cargo test ${flags["no-fail-fast"] ? "--no-fail-fast" : ""}`, { stdio: "inherit" }
+      `docker run --security-opt seccomp=unconfined -v "${process.cwd()}:/volume" xd009642/tarpaulin`, { stdio: "inherit" }
     );
   }
 }
