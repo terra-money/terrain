@@ -13,18 +13,22 @@ class TerrainCLI {
 
   errorStyle: ChalkInstance;
 
+  anykeyStyle: ChalkInstance;
+
   constructor(
     prefix: string,
     logStyle: ChalkInstance,
     successStyle: ChalkInstance,
     warningStyle: ChalkInstance,
     errorStyle: ChalkInstance,
+    anykeyStyle: ChalkInstance,
   ) {
     this.prefix = prefix;
     this.logStyle = logStyle;
     this.successStyle = successStyle;
     this.warningStyle = warningStyle;
     this.errorStyle = errorStyle;
+    this.anykeyStyle = anykeyStyle;
   }
 
   // TerrainCLI.log() styling.
@@ -54,6 +58,11 @@ class TerrainCLI {
       `\n${this.prefix} ${this.errorStyle(`Error: ${errorMsg}`)}\n`,
     );
   }
+
+  // await TerrainCLI.anykey() styling.
+  async anykey(anykeyMsg = '') {
+    await cli.anykey(`\n${this.prefix} ${this.anykeyStyle(`${anykeyMsg}`)}`);
+  }
 }
 
-export default new TerrainCLI(chalk.yellow('>'), chalk.white, chalk.green, chalk.hex('#FFA500'), chalk.red);
+export default new TerrainCLI(chalk.yellow('>'), chalk.white, chalk.green, chalk.hex('#FFA500'), chalk.red, chalk.cyan);

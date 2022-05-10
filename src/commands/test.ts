@@ -2,6 +2,7 @@ import { Command, flags } from '@oclif/command';
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import TerrainCLI from '../TerrainCLI';
+import cli from 'cli-ux';
 
 /**
  * Runs unit tests for a contract directory.
@@ -39,7 +40,7 @@ export default class Test extends Command {
       // If contractPath available, alert user of testing initialization,
       // change working directory to contractPath and execute cargo test command.
       if (existsSync(contractPath)) {
-        TerrainCLI.log(`Testing '${args['contract-name']}' contract.`);
+        TerrainCLI.success(`Testing '${args['contract-name']}' contract.`);
         process.chdir(contractPath);
         execSync(`cargo test ${flags['no-fail-fast'] ? '--no-fail-fast' : ''}`, { stdio: 'inherit' });
         process.exit();
