@@ -10,6 +10,15 @@ import TerrainCLI from '../TerrainCLI';
  * $ terrain test counter --no-fail-fast
  */
 export default class Test extends Command {
+  // Specify description to be displayed upon help command execution.
+  static description = 'Runs unit tests for a contract directory.';
+
+  // Specify examples included upon help test command execution.
+  static examples = [
+    '$ terrain test counter',
+    '$ terrain test counter --no-fail-fast',
+  ];
+
   // Initialize args to be given after test command.
   static args = [{ name: 'contract-name', required: true }];
 

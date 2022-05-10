@@ -1,51 +1,59 @@
-import { cli } from 'cli-ux';
+import chalk, { ChalkInstance } from 'chalk';
+import cli from 'cli-ux';
 
 /** TerrainCLI offers default log styling for terrain commands. */
 class TerrainCLI {
-  prefixColor: string;
+  prefix: string;
 
-  logColor: string;
+  logStyle: ChalkInstance;
 
-  errorColor: string;
+  successStyle: ChalkInstance;
 
-  warningColor: string;
+  warningStyle: ChalkInstance;
 
-  reset: string;
+  errorStyle: ChalkInstance;
 
   constructor(
-    prefixColor: string,
-    logColor: string,
-    errorColor: string,
-    warningColor:string,
-    reset: string,
+    prefix: string,
+    logStyle: ChalkInstance,
+    successStyle: ChalkInstance,
+    warningStyle: ChalkInstance,
+    errorStyle: ChalkInstance,
   ) {
-    this.prefixColor = prefixColor;
-    this.logColor = logColor;
-    this.errorColor = errorColor;
-    this.warningColor = warningColor;
-    this.reset = reset;
+    this.prefix = prefix;
+    this.logStyle = logStyle;
+    this.successStyle = successStyle;
+    this.warningStyle = warningStyle;
+    this.errorStyle = errorStyle;
   }
 
   // TerrainCLI.log() styling.
-  log(body = '') {
+  log(logMsg = '') {
     cli.log(
-      `\n${this.prefixColor}>${this.reset} ${this.logColor}${body}${this.reset}\n`,
+      `\n${this.prefix} ${this.logStyle(logMsg)}\n`,
     );
   }
 
-  // TerrainCLI.error() styling.
-  error(body = '') {
+  // TerrainCLI.success() styling.
+  success(successMsg = '') {
     cli.log(
-      `\n${this.prefixColor}>${this.reset} ${this.errorColor}Error: ${body}${this.reset}\n`,
+      `\n${this.prefix} ${this.successStyle(successMsg)}\n`,
     );
   }
 
   // TerrainCLI.warning() styling.
-  warning(body = '') {
+  warning(warningMsg = '') {
     cli.log(
-      `\n${this.prefixColor}>${this.reset} ${this.warningColor}Warning: ${body}${this.reset}\n`,
+      `\n${this.prefix} ${this.warningStyle(`Warning: ${warningMsg}`)}\n`,
+    );
+  }
+
+  // TerrainCLI.error() styling.
+  error(errorMsg = '') {
+    cli.log(
+      `\n${this.prefix} ${this.errorStyle(`Error: ${errorMsg}`)}\n`,
     );
   }
 }
 
-export default new TerrainCLI('\x1b[37m', '\x1b[32m', '\x1b[31m', '\x1b[33m', '\x1b[0m');
+export default new TerrainCLI(chalk.yellow('>'), chalk.white, chalk.green, chalk.hex('#FFA500'), chalk.red);
