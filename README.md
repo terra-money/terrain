@@ -426,11 +426,11 @@ npm unlink terrain
 # Terrain Commands
 
 <!-- commands -->
-* [`terrain code:new NAME`](#terrain-codenew-name)
-* [`terrain code:store CONTRACT`](#terrain-codestore-contract)
 * [`terrain console`](#terrain-console)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
 * [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
+* [`terrain contract:new NAME`](#terrain-contractnew-name)
+* [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
 * [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
 * [`terrain deploy CONTRACT`](#terrain-deploy-contract)
 * [`terrain help [COMMAND]`](#terrain-help-command)
@@ -440,56 +440,6 @@ npm unlink terrain
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
 * [`terrain wallet:new`](#terrain-walletnew)
-
-## `terrain code:new NAME`
-
-Generate new contract.
-
-```
-USAGE
-  $ terrain code:new [NAME] [--path <value>] [--version <value>] [--authors <value>]
-
-FLAGS
-  --authors=<value>  [default: Terra Money <core@terra.money>]
-  --path=<value>     [default: ./contracts] path to keep the contracts
-  --version=<value>  [default: 0.16]
-
-DESCRIPTION
-  Generate new contract.
-
-EXAMPLES
-  $ terrain code:new awesome_contract
-
-  $ terrain code:new awesome_contract --path path/to/dapp
-
-  $ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
-```
-
-_See code: [src/commands/code/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/code/new.ts)_
-
-## `terrain code:store CONTRACT`
-
-Store code on chain.
-
-```
-USAGE
-  $ terrain code:store [CONTRACT] --signer <value> [--no-rebuild] [--network <value>] [--config-path <value>]
-    [--refs-path <value>] [--keys-path <value>] [--code-id <value>]
-
-FLAGS
-  --code-id=<value>
-  --config-path=<value>  [default: ./config.terrain.json]
-  --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: localterra]
-  --no-rebuild
-  --refs-path=<value>    [default: ./refs.terrain.json]
-  --signer=<value>       (required)
-
-DESCRIPTION
-  Store code on chain.
-```
-
-_See code: [src/commands/code/store.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/code/store.ts)_
 
 ## `terrain console`
 
@@ -563,6 +513,56 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/migrate.ts)_
+
+## `terrain contract:new NAME`
+
+Generate new contract.
+
+```
+USAGE
+  $ terrain contract:new [NAME] [--path <value>] [--version <value>] [--authors <value>]
+
+FLAGS
+  --authors=<value>  [default: Terra Money <core@terra.money>]
+  --path=<value>     [default: ./contracts] path to keep the contracts
+  --version=<value>  [default: 0.16]
+
+DESCRIPTION
+  Generate new contract.
+
+EXAMPLES
+  $ terrain code:new awesome_contract
+
+  $ terrain code:new awesome_contract --path path/to/dapp
+
+  $ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
+```
+
+_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/new.ts)_
+
+## `terrain contract:store CONTRACT`
+
+Store code on chain.
+
+```
+USAGE
+  $ terrain contract:store [CONTRACT] --signer <value> [--no-rebuild] [--network <value>] [--config-path <value>]
+    [--refs-path <value>] [--keys-path <value>] [--code-id <value>]
+
+FLAGS
+  --code-id=<value>
+  --config-path=<value>  [default: ./config.terrain.json]
+  --keys-path=<value>    [default: ./keys.terrain.js]
+  --network=<value>      [default: localterra]
+  --no-rebuild
+  --refs-path=<value>    [default: ./refs.terrain.json]
+  --signer=<value>       (required)
+
+DESCRIPTION
+  Store code on chain.
+```
+
+_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/store.ts)_
 
 ## `terrain contract:updateAdmin CONTRACT ADMIN`
 
