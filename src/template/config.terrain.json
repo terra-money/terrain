@@ -16,7 +16,7 @@
   },
   "testnet": {
     "_connection": {
-      "chainID": "bombay-1",
+      "chainID": "pisco-1",
       "URL": "https://pisco-lcd.terra.dev"
     }
   },
