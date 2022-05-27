@@ -12,6 +12,9 @@ export type InstantiateMessage = Record<string, any>;
 
 export type ContractConfig = {
   // TODO: Remove since fee in config is deprecated.
+  /**
+ * @deprecated The property should not be used
+ */
   store?: { fee: Fee };
   instantiation: {
     // TODO: Remove since fee in config is deprecated.
