@@ -17,7 +17,10 @@ export type ContractConfig = {
  */
   store?: { fee: Fee };
   instantiation: {
-    // TODO: Remove since fee in config is deprecated.
+  // TODO: Remove since fee in config is deprecated.
+  /**
+ * @deprecated The property should not be used
+ */
     fee?: Fee;
     instantiateMsg: InstantiateMessage;
   };
