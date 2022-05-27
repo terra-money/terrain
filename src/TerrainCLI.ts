@@ -1,27 +1,27 @@
-import chalk, { ChalkInstance } from 'chalk';
+import chalk, { Chalk } from 'chalk';
 import cli from 'cli-ux';
 
 /** TerrainCLI offers default log styling for terrain commands. */
 class TerrainCLI {
   prefix: string;
 
-  logStyle: ChalkInstance;
+  logStyle: Chalk;
 
-  successStyle: ChalkInstance;
+  successStyle: Chalk;
 
-  warningStyle: ChalkInstance;
+  warningStyle: Chalk;
 
-  errorStyle: ChalkInstance;
+  errorStyle: Chalk;
 
-  anykeyStyle: ChalkInstance;
+  anykeyStyle: Chalk;
 
   constructor(
     prefix: string,
-    logStyle: ChalkInstance,
-    successStyle: ChalkInstance,
-    warningStyle: ChalkInstance,
-    errorStyle: ChalkInstance,
-    anykeyStyle: ChalkInstance,
+    logStyle: Chalk,
+    successStyle: Chalk,
+    warningStyle: Chalk,
+    errorStyle: Chalk,
+    anykeyStyle: Chalk,
   ) {
     this.prefix = prefix;
     this.logStyle = logStyle;
