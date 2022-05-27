@@ -525,7 +525,7 @@ USAGE
 FLAGS
   --authors=<value>  [default: Terra Money <core@terra.money>]
   --path=<value>     [default: ./contracts] path to keep the contracts
-  --version=<value>  [default: 0.16]
+  --version=<value>  [default: 1.0-beta6]
 
 DESCRIPTION
   Generate new contract.
