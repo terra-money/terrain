@@ -28,7 +28,7 @@ export default class New extends Command {
       default: 'react',
     }),
     version: flags.string({
-      default: '0.16',
+      default: '1.0',
     }),
     authors: flags.string({
       default: 'Terra Money <core@terra.money>',
