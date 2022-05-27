@@ -86,7 +86,6 @@ rustup target add wasm32-unknown-unknown
 3. Install the necessary dependencies for generating contracts:
 
 ```sh
-cargo install cargo-generate --features vendored-openssl
 cargo install cargo-run-script
 ```
 
@@ -427,11 +426,11 @@ npm unlink terrain
 # Terrain Commands
 
 <!-- commands -->
-* [`terrain code:new NAME`](#terrain-codenew-name)
-* [`terrain code:store CONTRACT`](#terrain-codestore-contract)
 * [`terrain console`](#terrain-console)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
 * [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
+* [`terrain contract:new NAME`](#terrain-contractnew-name)
+* [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
 * [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
 * [`terrain deploy CONTRACT`](#terrain-deploy-contract)
 * [`terrain help [COMMAND]`](#terrain-help-command)
@@ -442,20 +441,29 @@ npm unlink terrain
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
 * [`terrain wallet:new`](#terrain-walletnew)
 
+<<<<<<< HEAD
 ## `terrain code:new NAME`
 
 Generate new contract.
 
 ```
 USAGE
-  $ terrain code:new [NAME] [--path <value>] [--version <value>]
+  $ terrain code:new [NAME] [--path <value>] [--version <value>] [--authors <value>]
 
 FLAGS
+  --authors=<value>  [default: Terra Money <core@terra.money>]
   --path=<value>     [default: ./contracts] path to keep the contracts
   --version=<value>  [default: 0.16]
 
 DESCRIPTION
   Generate new contract.
+
+EXAMPLES
+  $ terrain code:new awesome_contract
+
+  $ terrain code:new awesome_contract --path path/to/dapp
+
+  $ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
 ```
 
 _See code: [src/commands/code/new.ts](https://github.com/terra-money/terrain/blob/v0.3.0/src/commands/code/new.ts)_
@@ -484,6 +492,8 @@ DESCRIPTION
 
 _See code: [src/commands/code/store.ts](https://github.com/terra-money/terrain/blob/v0.3.0/src/commands/code/store.ts)_
 
+=======
+>>>>>>> aed8534 (feat: merge 'code' and 'contract' (#72))
 ## `terrain console`
 
 Start a repl console that provides context and convinient utilities to interact with the blockchain and your contracts.
@@ -556,6 +566,56 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.3.0/src/commands/contract/migrate.ts)_
+
+## `terrain contract:new NAME`
+
+Generate new contract.
+
+```
+USAGE
+  $ terrain contract:new [NAME] [--path <value>] [--version <value>] [--authors <value>]
+
+FLAGS
+  --authors=<value>  [default: Terra Money <core@terra.money>]
+  --path=<value>     [default: ./contracts] path to keep the contracts
+  --version=<value>  [default: 1.0-beta6]
+
+DESCRIPTION
+  Generate new contract.
+
+EXAMPLES
+  $ terrain code:new awesome_contract
+
+  $ terrain code:new awesome_contract --path path/to/dapp
+
+  $ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
+```
+
+_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/new.ts)_
+
+## `terrain contract:store CONTRACT`
+
+Store code on chain.
+
+```
+USAGE
+  $ terrain contract:store [CONTRACT] --signer <value> [--no-rebuild] [--network <value>] [--config-path <value>]
+    [--refs-path <value>] [--keys-path <value>] [--code-id <value>]
+
+FLAGS
+  --code-id=<value>
+  --config-path=<value>  [default: ./config.terrain.json]
+  --keys-path=<value>    [default: ./keys.terrain.js]
+  --network=<value>      [default: localterra]
+  --no-rebuild
+  --refs-path=<value>    [default: ./refs.terrain.json]
+  --signer=<value>       (required)
+
+DESCRIPTION
+  Store code on chain.
+```
+
+_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.2.0/src/commands/contract/store.ts)_
 
 ## `terrain contract:updateAdmin CONTRACT ADMIN`
 
@@ -636,13 +696,15 @@ Create new dapp from a template.
 
 ```
 USAGE
-  $ terrain new [NAME] [--path <value>] [--framework next|vue|vite|lit|svelte|react] [--version <value>]
+  $ terrain new [NAME] [--path <value>] [--framework react|vue|svelte|next|vite|lit] [--version <value>]
+    [--authors <value>]
 
 FLAGS
+  --authors=<value>     [default: Terra Money <core@terra.money>]
   --framework=<option>  [default: react] Choose the frontend framework you want to use. Non-react framework options have
                         better wallet-provider support but less streamlined contract integration.
-                        <options: next|vue|vite|lit|svelte|react>
-  --path=<value>        path to keep the project
+                        <options: react|vue|svelte|next|vite|lit>
+  --path=<value>        [default: .] Path to create the workspace
   --version=<value>     [default: 0.16]
 
 DESCRIPTION
@@ -655,7 +717,9 @@ EXAMPLES
 
   $ terrain new awesome-dapp --path path/to/dapp
 
-  $ terrain new --framework next awesome-dapp --path path/to/dapp
+  $ terrain new awesome-dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
+
+  $ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"
 ```
 
 _See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.3.0/src/commands/new.ts)_

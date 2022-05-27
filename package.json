@@ -27,14 +27,14 @@
   },
   "scripts": {
     "use": "node ./bin/run",
-    "prepack:use": "npm run prepack && npm run use",
-    "prepack": "rm -rf lib && tsc -b && cp -R src/template lib/template && oclif-dev manifest && oclif-dev readme",
+    "prepack:use" : "npm run prepack && npm run use",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "postpack": "rm -f oclif.manifest.json",
     "test": "jest",
     "test:watch": "jest --watch",
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "fixlint": "eslint . --ext .ts --config .eslintrc.js --fix",
     "lint": "eslint . --ext .ts --config .eslintrc.js",
+    "fixlint": "eslint . --ext .ts --config .eslintrc.js --fix",
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
@@ -43,8 +43,8 @@
     "@oclif/core": "^1.0.11",
     "@oclif/plugin-help": "^5.1.12",
     "@oclif/plugin-not-found": "^2.3.1",
-    "@terra-money/terra.js": "^3.0.9",
-    "adm-zip": "^0.5.9",
+    "@terra-money/terra.js": "^3.1.0",
+    "@terra-money/template-scaffolding": "1.0.1",
     "cli-ux": "^5.6.3",
     "fs-extra": "^8.1.0",
     "ramda": "^0.26.1",
@@ -71,13 +71,12 @@
     "eslint": "^8.12.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
-    "globby": "^10.0.2",
     "jest": "^27.3.1",
     "prettier": "2.4.1",
     "typescript": "^3.9.10"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "/bin",
