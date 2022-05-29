@@ -2,13 +2,10 @@ import { Command, flags } from '@oclif/command';
 import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import cli from 'cli-ux';
 import * as path from 'path';
-import * as fs from 'fs-extra';
-import Zip from 'adm-zip';
-import * as request from 'superagent';
-import { execSync } from 'child_process';
+import * as fs from 'fs';
 
 export default class New extends Command {
-  static description = 'Create new dapp from a template.';
+  static description = 'Create new dapp from template.';
 
   static examples = [
     '$ terrain new awesome-dapp',
@@ -64,36 +61,6 @@ export default class New extends Command {
       },
     });
     cli.action.stop();
-    process.chdir('..');
-
-    cli.action.start('- frontend');
-    if (flags.framework === 'react') {
-      await new Promise((resolve, reject) => {
-        const file = fs.createWriteStream('frontend.zip');
-        request
-          .get(
-            'https://github.com/terra-money/terrain-frontend-template/archive/refs/heads/main.zip',
-          )
-          .on('error', (error) => {
-            reject(error);
-          })
-          .pipe(file)
-          .on('finish', () => {
-            cli.action.stop();
-            resolve(null);
-          });
-      });
-      const zip = new Zip('frontend.zip');
-      zip.extractAllTo('.', true);
-      fs.renameSync('terrain-frontend-template-main', 'frontend');
-      fs.removeSync('frontend.zip');
-    } else {
-      execSync(
-        `npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/${flags.framework} frontend`,
-      );
-      process.chdir('frontend');
-      fs.removeSync('sandbox.config.json');
-    }
 
     cli.action.start('- contract');
     await TemplateScaffolding.from({
