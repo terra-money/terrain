@@ -438,7 +438,7 @@ npm unlink terrain
 * [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
 * [`terrain task:new [TASK]`](#terrain-tasknew-task)
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
-* [`terrain test [CONTRACT-NAME]`](#terrain-test-contract-name)
+* [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
 * [`terrain test:coverage [CONTRACT-NAME]`](#terrain-testcoverage-contract-name)
 * [`terrain wallet:new`](#terrain-walletnew)
 
@@ -723,7 +723,7 @@ DESCRIPTION
 
 _See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/task/run.ts)_
 
-## `terrain test [CONTRACT-NAME]`
+## `terrain test CONTRACT-NAME`
 
 Runs unit tests for a contract directory.
 
@@ -738,14 +738,31 @@ DESCRIPTION
   Runs unit tests for a contract directory.
 
 EXAMPLES
-  $ terrain test
-
   $ terrain test counter
 
   $ terrain test counter --no-fail-fast
 ```
 
 _See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/test.ts)_
+
+## `terrain test:coverage [CONTRACT-NAME]`
+
+Runs unit tests for a contract directory.
+
+```
+USAGE
+  $ terrain test:coverage [CONTRACT-NAME]
+
+DESCRIPTION
+  Runs unit tests for a contract directory.
+
+EXAMPLES
+  $ terrain test:coverage
+
+  $ terrain test:coverage counter
+```
+
+_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/test/coverage.ts)_
 
 ## `terrain wallet:new`
 
