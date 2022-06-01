@@ -80,7 +80,7 @@ export const storeCode = async ({
     .toString('base64');
 
   cli.action.start('storing wasm bytecode on chain');
-
+  
   const storeCodeTx = await signer.createAndSignTx({
     msgs: [
       typeof codeId !== 'undefined'
@@ -88,7 +88,6 @@ export const storeCode = async ({
         : new MsgStoreCode(signer.key.accAddress, wasmByteCode),
     ],
   });
-
   const result = await lcd.tx.broadcastSync(storeCodeTx);
   if ('code' in result) {
     return cli.error(result.raw_log);
@@ -166,6 +165,8 @@ export const instantiate = async ({
         admin, // can migrate
         codeId,
         instantiation.instantiateMsg,
+        undefined,
+        "Instantiate"
       ),
     ],
   });
@@ -181,16 +182,15 @@ export const instantiate = async ({
     if (error instanceof SyntaxError && res) {
       cli.error(res.raw_log);
     } else {
-      cli.error(`Unexpcted Error: ${error}`);
+      cli.error(`Unexpected Error: ${error}`);
     }
   }
 
   cli.action.stop();
-
   const contractAddress = log[0].events
-    .find((event: { type: string }) => event.type === 'instantiate_contract')
+    .find((event: { type: string }) => event.type === 'instantiate')
     .attributes.find(
-      (attr: { key: string }) => attr.key === 'contract_address',
+      (attr: { key: string }) => attr.key === '_contract_address',
     ).value;
 
   const updatedRefs = setContractAddress(
