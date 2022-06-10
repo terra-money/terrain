@@ -45,7 +45,7 @@ export const buildWasm = async ({ contract, workspace }: BuildWasmParams) => {
 type OptimizeWasmParams = {
   contract: string;
   workspace?: string;
-  arm64?: boolean;
+  arm64: boolean | undefined;
 };
 
 export const optimizeWasm = async ({
@@ -219,11 +219,17 @@ export const instantiate = async ({
 
   cli.action.stop();
 
-  const contractAddress: string = log[0].events
-    .find((event: { type: string }) => event.type === "instantiate_contract")
-    .attributes.find(
-      (attr: { key: string }) => attr.key === "_contract_address"
-    ).value;
+  const event =
+    log[0].events.find(
+      (event: { type: string }) => event.type === "instantiate_contract"
+    ) ??
+    log[0].events.find(
+      (event: { type: string }) => event.type === "instantiate"
+    );
+
+  const contractAddress: string = event.attributes.find(
+    (attr: { key: string }) => attr.key === "_contract_address"
+  ).value;
 
   const updatedRefs = setContractAddress(
     network,

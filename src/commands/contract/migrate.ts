@@ -54,7 +54,7 @@ export default class ContractMigrate extends Command {
       await optimizeWasm({
         contract: args.contract,
         workspace: flags.workspace,
-        arm64: flag.arm64,
+        arm64: flags.arm64,
       });
     }
 
