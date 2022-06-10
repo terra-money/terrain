@@ -2,41 +2,33 @@ import { Command, flags } from "@oclif/command";
 import { LCDClient } from "@terra-money/terra.js";
 import { loadConfig, loadConnections } from "../../config";
 import {
-  buildWasm,
   migrate,
-  optimizeWasm,
   storeCode,
+  buildWasm,
+  optimizeWasm,
 } from "../../lib/deployment";
 import { getSigner } from "../../lib/signer";
+import * as flag from "../../lib/flag";
 
 export default class ContractMigrate extends Command {
   static description = "Migrate the contract.";
 
   static flags = {
-    "no-rebuild": flags.boolean({
-      description: "deploy the wasm bytecode as is.",
-      default: false,
-    }),
+    signer: flag.signer,
+    arm64: flag.arm64,
+    "no-rebuild": flag.noRebuild,
     network: flags.string({ default: "localterra" }),
     "config-path": flags.string({ default: "./config.terrain.json" }),
     "refs-path": flags.string({ default: "./refs.terrain.json" }),
     "keys-path": flags.string({ default: "./keys.terrain.js" }),
     "instance-id": flags.string({ default: "default" }),
-    signer: flags.string({ required: true }),
     "code-id": flags.integer({
       description: "target code id for migration",
     }),
-    workspace: flags.string({
-      default: undefined,
-    }),
-    arm64: flags.boolean({
-      description:
-        "use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.",
-      default: false,
-    }),
+    workspace: flags.string({ default: undefined }),
   };
 
-  static args = [{ name: "contract" }];
+  static args = [{ name: "contract", required: true }];
 
   async run() {
     const { args, flags } = this.parse(ContractMigrate);
@@ -62,6 +54,7 @@ export default class ContractMigrate extends Command {
       await optimizeWasm({
         contract: args.contract,
         workspace: flags.workspace,
+        arm64: flag.arm64,
       });
     }
 

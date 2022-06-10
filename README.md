@@ -336,13 +336,63 @@ task(async ({ wallets, refs, config, client }) => {
 });
 ```
 
+As of Terrain 0.4.0 it is possible to deploy and instantiate contracts from tasks. This can be useful for multi-contract, or multi-stage deployments. 
+
+```js
+const { task } = require("@terra-money/terrain");
+
+task(async ({ wallets, client, deploy }) => {
+  // First deploy the counter smart contract.
+  const counterCodeId = await deploy.storeCode(wallets.test1, "counter");
+  const counterAddress = await deploy.instantiate(
+    // Signer
+    wallets.test1,
+    // Contract name
+    "counter",
+    // Code ID
+    counterCodeId,
+    // Instance ID
+    "default",
+    // Contract admin
+    wallets.test1.key.accAddress
+  );
+
+  // Now deploy a CW20 with the counter contract set as the minter in instantiation.
+  const cw20CodeId = await deploy.storeCode(wallets.test1, "cw20-base");
+  const cw20Address = await deploy.instantiate(
+    wallets.test1,
+    "cw20-base",
+    cw20CodeId,
+    "default",
+    wallets.test1.key.accAddress,
+    // Custom instantiation message.
+    // with no message provided the default from config.terrain will be used.
+    {
+      name: "counter",
+      symbol: "CTR",
+      decimals: 6,
+      initial_balances: [],
+      mint: {
+        minter: counterAddress,
+      },
+    }
+  );
+
+  // Update the CW20 address in counter.
+  // Note: It's important to use the address returned by deploy.instantiate
+  // Refs are only read into memory at the start of the task.
+  await client.execute(wallets.test1, counterAddress, {
+    update_token: { token: cw20Address },
+  });
+
+  console.log(`CW20 Address: ${cw20Address}`);
+});
+```
 ---
 
 # Migrating CosmWasm Contracts on Terra
 
-(Thanks to @octalmage)
-
-On Terra, it is possible to initilize contracts as **_migratable_**. A migratable contract allows an adminstrator to upload a new version of a contract and then send a migrate message to move to the new code.
+On Terra it is possible to initalize contracts as migratable. This functionallity allows the adminstrator to upload a new version of the contract, then send a migrate message to move to the new code.
 
 <a href="https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html" target="_blank">This tutorial</a> builds on top of the Terrain Quick Start Guide and walks you through a contract migration.
 
@@ -837,7 +887,7 @@ _See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/b
 <!-- commandsstop -->
 * [`terrain console`](#terrain-console)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
-* [`terrain contract:migrate [CONTRACT]`](#terrain-contractmigrate-contract)
+* [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
 * [`terrain contract:new NAME`](#terrain-contractnew-name)
 * [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
 * [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
@@ -870,7 +920,7 @@ DESCRIPTION
   contracts.
 ```
 
-_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/console.ts)_
+_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/console.ts)_
 
 ## `terrain contract:instantiate CONTRACT`
 
@@ -878,32 +928,32 @@ Instantiate the contract.
 
 ```
 USAGE
-  $ terrain contract:instantiate [CONTRACT] --signer <value> [--network <value>] [--config-path <value>] [--refs-path
-    <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>] [--set-signer-as-admin]
+  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--set-signer-as-admin] [--network <value>] [--config-path
+    <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>]
 
 FLAGS
-  --code-id=<value>      target code id for migration, can do only once after columbus-5 upgrade
+  --code-id=<value>      specfic codeId to instantiate
   --config-path=<value>  [default: ./config.terrain.json]
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra]
   --refs-path=<value>    [default: ./refs.terrain.json]
-  --set-signer-as-admin
-  --signer=<value>       (required)
+  --set-signer-as-admin  set signer (deployer) as admin to allow migration.
+  --signer=<value>       [default: test1]
 
 DESCRIPTION
   Instantiate the contract.
 ```
 
-_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/contract/instantiate.ts)_
+_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/instantiate.ts)_
 
-## `terrain contract:migrate [CONTRACT]`
+## `terrain contract:migrate CONTRACT`
 
 Migrate the contract.
 
 ```
 USAGE
-  $ terrain contract:migrate [CONTRACT] --signer <value> [--no-rebuild] [--network <value>] [--config-path <value>]
+  $ terrain contract:migrate [CONTRACT] [--signer <value>] [--no-rebuild] [--network <value>] [--config-path <value>]
     [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>] [--arm64]
 
 FLAGS
@@ -916,13 +966,13 @@ FLAGS
   --network=<value>      [default: localterra]
   --no-rebuild           deploy the wasm bytecode as is.
   --refs-path=<value>    [default: ./refs.terrain.json]
-  --signer=<value>       (required)
+  --signer=<value>       [default: test1]
 
 DESCRIPTION
   Migrate the contract.
 ```
 
-_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/contract/migrate.ts)_
+_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/migrate.ts)_
 
 ## `terrain contract:new NAME`
 
@@ -948,7 +998,7 @@ EXAMPLES
   $ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
 ```
 
-_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/contract/new.ts)_
+_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/new.ts)_
 
 ## `terrain contract:store CONTRACT`
 
@@ -956,7 +1006,7 @@ Store code on chain.
 
 ```
 USAGE
-  $ terrain contract:store [CONTRACT] --signer <value> [--no-rebuild] [--network <value>] [--config-path <value>]
+  $ terrain contract:store [CONTRACT] [--signer <value>] [--no-rebuild] [--network <value>] [--config-path <value>]
     [--refs-path <value>] [--keys-path <value>] [--code-id <value>]
 
 FLAGS
@@ -964,15 +1014,15 @@ FLAGS
   --config-path=<value>  [default: ./config.terrain.json]
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra]
-  --no-rebuild
+  --no-rebuild           deploy the wasm bytecode as is.
   --refs-path=<value>    [default: ./refs.terrain.json]
-  --signer=<value>       (required)
+  --signer=<value>       [default: test1]
 
 DESCRIPTION
   Store code on chain.
 ```
 
-_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/contract/store.ts)_
+_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/store.ts)_
 
 ## `terrain contract:updateAdmin CONTRACT ADMIN`
 
@@ -980,7 +1030,7 @@ Update the admin of a contract.
 
 ```
 USAGE
-  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] --signer <value> [--network <value>] [--config-path <value>]
+  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] [--signer <value>] [--network <value>] [--config-path <value>]
     [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
 
 FLAGS
@@ -989,13 +1039,13 @@ FLAGS
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra]
   --refs-path=<value>    [default: ./refs.terrain.json]
-  --signer=<value>       (required)
+  --signer=<value>       [default: test1]
 
 DESCRIPTION
   Update the admin of a contract.
 ```
 
-_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/contract/updateAdmin.ts)_
+_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/updateAdmin.ts)_
 
 ## `terrain deploy CONTRACT`
 
@@ -1003,9 +1053,9 @@ Build wasm bytecode, store code on chain and instantiate.
 
 ```
 USAGE
-  $ terrain deploy [CONTRACT] --signer <value> [--no-rebuild] [--network <value>] [--config-path <value>]
-    [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--set-signer-as-admin] [--admin-address
-    <value>] [--frontend-refs-path <value>] [--arm64]
+  $ terrain deploy [CONTRACT] [--signer <value>] [--arm64] [--no-rebuild] [--set-signer-as-admin] [--network
+    <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
+    [--admin-address <value>] [--frontend-refs-path <value>]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
@@ -1013,19 +1063,19 @@ FLAGS
                                 optimize quicker on arm64 hardware during development.
   --config-path=<value>         [default: ./config.terrain.json]
   --frontend-refs-path=<value>  [default: ./frontend/src/refs.terrain.json]
-  --instance-id=<value>         [default: default]
+  --instance-id=<value>         [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>           [default: ./keys.terrain.js]
   --network=<value>             [default: localterra]
   --no-rebuild                  deploy the wasm bytecode as is.
   --refs-path=<value>           [default: ./refs.terrain.json]
   --set-signer-as-admin         set signer (deployer) as admin to allow migration.
-  --signer=<value>              (required)
+  --signer=<value>              [default: test1]
 
 DESCRIPTION
   Build wasm bytecode, store code on chain and instantiate.
 ```
 
-_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/deploy.ts)_
+_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/deploy.ts)_
 
 ## `terrain help [COMMAND]`
 
@@ -1077,7 +1127,7 @@ EXAMPLES
   $ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"
 ```
 
-_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/new.ts)_
+_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/new.ts)_
 
 ## `terrain sync-refs [FILE]`
 
@@ -1095,7 +1145,7 @@ DESCRIPTION
   Sync configuration with frontend app.
 ```
 
-_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/sync-refs.ts)_
+_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/sync-refs.ts)_
 
 ## `terrain task:new [TASK]`
 
@@ -1109,7 +1159,7 @@ DESCRIPTION
   create new task
 ```
 
-_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/task/new.ts)_
+_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/task/new.ts)_
 
 ## `terrain task:run [TASK]`
 
@@ -1130,7 +1180,7 @@ DESCRIPTION
   run predefined task
 ```
 
-_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/task/run.ts)_
+_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/task/run.ts)_
 
 ## `terrain test CONTRACT-NAME`
 
@@ -1152,7 +1202,7 @@ EXAMPLES
   $ terrain test counter --no-fail-fast
 ```
 
-_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/test.ts)_
+_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/test.ts)_
 
 ## `terrain test:coverage [CONTRACT-NAME]`
 
@@ -1171,11 +1221,11 @@ EXAMPLES
   $ terrain test:coverage counter
 ```
 
-_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/test/coverage.ts)_
+_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/test/coverage.ts)_
 
 ## `terrain wallet:new`
 
-Generate a new wallet.
+Generate a new wallet to use for signing contracts
 
 ```
 USAGE
@@ -1186,8 +1236,8 @@ FLAGS
   --outfile=<value>  absolute path to store the mnemonic key to. If omitted, output to stdout
 
 DESCRIPTION
-  Generate a new wallet.
+  Generate a new wallet to use for signing contracts
 ```
 
-_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.3.1/src/commands/wallet/new.ts)_
+_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/wallet/new.ts)_
 <!-- commandsstop -->

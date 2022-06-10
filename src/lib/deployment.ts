@@ -218,8 +218,9 @@ export const instantiate = async ({
   }
 
   cli.action.stop();
-  const contractAddress = log[0].events
-    .find((event: { type: string }) => event.type === "instantiate")
+
+  const contractAddress: string = log[0].events
+    .find((event: { type: string }) => event.type === "instantiate_contract")
     .attributes.find(
       (attr: { key: string }) => attr.key === "_contract_address"
     ).value;
@@ -233,6 +234,8 @@ export const instantiate = async ({
   saveRefs(updatedRefs, refsPath);
 
   cli.log(YAML.stringify(log));
+
+  return contractAddress;
 };
 
 type MigrateParams = {

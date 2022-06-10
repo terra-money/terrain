@@ -64,7 +64,6 @@ export default class Run extends Command {
   }
 }
 
-
 function runScript(
   scriptPath: string,
   env: {

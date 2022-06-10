@@ -3,7 +3,7 @@ import { MnemonicKey } from '@terra-money/terra.js';
 import * as fs from 'fs';
 
 export default class WalletNew extends Command {
-  static description = 'Generate a new wallet.';
+  static description = 'Generate a new wallet to use for signing contracts';
 
   static flags = {
     outfile: flags.string({

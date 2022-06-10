@@ -3,22 +3,23 @@ import { LCDClient } from '@terra-money/terra.js';
 import { loadConfig, loadConnections, loadRefs } from '../../config';
 import { instantiate } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
+import * as flag from '../../lib/flag';
 
 export default class ContractInstantiate extends Command {
   static description = 'Instantiate the contract.';
 
   static flags = {
+    signer: flag.signer,
+    'set-signer-as-admin': flag.setSignerAsAdmin,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: './config.terrain.json' }),
     'refs-path': flags.string({ default: './refs.terrain.json' }),
     'keys-path': flags.string({ default: './keys.terrain.js' }),
     'instance-id': flags.string({ default: 'default' }),
-    signer: flags.string({ required: true }),
     'code-id': flags.integer({
       description:
-        'target code id for migration, can do only once after columbus-5 upgrade',
+        'specfic codeId to instantiate',
     }),
-    'set-signer-as-admin': flags.boolean({ default: false }),
   };
 
   static args = [{ name: 'contract', required: true }];

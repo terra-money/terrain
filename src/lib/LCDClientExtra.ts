@@ -36,13 +36,14 @@ export class LCDClientExtra extends LCDClient {
     const msgs = [
       new MsgExecuteContract(
         wallet.key.accAddress,
-        this.refs[contract].contractAddresses[instanceId],
+        // Enable supplying a contract address instead of the contract name.
+        contract.startsWith('terra1') ? contract : this.refs[contract].contractAddresses[instanceId],
         msg,
         coins,
       ),
     ];
-    const _options = options ? { ...options, msgs } : { msgs };
-    const tx = await wallet.createAndSignTx(_options);
-    return await this.tx.broadcast(tx);
+    const mergedOptions = options ? { ...options, msgs } : { msgs };
+    const tx = await wallet.createAndSignTx(mergedOptions);
+    return this.tx.broadcast(tx);
   }
 }
