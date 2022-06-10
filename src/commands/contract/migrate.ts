@@ -28,7 +28,7 @@ export default class ContractMigrate extends Command {
     }),
   };
 
-  static args = [{ name: 'contract' }];
+  static args = [{ name: 'contract', required: true }];
 
   async run() {
     const { args, flags } = this.parse(ContractMigrate);
