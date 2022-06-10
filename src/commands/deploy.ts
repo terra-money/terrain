@@ -1,47 +1,61 @@
-import { Command, flags } from '@oclif/command';
-import { LCDClient } from '@terra-money/terra.js';
-import * as fs from 'fs';
-import { loadConfig, loadConnections } from '../config';
-import { instantiate, storeCode } from '../lib/deployment';
-import { getSigner } from '../lib/signer';
+import { Command, flags } from "@oclif/command";
+import { LCDClient } from "@terra-money/terra.js";
+import * as fs from "fs";
+import { loadConfig, loadConnections } from "../config";
+import {
+  instantiate,
+  storeCode,
+  buildWasm,
+  optimizeWasm,
+} from "../lib/deployment";
+import { getSigner } from "../lib/signer";
 
 export default class Deploy extends Command {
-  static description = 'Build wasm bytecode, store code on chain and instantiate.';
+  static description =
+    "Build wasm bytecode, store code on chain and instantiate.";
 
   static flags = {
-    'no-rebuild': flags.boolean({
-      description: 'deploy the wasm bytecode as is.',
+    "no-rebuild": flags.boolean({
+      description: "deploy the wasm bytecode as is.",
       default: false,
     }),
-    network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: './config.terrain.json' }),
-    'refs-path': flags.string({ default: './refs.terrain.json' }),
-    'keys-path': flags.string({ default: './keys.terrain.js' }),
-    'instance-id': flags.string({ default: 'default' }),
+    network: flags.string({ default: "localterra" }),
+    "config-path": flags.string({ default: "./config.terrain.json" }),
+    "refs-path": flags.string({ default: "./refs.terrain.json" }),
+    "keys-path": flags.string({ default: "./keys.terrain.js" }),
+    "instance-id": flags.string({ default: "default" }),
     signer: flags.string({ required: true }),
-    'set-signer-as-admin': flags.boolean({
-      description: 'set signer (deployer) as admin to allow migration.',
+    "set-signer-as-admin": flags.boolean({
+      description: "set signer (deployer) as admin to allow migration.",
       default: false,
     }),
-    'admin-address': flags.string({
-      description: 'set custom address as contract admin to allow migration.',
+    "admin-address": flags.string({
+      description: "set custom address as contract admin to allow migration.",
     }),
-    'frontend-refs-path': flags.string({
-      default: './frontend/src/refs.terrain.json',
+    "frontend-refs-path": flags.string({
+      default: "./frontend/src/refs.terrain.json",
+    }),
+    "no-sync": flags.boolean({
+      description: "do not sync the contracts to the frontend.",
+      default: false,
+    }),
+    workspace: flags.string({
+      default: undefined,
     }),
     arm64: flags.boolean({
-      description: 'use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.',
+      description:
+        "use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.",
       default: false,
     }),
   };
 
-  static args = [{ name: 'contract', required: true }];
+  static args = [{ name: "contract", required: true }];
 
   async run() {
     const { args, flags } = this.parse(Deploy);
 
-    const connections = loadConnections(flags['config-path']);
-    const config = loadConfig(flags['config-path']);
+    const connections = loadConnections(flags["config-path"]);
+    const config = loadConfig(flags["config-path"]);
     const conf = config(flags.network, args.contract);
 
     // @ts-ignore
@@ -49,9 +63,20 @@ export default class Deploy extends Command {
     const signer = getSigner({
       network: flags.network,
       signerId: flags.signer,
-      keysPath: flags['keys-path'],
+      keysPath: flags["keys-path"],
       lcd,
     });
+
+    if (flags["no-rebuild"] === false) {
+      await buildWasm({
+        contract: args.contract,
+        workspace: flags.workspace,
+      });
+      await optimizeWasm({
+        contract: args.contract,
+        workspace: flags.workspace,
+      });
+    }
 
     // Store sequence to manually increment after code is stored.
     const sequence = await signer.sequence();
@@ -60,19 +85,19 @@ export default class Deploy extends Command {
       lcd,
       conf,
       signer,
-      noRebuild: flags['no-rebuild'],
       contract: args.contract,
+      workspace: flags.workspace,
       network: flags.network,
-      refsPath: flags['refs-path'],
+      refsPath: flags["refs-path"],
       arm64: flags.arm64,
     });
 
     // pause for account sequence to update.
     await new Promise((r) => setTimeout(r, 1000));
 
-    const admin = flags['set-signer-as-admin']
+    const admin = flags["set-signer-as-admin"]
       ? signer.key.accAddress
-      : flags['admin-address'];
+      : flags["admin-address"];
 
     await instantiate({
       conf,
@@ -82,11 +107,17 @@ export default class Deploy extends Command {
       contract: args.contract,
       codeId,
       network: flags.network,
-      instanceId: flags['instance-id'],
-      refsPath: flags['refs-path'],
+      instanceId: flags["instance-id"],
+      refsPath: flags["refs-path"],
       lcd,
     });
 
-    fs.copyFileSync(flags['refs-path'], flags['frontend-refs-path']);
+    if (
+      flags["no-sync"] === false &&
+      flags["frontend-refs-path"] &&
+      flags["frontend-refs-path"].length > 0
+    ) {
+      fs.copyFileSync(flags["refs-path"], flags["frontend-refs-path"]);
+    }
   }
 }
