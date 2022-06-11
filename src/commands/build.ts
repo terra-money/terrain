@@ -5,8 +5,12 @@ export default class Build extends Command {
   static description = "Build and optimize wasm bytecode.";
 
   static flags = {
-    "no-optimize": flags.boolean({
-      description: "do not optimize the wasm.",
+    // "no-optimize": flags.boolean({
+    //   description: "do not optimize the wasm.",
+    //   default: false,
+    // }),
+    optimize: flags.boolean({
+      description: "optimize the wasm after the build.",
       default: false,
     }),
     workspace: flags.string({
@@ -29,7 +33,7 @@ export default class Build extends Command {
       workspace: flags.workspace,
     });
 
-    if (flags["no-optimize"] === false) {
+    if (flags.optimize) {
       await optimize({
         contract: args.contract,
         workspace: flags.workspace,

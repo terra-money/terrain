@@ -11,7 +11,8 @@ export default class ContractMigrate extends Command {
   static flags = {
     signer: flag.signer,
     arm64: flag.arm64,
-    "no-rebuild": flag.noRebuild,
+    //"no-rebuild": flag.noRebuild,
+    build: flag.build,
     network: flags.string({ default: "localterra" }),
     "config-path": flags.string({ default: "./config.terrain.json" }),
     "refs-path": flags.string({ default: "./refs.terrain.json" }),
@@ -41,7 +42,7 @@ export default class ContractMigrate extends Command {
       lcd,
     });
 
-    if (flags["no-rebuild"] === false) {
+    if (flags.build) {
       await build({
         contract: args.contract,
         workspace: flags.workspace,

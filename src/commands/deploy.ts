@@ -13,7 +13,8 @@ export default class Deploy extends Command {
   static flags = {
     signer: flag.signer,
     arm64: flag.arm64,
-    "no-rebuild": flag.noRebuild,
+    //"no-rebuild": flag.noRebuild,
+    build: flag.build,
     "set-signer-as-admin": flag.setSignerAsAdmin,
     network: flags.string({ default: "localterra" }),
     "config-path": flags.string({ default: "./config.terrain.json" }),
@@ -26,8 +27,12 @@ export default class Deploy extends Command {
     "frontend-refs-path": flags.string({
       default: "./frontend/src/refs.terrain.json",
     }),
-    "no-sync": flags.boolean({
-      description: "do not sync the contracts to the frontend.",
+    // "no-sync": flags.boolean({
+    //   description: "do not sync the contracts to the frontend.",
+    //   default: false,
+    // }),
+    sync: flags.boolean({
+      description: "sync the contracts to the frontend.",
       default: false,
     }),
     workspace: flags.string({
@@ -53,7 +58,7 @@ export default class Deploy extends Command {
       lcd,
     });
 
-    if (flags["no-rebuild"] === false) {
+    if (flags["build"]) {
       await build({
         contract: args.contract,
         workspace: flags.workspace,
@@ -99,11 +104,7 @@ export default class Deploy extends Command {
       lcd,
     });
 
-    if (
-      flags["no-sync"] === false &&
-      flags["frontend-refs-path"] &&
-      flags["frontend-refs-path"].length > 0
-    ) {
+    if (flags["sync"]) {
       fs.copyFileSync(flags["refs-path"], flags["frontend-refs-path"]);
     }
   }

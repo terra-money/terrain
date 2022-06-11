@@ -69,8 +69,10 @@ const buildWorkspace = async ({ workspace }: BuildWorkspaceParams) => {
   const folder = workspace;
   process.chdir(folder);
 
-  const { package: pkg } = parse(fs.readFileSync("./Cargo.toml", "utf-8"));
-  if (pkg.workspace === undefined) {
+  const { workspace: wksp } = parse(fs.readFileSync("./Cargo.toml", "utf-8"));
+  console.log(wksp);
+
+  if (wksp === undefined) {
     cli.error(`The Cargo.toml must define a workspace`);
   }
 
