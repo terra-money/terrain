@@ -23,13 +23,33 @@ import {
 } from "../config";
 import path from "path";
 
-type BuildWasmParams = {
+type BuildParams = {
+  contract?: string;
+  workspace?: string;
+};
+
+export const build = async ({ contract, workspace }: BuildParams) => {
+  if (contract === undefined && workspace === undefined) {
+    cli.error(`No workspace or contract was defined.`);
+    return;
+  }
+  if (contract) {
+    buildContract({ contract, workspace });
+    return;
+  }
+  if (workspace) {
+    buildWorkspace({ workspace });
+    return;
+  }
+};
+
+type BuildContractParams = {
   contract: string;
   workspace?: string;
 };
 
-export const buildWasm = async ({ contract, workspace }: BuildWasmParams) => {
-  const folder = workspace ? workspace : path.join("contracts", contract);
+const buildContract = async ({ contract, workspace }: BuildContractParams) => {
+  const folder = path.join(workspace ?? "", "contracts", contract);
   process.chdir(folder);
 
   const { package: pkg } = parse(fs.readFileSync("./Cargo.toml", "utf-8"));
@@ -38,39 +58,101 @@ export const buildWasm = async ({ contract, workspace }: BuildWasmParams) => {
   }
 
   execSync("cargo wasm", { stdio: "inherit" });
-
-  process.chdir(workspace ? "../" : "../..");
+  process.chdir("../..");
 };
 
-type OptimizeWasmParams = {
+type BuildWorkspaceParams = {
+  workspace: string;
+};
+
+const buildWorkspace = async ({ workspace }: BuildWorkspaceParams) => {
+  const folder = workspace;
+  process.chdir(folder);
+
+  const { package: pkg } = parse(fs.readFileSync("./Cargo.toml", "utf-8"));
+  if (pkg.workspace === undefined) {
+    cli.error(`The Cargo.toml must define a workspace`);
+  }
+
+  execSync("cargo build", { stdio: "inherit" });
+
+  process.chdir("../");
+};
+
+type OptimizeParams = {
+  contract?: string;
+  workspace?: string;
+  arm64: boolean | undefined;
+};
+
+export const optimize = async ({
+  contract,
+  workspace,
+  arm64,
+}: OptimizeParams) => {
+  if (contract === undefined && workspace === undefined) {
+    cli.error(`No workspace or contract was defined.`);
+    return;
+  }
+
+  if (contract) {
+    optimizeContract({ contract, workspace, arm64 });
+    return;
+  }
+
+  if (workspace) {
+    optimizeWorkspace({ workspace, arm64 });
+  }
+};
+
+type OptimizeContractParams = {
   contract: string;
   workspace?: string;
   arm64: boolean | undefined;
 };
 
-export const optimizeWasm = async ({
+const optimizeContract = async ({
   contract,
   workspace,
   arm64,
-}: OptimizeWasmParams) => {
-  const folder = workspace ? workspace : path.join("contracts", contract);
+}: OptimizeContractParams) => {
+  const folder = path.join(workspace ?? "", "contracts", contract);
   process.chdir(folder);
 
-  const image = `cosmwasm/${workspace ? "workspace" : "rust"}-optimizer${
-    arm64 ? "-arm64" : ""
-  }:0.12.5`;
+  const image = `cosmwasm/rust-optimizer${arm64 ? "-arm64" : ""}:0.12.5`;
 
+  execDockerOptimization(image, contract);
+
+  process.chdir(workspace ? "../../.." : "../..");
+};
+
+type OptimizeWorkspaceParams = {
+  workspace: string;
+  arm64: boolean | undefined;
+};
+
+const optimizeWorkspace = async ({
+  workspace,
+  arm64,
+}: OptimizeWorkspaceParams) => {
+  const folder = workspace;
+  process.chdir(folder);
+
+  const image = `cosmwasm/workspace-optimizer${arm64 ? "-arm64" : ""}:0.12.5`;
+
+  execDockerOptimization(image, workspace);
+
+  process.chdir("../");
+};
+
+const execDockerOptimization = (image: string, cache: string) => {
   execSync(
     `docker run --rm -v "$(pwd)":/code \
-      --mount type=volume,source="${
-        workspace ?? contract
-      }_cache",target=/code/target \
+      --mount type=volume,source="${cache}_cache",target=/code/target \
       --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
       ${image}`,
     { stdio: "inherit" }
   );
-
-  process.chdir(workspace ? "../" : "../..");
 };
 
 type StoreCodeParams = {

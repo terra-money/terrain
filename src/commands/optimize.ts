@@ -1,5 +1,5 @@
 import { Command, flags } from "@oclif/command";
-import { optimizeWasm } from "../lib/deployment";
+import { optimize } from "../lib/deployment";
 
 export default class Optimize extends Command {
   static description = "Optimize wasm bytecode.";
@@ -20,7 +20,7 @@ export default class Optimize extends Command {
   async run() {
     const { args, flags } = this.parse(Optimize);
 
-    await optimizeWasm({
+    await optimize({
       contract: args.contract,
       workspace: flags.workspace,
       arm64: flags.arm64,

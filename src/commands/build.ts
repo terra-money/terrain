@@ -1,5 +1,5 @@
 import { Command, flags } from "@oclif/command";
-import { buildWasm, optimizeWasm } from "../lib/deployment";
+import { build, optimize } from "../lib/deployment";
 
 export default class Build extends Command {
   static description = "Build and optimize wasm bytecode.";
@@ -24,13 +24,13 @@ export default class Build extends Command {
   async run() {
     const { args, flags } = this.parse(Build);
 
-    await buildWasm({
+    await build({
       contract: args.contract,
       workspace: flags.workspace,
     });
 
     if (flags["no-optimize"] === false) {
-      await optimizeWasm({
+      await optimize({
         contract: args.contract,
         workspace: flags.workspace,
         arm64: flags.arm64,

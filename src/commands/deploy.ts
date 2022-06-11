@@ -2,12 +2,7 @@ import { Command, flags } from "@oclif/command";
 import { LCDClient } from "@terra-money/terra.js";
 import * as fs from "fs";
 import { loadConfig, loadConnections } from "../config";
-import {
-  instantiate,
-  storeCode,
-  buildWasm,
-  optimizeWasm,
-} from "../lib/deployment";
+import { instantiate, storeCode, build, optimize } from "../lib/deployment";
 import { getSigner } from "../lib/signer";
 import * as flag from "../lib/flag";
 
@@ -59,11 +54,11 @@ export default class Deploy extends Command {
     });
 
     if (flags["no-rebuild"] === false) {
-      await buildWasm({
+      await build({
         contract: args.contract,
         workspace: flags.workspace,
       });
-      await optimizeWasm({
+      await optimize({
         contract: args.contract,
         workspace: flags.workspace,
         arm64: flags.arm64,

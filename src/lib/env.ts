@@ -9,17 +9,21 @@ import {
   loadKeys,
   loadRefs,
 } from "../config";
-import { storeCode, instantiate, buildWasm, optimizeWasm } from "./deployment";
+import { storeCode, instantiate, build, optimize } from "./deployment";
 import { LCDClientExtra } from "./LCDClientExtra";
 
 export type DeployHelpers = {
-  buildWasm: (contract: string, workspace?: string) => Promise<void>;
-  optimizeWasm: (
+  build: (contract?: string, workspace?: string) => Promise<void>;
+  optimize: (
     contract: string,
     workspace?: string,
     arm64?: boolean
   ) => Promise<void>;
-  storeCode: (signer: Wallet, contract: string) => Promise<number>;
+  storeCode: (
+    signer: Wallet,
+    contract: string,
+    workspace?: string
+  ) => Promise<number>;
   instantiate: (
     signer: Wallet,
     contract: string,
@@ -67,21 +71,22 @@ export const getEnv = (
     client: lcd,
     // Enable tasks to deploy code.
     deploy: {
-      buildWasm: (contract: string, workspace?: string) =>
-        buildWasm({
+      build: (contract?: string, workspace?: string) =>
+        build({
           contract,
           workspace,
         }),
-      optimizeWasm: (contract: string, workspace?: string, arm64?: boolean) =>
-        optimizeWasm({
+      optimize: (contract: string, workspace?: string, arm64?: boolean) =>
+        optimize({
           contract,
           workspace,
           arm64,
         }),
-      storeCode: (signer: Wallet, contract: string) =>
+      storeCode: (signer: Wallet, contract: string, workspace?: string) =>
         storeCode({
           signer,
           contract,
+          workspace,
           network,
           refsPath,
           lcd,
