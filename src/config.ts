@@ -8,11 +8,21 @@ type Fee = {
   amount: { [coin: string]: number };
 };
 
+export type InstantiateMessage = Record<string, any>;
+
 export type ContractConfig = {
-  store: { fee: Fee };
+  // TODO: Remove since fee in config is deprecated.
+  /**
+ * @deprecated The property should not be used
+ */
+  store?: { fee: Fee };
   instantiation: {
-    fee: Fee;
-    instantiateMsg: Record<string, any>;
+  // TODO: Remove since fee in config is deprecated.
+  /**
+ * @deprecated The property should not be used
+ */
+    fee?: Fee;
+    instantiateMsg: InstantiateMessage;
   };
 };
 

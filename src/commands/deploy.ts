@@ -4,34 +4,26 @@ import * as fs from 'fs';
 import { loadConfig, loadConnections } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
+import * as flag from '../lib/flag';
 
 export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
 
   static flags = {
-    'no-rebuild': flags.boolean({
-      description: 'deploy the wasm bytecode as is.',
-      default: false,
-    }),
+    signer: flag.signer,
+    arm64: flag.arm64,
+    'no-rebuild': flag.noRebuild,
+    'set-signer-as-admin': flag.setSignerAsAdmin,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: './config.terrain.json' }),
     'refs-path': flags.string({ default: './refs.terrain.json' }),
     'keys-path': flags.string({ default: './keys.terrain.js' }),
-    'instance-id': flags.string({ default: 'default' }),
-    signer: flags.string({ required: true }),
-    'set-signer-as-admin': flags.boolean({
-      description: 'set signer (deployer) as admin to allow migration.',
-      default: false,
-    }),
+    'instance-id': flag.instanceId,
     'admin-address': flags.string({
       description: 'set custom address as contract admin to allow migration.',
     }),
     'frontend-refs-path': flags.string({
       default: './frontend/src/refs.terrain.json',
-    }),
-    "arm64": flags.boolean({
-      description: "use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.",
-      default: false,
     }),
   };
 
@@ -60,10 +52,10 @@ export default class Deploy extends Command {
       lcd,
       conf,
       signer,
-      noRebuild: flags["no-rebuild"],
+      noRebuild: flags['no-rebuild'],
       contract: args.contract,
       network: flags.network,
-      refsPath: flags["refs-path"],
+      refsPath: flags['refs-path'],
       arm64: flags.arm64,
     });
 

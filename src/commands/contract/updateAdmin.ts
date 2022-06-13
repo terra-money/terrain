@@ -4,6 +4,7 @@ import { LCDClient, MsgUpdateContractAdmin } from "@terra-money/terra.js";
 import { cli } from "cli-ux";
 import { loadConnections, loadRefs } from "../../config";
 import { getSigner } from "../../lib/signer";
+import * as flag from '../../lib/flag';
 import { waitForInclusionInBlock } from '../../lib/waitForInclusionBlock';
 
 
@@ -11,12 +12,12 @@ export default class ContractUpdateAdmin extends Command {
   static description = "Update the admin of a contract.";
 
   static flags = {
+    signer: flag.signer,
     network: flags.string({ default: "localterra" }),
     "config-path": flags.string({ default: "./config.terrain.json" }),
     "refs-path": flags.string({ default: "./refs.terrain.json" }),
     "keys-path": flags.string({ default: "./keys.terrain.js" }),
     "instance-id": flags.string({ default: "default" }),
-    signer: flags.string({ required: true }),
   };
 
   static args = [

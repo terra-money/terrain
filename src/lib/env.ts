@@ -1,20 +1,37 @@
-import { LocalTerra, RawKey, Wallet } from '@terra-money/terra.js';
+import {
+  AccAddress, LocalTerra, RawKey, Wallet,
+} from '@terra-money/terra.js';
 import * as R from 'ramda';
 import {
   ContractConfig,
   ContractRef,
+  InstantiateMessage,
   loadConfig,
   loadConnections,
   loadKeys,
   loadRefs,
 } from '../config';
+import { storeCode, instantiate } from './deployment';
 import { LCDClientExtra } from './LCDClientExtra';
+
+export type DeployHelpers = {
+  storeCode: (signer: Wallet, contract: string) => Promise<number>;
+  instantiate: (
+    signer: Wallet,
+    contract: string,
+    codeId: number,
+    instanceId: string,
+    admin?: string,
+    conf?: ContractConfig
+  ) => Promise<string>;
+};
 
 export type Env = {
   config: (contract: string) => ContractConfig;
   refs: { [contractName: string]: ContractRef };
   wallets: { [key: string]: Wallet };
   client: LCDClientExtra;
+  deploy: DeployHelpers;
 };
 
 export const getEnv = (
@@ -44,5 +61,36 @@ export const getEnv = (
       ...userDefinedWallets,
     },
     client: lcd,
+    // Enable tasks to deploy code.
+    deploy: {
+      storeCode: (signer: Wallet, contract: string) => storeCode({
+        signer,
+        contract,
+        network,
+        refsPath,
+        lcd,
+        conf: config(network, contract),
+        noRebuild: false,
+      }),
+      instantiate: (
+        signer: Wallet,
+        contract: string,
+        codeId: number,
+        instanceId: string,
+        admin?: AccAddress,
+        init?: InstantiateMessage,
+      ) => instantiate({
+        instanceId,
+        codeId,
+        signer,
+        contract,
+        network,
+        refsPath,
+        lcd,
+        admin,
+        // Use the instantiation message passed instead of default.
+        conf: init ? { instantiation: { instantiateMsg: init } } : config(network, contract),
+      }),
+    },
   };
 };

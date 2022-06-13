@@ -1,10 +1,10 @@
 import {
-  BlockTxBroadcastResult,
   Coins,
   CreateTxOptions,
   LCDClient,
   LCDClientConfig,
   MsgExecuteContract,
+  WaitTxBroadcastResult,
   Wallet,
 } from '@terra-money/terra.js';
 import { ContractRef } from '../config';
@@ -32,17 +32,18 @@ export class LCDClientExtra extends LCDClient {
     coins?: Coins.Input,
     options?: CreateTxOptions,
     instanceId = 'default',
-  ): Promise<BlockTxBroadcastResult> {
+  ): Promise<WaitTxBroadcastResult> {
     const msgs = [
       new MsgExecuteContract(
         wallet.key.accAddress,
-        this.refs[contract].contractAddresses[instanceId],
+        // Enable supplying a contract address instead of the contract name.
+        contract.startsWith('terra1') ? contract : this.refs[contract].contractAddresses[instanceId],
         msg,
         coins,
       ),
     ];
-    const _options = options ? { ...options, msgs } : { msgs };
-    const tx = await wallet.createAndSignTx(_options);
-    return await this.tx.broadcast(tx);
+    const mergedOptions = options ? { ...options, msgs } : { msgs };
+    const tx = await wallet.createAndSignTx(mergedOptions);
+    return this.tx.broadcast(tx);
   }
 }
