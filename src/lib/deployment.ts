@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import Os from "os";
 import {
   AccAddress,
   LCDClient,
@@ -148,8 +149,10 @@ const optimizeWorkspace = async ({
 };
 
 const execDockerOptimization = (image: string, cache: string) => {
+  const dir = Os.platform() === "win32" ? "%cd%" : "$(pwd)";
+
   execSync(
-    `docker run --rm -v "$(pwd)":/code \
+    `docker run --rm -v "${dir}":/code \
       --mount type=volume,source="${cache}_cache",target=/code/target \
       --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
       ${image}`,
