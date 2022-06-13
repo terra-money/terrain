@@ -190,7 +190,7 @@ export const instantiate = async ({
   cli.action.stop();
 
   const contractAddress: string = log[0].events
-    .find((event: { type: string }) => event.type === 'instantiate_contract')
+    .find((event: { type: string }) => event.type === 'instantiate')
     .attributes.find(
       (attr: { key: string }) => attr.key === '_contract_address',
     ).value;
