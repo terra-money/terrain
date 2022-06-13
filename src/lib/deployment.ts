@@ -83,7 +83,7 @@ export const storeCode = async ({
     .toString('base64');
 
   cli.action.start('storing wasm bytecode on chain');
-  
+
   const storeCodeTx = await signer.createAndSignTx({
     msgs: [
       typeof codeId !== 'undefined'
@@ -179,17 +179,17 @@ export const instantiate = async ({
     ],
   };
 
-  // Set default feeDenoms value if not specified and translate to terraDenom.
+  // Set default terraDenom and feeDenoms value if not specified.
   if (!txOptions.feeDenoms) {
-    txOptions.feeDenoms = ['uusd'];
+    txOptions.feeDenoms = ['uluna'];
   }
-  const terraDenom = `${txOptions.feeDenoms[0].slice(1, -1).toUpperCase()}T`;
+  const terraDenom = 'LUNA';
 
   // Prompt user to accept gas fee for contract initialization if network is mainnet.
-  if (network === 'mainnet') {
+  if (network !== 'mainnet') {
     const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
     const gasFee = Number(feeEstimate.amount.get(txOptions.feeDenoms[0])!.amount) / 1000000;
-    await cli.anykey(`\n\nThe gas estimate to deploy your contract is ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`);
+    await cli.anykey(`\n\n> The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`);
   }
 
   const instantiateTx = await signer.createAndSignTx({
