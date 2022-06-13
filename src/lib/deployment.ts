@@ -174,7 +174,7 @@ export const instantiate = async ({
         codeId,
         instantiation.instantiateMsg,
         undefined,
-        "Instantiate"
+        'Instantiate',
       ),
     ],
   };
