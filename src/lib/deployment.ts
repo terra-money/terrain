@@ -187,7 +187,7 @@ export const instantiate = async ({
   const terraDenom = 'LUNA';
 
   // Prompt user to accept gas fee for contract initialization if network is mainnet.
-  if (network !== 'mainnet') {
+  if (network === 'mainnet') {
     const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
     const gasFee = Number(feeEstimate.amount.get(txOptions.feeDenoms[0])!.amount) / 1000000;
     await TerrainCLI.anykey(`The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`);
