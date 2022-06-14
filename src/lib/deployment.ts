@@ -7,6 +7,8 @@ import {
   MsgMigrateContract,
   MsgStoreCode,
   Wallet,
+  SignerData,
+  CreateTxOptions,
 } from '@terra-money/terra.js';
 import { parse } from 'toml';
 import { execSync } from 'child_process';
@@ -21,6 +23,7 @@ import {
   setCodeId,
   setContractAddress,
 } from '../config';
+import TerrainCLI from '../TerrainCLI';
 
 type StoreCodeParams = {
   conf: ContractConfig;
@@ -81,7 +84,7 @@ export const storeCode = async ({
     .toString('base64');
 
   cli.action.start('storing wasm bytecode on chain');
-  
+
   const storeCodeTx = await signer.createAndSignTx({
     msgs: [
       typeof codeId !== 'undefined'
@@ -158,8 +161,13 @@ export const instantiate = async ({
   // Allow manual account sequences.
   const manualSequence = sequence || (await signer.sequence());
 
-  const instantiateTx = await signer.createAndSignTx({
-    sequence: manualSequence,
+  // Create signerData and txOptions for fee estimation.
+  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress);
+  const signerData: [SignerData] = [{
+    sequenceNumber: manualSequence,
+    publicKey: accountInfo.getPublicKey(),
+  }];
+  const txOptions: CreateTxOptions = {
     msgs: [
       new MsgInstantiateContract(
         signer.key.accAddress,
@@ -167,9 +175,27 @@ export const instantiate = async ({
         codeId,
         instantiation.instantiateMsg,
         undefined,
-        "Instantiate"
+        'Instantiate',
       ),
     ],
+  };
+
+  // Set default terraDenom and feeDenoms value if not specified.
+  if (!txOptions.feeDenoms) {
+    txOptions.feeDenoms = ['uluna'];
+  }
+  const terraDenom = 'LUNA';
+
+  // Prompt user to accept gas fee for contract initialization if network is mainnet.
+  if (network === 'mainnet') {
+    const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
+    const gasFee = Number(feeEstimate.amount.get(txOptions.feeDenoms[0])!.amount) / 1000000;
+    await TerrainCLI.anykey(`The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`);
+  }
+
+  const instantiateTx = await signer.createAndSignTx({
+    sequence: manualSequence,
+    ...txOptions,
   });
 
   const result = await lcd.tx.broadcastSync(instantiateTx);
