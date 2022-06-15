@@ -4,6 +4,10 @@ import * as repl from 'repl';
 import * as terrajs from '@terra-money/terra.js';
 import { getEnv } from '../lib/env';
 
+function isClass(v) {
+  return typeof v === 'function' && /^\s*class\s+/.test(v.toString());
+}
+
 export default class Console extends Command {
   static description = 'Start a repl console that provides context and convinient utilities to interact with the blockchain and your contracts.';
 
@@ -27,8 +31,19 @@ export default class Console extends Command {
       flags.network,
     );
 
-    const lib = require(path.join(process.cwd(), 'lib'));
+    let Lib = require(path.join(process.cwd(), 'lib'));
 
+    let libInstance;
+    if (Lib.default) {
+      Lib = Lib.default;
+    }
+
+    if (isClass(Lib)) {
+      libInstance = new Lib(env);
+    } else {
+      libInstance = Lib(env);
+    }
+ 
     // for repl server
     const {
       config, refs, wallets, client,
@@ -47,6 +62,6 @@ export default class Console extends Command {
     def('wallets', wallets);
     def('client', client);
     def('terrajs', terrajs);
-    def('lib', lib(env));
+    def('lib', libInstance);
   }
 }
