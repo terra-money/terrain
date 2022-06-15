@@ -87,19 +87,19 @@ docker-compose up
 
 While WASM smart contracts can be written in any programming language, **it is strongly recommended that you utilize Rust**, as it is the only language for which mature libraries and tooling exist for CosmWasm. To complete this tutorial, install the latest version of Rust by following the instructions <a href="https://www.rust-lang.org/tools/install" target="_blank">here</a>. Once Rust is installed on your computer, do the following:
 
-1. Set the default release channel used to update Rust to stable:
+1. Set the default release channel used to update Rust to stable.
 
 ```sh
 rustup default stable
 ```
 
-2. Add wasm as the compilation target:
+2. Add wasm as the compilation target.
 
 ```sh
 rustup target add wasm32-unknown-unknown
 ```
 
-3. Install the necessary dependencies for generating contracts:
+3. Install the necessary dependencies for generating contracts.
 
 ```sh
 cargo install cargo-run-script
@@ -113,7 +113,7 @@ To run Terrain, you will need to install Node.js and NPM. We recommend that you 
 
 # Getting Started
 
-Now that you have completed the initial setup, generate your first smart contract using the procedure described below:
+Now that you have completed the initial setup, generate your first smart contract using the procedure described below.
 
 1. Install the terrain package globally.
 
@@ -121,7 +121,7 @@ Now that you have completed the initial setup, generate your first smart contrac
 npm install -g @terra-money/terrain
 ```
 
-<sub>**Note:** _If you would like to install terrain locally, you can execute the command `npm install @terra-money/terrain`, without the `-g` flag, while in the directory in which you would like to be able to use the package. You can then execute any terrain commands by prefixing them with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed terrain package, you would utilize the command `npx terrain new my-terra-dapp`._</sub>
+<sub>**Note:** _If you would like to install terrain locally, you can execute the command `npm install @terra-money/terrain`, without the `-g` flag, while in the directory in which you would like to be able to utilize the package. You can then execute any terrain commands by prefixing them with `npx`. For example, to scaffold a new project named `my-terra-dapp` with a locally installed terrain package, you would utilize the command `npx terrain new my-terra-dapp`._</sub>
 
 2. Generate your smart contract and corresponding frontend templates.
 
@@ -143,7 +143,7 @@ npm install
 
 ## Project Structure
 
-The `terrain new` command generates a project with the following structure:
+The `terrain new` command generates a project that contains a template smart contract called `counter` and a corresponding frontend. Other supporting files are generated to provide further functionality. You may view the project structure below.
 
 ```
 .
@@ -183,7 +183,7 @@ You can also specify the network on which you would like to deploy your contract
 
 The predefined accounts in the `keys.terrain.js` file shown below can be utilized as signers on `testnet`. We will demonstrate how to deploy your smart contract utilizing the preconfigured `custom_tester_1` account. You may also add a personal account to the `keys.terrain.js` file by adding the account name as well as its corresponding private key. You can then use that account as the signer specifying the account name after the `--signer` flag in the `terrain deploy` command.
 
-<sub>**Warning:** _Utilizing a personal account for deployment requires the use of a private key or mnemonic. These are private keys that are generated upon creation of your personal wallet. Saving or utilizing these keys on your personal computer may expose them to malicious actors who could gain access to your personal wallet if they are able to obtain them. You can create a wallet solely for testing purposes to eliminate risk. Alternatively, you can store your private keys as secret enviroment variables which you can then reference utilizing `process.env.SECRET_VAR` in `keys.terrain.json`. Use your private key or mnemonic at your own discretion._</sub>
+<sub>**Warning:** _Utilizing a personal account for deployment requires the use of a private key or mnemonic. These are private keys that are generated upon the creation of your personal wallet. Saving or utilizing these keys on your personal computer may expose them to malicious actors who could gain access to your personal wallet if they are able to obtain them. You can create a wallet solely for testing purposes to eliminate risk. Alternatively, you can store your private keys as secret enviroment variables which you can then reference utilizing `process.env.SECRET_VAR` in `keys.terrain.json`. Use your private key or mnemonic at your own discretion._</sub>
 
 ```js
 // can use `process.env.SECRET_MNEMONIC` or `process.env.SECRET_PRIV_KEY`
@@ -225,7 +225,7 @@ terrain deploy counter --signer custom_tester_1 --network testnet
 
 ## Initializing the Frontend Template
 
-After deployment, the `refs.terrain.json` file is updated in the project directory as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
+After deployment, the `refs.terrain.json` file will be updated in the project directory as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
 
 ```json
 {
@@ -268,7 +268,7 @@ npm run start
 
 ## Run Contract Functions with Terrain
 
-Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. The default contents of the `lib/index.js` file are presented below:
+Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. The default contents of the `lib/index.js` file are presented below.
 
 ```js
 // lib/index.js
@@ -280,7 +280,7 @@ module.exports = ({ wallets, refs, config, client }) => ({
 });
 ```
 
-You can call the functions defined above inside of the `terrain console`. An example of this using the `counter` contract is shown below.
+You can call the functions defined above inside of the `terrain console`. An example using the `counter` smart contract is shown below.
 
 ```sh
 terrain console
@@ -291,7 +291,7 @@ terrain > await lib.getCount()
 { count: 1 }
 ```
 
-You can also specify which network you would like to interact with by utilizing the `--network` flag.
+You may also specify which network you would like to interact with by utilizing the `--network` flag with the `terrain console` command.
 
 ```
 terrain console --network NETWORK
@@ -321,7 +321,7 @@ To run the example task shown above, which is located in the `tasks/example-with
 terrain task:run example-with-lib
 ```
 
-In order to create a new task, run the following command, replacing `<task-name>` with the desired name for your new task.
+In order to create a new task, run the following command replacing `<task-name>` with the desired name for your new task.
 
 ```sh
 terrain task:new <task-name>
@@ -1330,7 +1330,7 @@ DESCRIPTION
   contracts.
 ```
 
-_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/console.ts)_
+_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/console.ts)_
 
 ## `terrain contract:instantiate CONTRACT`
 
@@ -1355,7 +1355,7 @@ DESCRIPTION
   Instantiate the contract.
 ```
 
-_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/instantiate.ts)_
+_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/contract/instantiate.ts)_
 
 ## `terrain contract:migrate CONTRACT`
 
@@ -1382,7 +1382,7 @@ DESCRIPTION
   Migrate the contract.
 ```
 
-_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/migrate.ts)_
+_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/contract/migrate.ts)_
 
 ## `terrain contract:new NAME`
 
@@ -1408,7 +1408,7 @@ EXAMPLES
   $ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
 ```
 
-_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/new.ts)_
+_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/contract/new.ts)_
 
 ## `terrain contract:store CONTRACT`
 
@@ -1432,7 +1432,7 @@ DESCRIPTION
   Store code on chain.
 ```
 
-_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/store.ts)_
+_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/contract/store.ts)_
 
 ## `terrain contract:updateAdmin CONTRACT ADMIN`
 
@@ -1455,7 +1455,7 @@ DESCRIPTION
   Update the admin of a contract.
 ```
 
-_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/contract/updateAdmin.ts)_
+_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/contract/updateAdmin.ts)_
 
 ## `terrain deploy CONTRACT`
 
@@ -1485,7 +1485,7 @@ DESCRIPTION
   Build wasm bytecode, store code on chain and instantiate.
 ```
 
-_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/deploy.ts)_
+_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/deploy.ts)_
 
 ## `terrain help [COMMAND]`
 
@@ -1537,7 +1537,7 @@ EXAMPLES
   $ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"
 ```
 
-_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/new.ts)_
+_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/new.ts)_
 
 ## `terrain sync-refs [FILE]`
 
@@ -1555,7 +1555,7 @@ DESCRIPTION
   Sync configuration with frontend app.
 ```
 
-_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/sync-refs.ts)_
+_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/sync-refs.ts)_
 
 ## `terrain task:new [TASK]`
 
@@ -1569,7 +1569,7 @@ DESCRIPTION
   create new task
 ```
 
-_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/task/new.ts)_
+_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/task/new.ts)_
 
 ## `terrain task:run [TASK]`
 
@@ -1590,7 +1590,7 @@ DESCRIPTION
   run predefined task
 ```
 
-_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/task/run.ts)_
+_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/task/run.ts)_
 
 ## `terrain test CONTRACT-NAME`
 
@@ -1612,7 +1612,7 @@ EXAMPLES
   $ terrain test counter --no-fail-fast
 ```
 
-_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/test.ts)_
+_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/test.ts)_
 
 ## `terrain test:coverage [CONTRACT-NAME]`
 
@@ -1631,7 +1631,7 @@ EXAMPLES
   $ terrain test:coverage counter
 ```
 
-_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/test/coverage.ts)_
+_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/test/coverage.ts)_
 
 ## `terrain wallet:new`
 
@@ -1649,5 +1649,5 @@ DESCRIPTION
   Generate a new wallet to use for signing contracts
 ```
 
-_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.4.0/src/commands/wallet/new.ts)_
+_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/wallet/new.ts)_
 <!-- commandsstop -->
