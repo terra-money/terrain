@@ -1,36 +1,38 @@
-import { Command, flags } from "@oclif/command";
-import { LCDClient } from "@terra-money/terra.js";
-import { loadConfig, loadConnections } from "../../config";
-import { migrate, storeCode, build, optimize } from "../../lib/deployment";
-import { getSigner } from "../../lib/signer";
-import * as flag from "../../lib/flag";
+import { Command, flags } from '@oclif/command';
+import { LCDClient } from '@terra-money/terra.js';
+import { loadConfig, loadConnections } from '../../config';
+import {
+  migrate, storeCode, build, optimize,
+} from '../../lib/deployment';
+import { getSigner } from '../../lib/signer';
+import * as flag from '../../lib/flag';
 
 export default class ContractMigrate extends Command {
-  static description = "Migrate the contract.";
+  static description = 'Migrate the contract.';
 
   static flags = {
     signer: flag.signer,
     arm64: flag.arm64,
-    //"no-rebuild": flag.noRebuild,
+    // "no-rebuild": flag.noRebuild,
     build: flag.build,
-    network: flags.string({ default: "localterra" }),
-    "config-path": flags.string({ default: "./config.terrain.json" }),
-    "refs-path": flags.string({ default: "./refs.terrain.json" }),
-    "keys-path": flags.string({ default: "./keys.terrain.js" }),
-    "instance-id": flags.string({ default: "default" }),
-    "code-id": flags.integer({
-      description: "target code id for migration",
+    network: flags.string({ default: 'localterra' }),
+    'config-path': flags.string({ default: './config.terrain.json' }),
+    'refs-path': flags.string({ default: './refs.terrain.json' }),
+    'keys-path': flags.string({ default: './keys.terrain.js' }),
+    'instance-id': flags.string({ default: 'default' }),
+    'code-id': flags.integer({
+      description: 'target code id for migration',
     }),
     workspace: flags.string({ default: undefined }),
   };
 
-  static args = [{ name: "contract", required: true }];
+  static args = [{ name: 'contract', required: true }];
 
   async run() {
     const { args, flags } = this.parse(ContractMigrate);
 
-    const connections = loadConnections(flags["config-path"]);
-    const config = loadConfig(flags["config-path"]);
+    const connections = loadConnections(flags['config-path']);
+    const config = loadConfig(flags['config-path']);
     const conf = config(flags.network, args.contract);
 
     // @ts-ignore
@@ -38,7 +40,7 @@ export default class ContractMigrate extends Command {
     const signer = getSigner({
       network: flags.network,
       signerId: flags.signer,
-      keysPath: flags["keys-path"],
+      keysPath: flags['keys-path'],
       lcd,
     });
 
@@ -60,7 +62,7 @@ export default class ContractMigrate extends Command {
       workspace: flags.workspace,
       signer,
       network: flags.network,
-      refsPath: flags["refs-path"],
+      refsPath: flags['refs-path'],
       lcd,
       arm64: flags.arm64,
     });
@@ -71,8 +73,8 @@ export default class ContractMigrate extends Command {
       contract: args.contract,
       codeId,
       network: flags.network,
-      instanceId: flags["instance-id"],
-      refsPath: flags["refs-path"],
+      instanceId: flags['instance-id'],
+      refsPath: flags['refs-path'],
       lcd,
     });
   }

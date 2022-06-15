@@ -1,5 +1,7 @@
-import { AccAddress, LocalTerra, RawKey, Wallet } from "@terra-money/terra.js";
-import * as R from "ramda";
+import {
+  AccAddress, LocalTerra, RawKey, Wallet,
+} from '@terra-money/terra.js';
+import * as R from 'ramda';
 import {
   ContractConfig,
   ContractRef,
@@ -8,9 +10,11 @@ import {
   loadConnections,
   loadKeys,
   loadRefs,
-} from "../config";
-import { storeCode, instantiate, build, optimize } from "./deployment";
-import { LCDClientExtra } from "./LCDClientExtra";
+} from '../config';
+import {
+  storeCode, instantiate, build, optimize,
+} from './deployment';
+import { LCDClientExtra } from './LCDClientExtra';
 
 export type DeployHelpers = {
   build: (contract?: string, workspace?: string) => Promise<void>;
@@ -46,7 +50,7 @@ export const getEnv = (
   configPath: string,
   keysPath: string,
   refsPath: string,
-  network: string
+  network: string,
 ): Env => {
   const connections = loadConnections(configPath);
   const config = loadConfig(configPath);
@@ -71,49 +75,45 @@ export const getEnv = (
     client: lcd,
     // Enable tasks to deploy code.
     deploy: {
-      build: (contract?: string, workspace?: string) =>
-        build({
-          contract,
-          workspace,
-        }),
-      optimize: (contract: string, workspace?: string, arm64?: boolean) =>
-        optimize({
-          contract,
-          workspace,
-          arm64,
-        }),
-      storeCode: (signer: Wallet, contract: string, workspace?: string) =>
-        storeCode({
-          signer,
-          contract,
-          workspace,
-          network,
-          refsPath,
-          lcd,
-          conf: config(network, contract),
-        }),
+      build: (contract?: string, workspace?: string) => build({
+        contract,
+        workspace,
+      }),
+      optimize: (contract: string, workspace?: string, arm64?: boolean) => optimize({
+        contract,
+        workspace,
+        arm64,
+      }),
+      storeCode: (signer: Wallet, contract: string, workspace?: string) => storeCode({
+        signer,
+        contract,
+        workspace,
+        network,
+        refsPath,
+        lcd,
+        conf: config(network, contract),
+      }),
       instantiate: (
         signer: Wallet,
         contract: string,
         codeId: number,
         instanceId: string,
         admin?: AccAddress,
-        init?: InstantiateMessage
-      ) =>
-        instantiate({
-          instanceId,
-          codeId,
-          signer,
-          contract,
-          network,
-          refsPath,
-          lcd,
-          admin,
-          // Use the instantiation message passed instead of default.
-          conf: init
-            ? { instantiation: { instantiateMsg: init } }
-            : config(network, contract),
-        }),
+        init?: InstantiateMessage,
+      ) => instantiate({
+        instanceId,
+        codeId,
+        signer,
+        contract,
+        network,
+        refsPath,
+        lcd,
+        admin,
+        // Use the instantiation message passed instead of default.
+        conf: init
+          ? { instantiation: { instantiateMsg: init } }
+          : config(network, contract),
+      }),
     },
   };
 };
