@@ -4,12 +4,11 @@ import * as repl from 'repl';
 import * as terrajs from '@terra-money/terra.js';
 import { getEnv } from '../lib/env';
 
-function isClass(v) {
-  return typeof v === 'function' && /^\s*class\s+/.test(v.toString());
-}
+// Needed for Terrain to be able to require typescript modules.
+require('ts-node').register();
 
 export default class Console extends Command {
-  static description = 'Start a repl console that provides context and convinient utilities to interact with the blockchain and your contracts.';
+  static description = 'Start a repl console that provides context and convenient utilities to interact with the blockchain and your contracts.';
 
   static flags = {
     network: flags.string({ default: 'localterra' }),
@@ -31,19 +30,23 @@ export default class Console extends Command {
       flags.network,
     );
 
+    // eslint-disable-next-line global-require, import/no-dynamic-require
     let Lib = require(path.join(process.cwd(), 'lib'));
 
     let libInstance;
-    if (Lib.default) {
+
+    // Detect if a default export exists and use that.
+    if (Lib?.default) {
       Lib = Lib.default;
     }
 
-    if (isClass(Lib)) {
+    // Need the new keyword if Lib is a class.
+    if (typeof Lib === 'function' && Lib.prototype?.constructor) {
       libInstance = new Lib(env);
     } else {
       libInstance = Lib(env);
     }
- 
+
     // for repl server
     const {
       config, refs, wallets, client,
