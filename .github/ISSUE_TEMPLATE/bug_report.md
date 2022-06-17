@@ -20,7 +20,7 @@ assignees: ''
 
 ### Tools and operating system versions
 <!--
-$ npm -v && node -v && docker-compose -v && docker -v 
+$ npm -v && node -v && docker-compose -v && docker -v && terrain --version
 -->
 
 ### Additional details / screenshot
