@@ -13,15 +13,15 @@ export default class TaskNew extends Command {
     const { args } = this.parse(TaskNew);
 
     const pathToTasks = path.join(process.cwd(), 'tasks', `${args.task}.ts`);
-    if(fs.existsSync(pathToTasks)){
+    if (fs.existsSync(pathToTasks)) {
       TerrainCLI.error(`Task with name ${args.task} already exists chose another name for the task`);
       return process.exit();
     }
 
     cli.action.start(`Creating task: ${args.task}`);
     await fs.writeFile(
-      pathToTasks, 
-`import { Env, task } from "@terra-money/terrain";
+      pathToTasks,
+      `import { Env, task } from "@terra-money/terrain";
 
 task(async (env:Env) => {
   console.log(env);
