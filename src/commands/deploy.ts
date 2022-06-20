@@ -34,7 +34,7 @@ export default class Deploy extends Command {
     // }),
     sync: flags.boolean({
       description: 'sync the contracts to the frontend.',
-      default: false,
+      default: true,
     }),
     workspace: flags.string({
       default: undefined,

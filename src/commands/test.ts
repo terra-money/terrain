@@ -1,7 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
-import cli from 'cli-ux';
 import TerrainCLI from '../TerrainCLI';
 
 /**

@@ -9,7 +9,7 @@ export const noRebuild = flags.boolean({
 
 export const build = flags.boolean({
   description: 'rebuild the wasm before deploying.',
-  default: false,
+  default: true,
 });
 
 export const arm64 = flags.boolean({

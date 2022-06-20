@@ -32,20 +32,6 @@ type BuildParams = {
   workspace?: string;
 };
 
-export const build = async ({ contract, workspace }: BuildParams) => {
-  if (contract === undefined && workspace === undefined) {
-    cli.error('No workspace or contract was defined.');
-    return;
-  }
-  if (contract) {
-    buildContract({ contract, workspace });
-    return;
-  }
-  if (workspace) {
-    buildWorkspace({ workspace });
-  }
-};
-
 type BuildContractParams = {
   contract: string;
   workspace?: string;
@@ -73,7 +59,6 @@ const buildWorkspace = async ({ workspace }: BuildWorkspaceParams) => {
   process.chdir(folder);
 
   const { workspace: wksp } = parse(fs.readFileSync('./Cargo.toml', 'utf-8'));
-  console.log(wksp);
 
   if (wksp === undefined) {
     cli.error('The Cargo.toml must define a workspace');
@@ -84,30 +69,36 @@ const buildWorkspace = async ({ workspace }: BuildWorkspaceParams) => {
   process.chdir('../');
 };
 
+export const build = async ({ contract, workspace }: BuildParams) => {
+  if (contract === undefined && workspace === undefined) {
+    cli.error('No workspace or contract was defined.');
+    return;
+  }
+  if (contract) {
+    buildContract({ contract, workspace });
+    return;
+  }
+  if (workspace) {
+    buildWorkspace({ workspace });
+  }
+};
+
 type OptimizeParams = {
   contract?: string;
   workspace?: string;
   arm64: boolean | undefined;
 };
 
-export const optimize = async ({
-  contract,
-  workspace,
-  arm64,
-}: OptimizeParams) => {
-  if (contract === undefined && workspace === undefined) {
-    cli.error('No workspace or contract was defined.');
-    return;
-  }
+const execDockerOptimization = (image: string, cache: string) => {
+  const dir = Os.platform() === 'win32' ? '%cd%' : '$(pwd)';
 
-  if (contract) {
-    optimizeContract({ contract, workspace, arm64 });
-    return;
-  }
-
-  if (workspace) {
-    optimizeWorkspace({ workspace, arm64 });
-  }
+  execSync(
+    `docker run --rm -v "${dir}":/code \
+      --mount type=volume,source="${cache}_cache",target=/code/target \
+      --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+      ${image}`,
+    { stdio: 'inherit' },
+  );
 };
 
 type OptimizeContractParams = {
@@ -150,17 +141,26 @@ const optimizeWorkspace = async ({
   process.chdir('../');
 };
 
-const execDockerOptimization = (image: string, cache: string) => {
-  const dir = Os.platform() === 'win32' ? '%cd%' : '$(pwd)';
+export const optimize = async ({
+  contract,
+  workspace,
+  arm64,
+}: OptimizeParams) => {
+  if (contract === undefined && workspace === undefined) {
+    cli.error('No workspace or contract was defined.');
+    return;
+  }
 
-  execSync(
-    `docker run --rm -v "${dir}":/code \
-      --mount type=volume,source="${cache}_cache",target=/code/target \
-      --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-      ${image}`,
-    { stdio: 'inherit' },
-  );
+  if (contract) {
+    optimizeContract({ contract, workspace, arm64 });
+    return;
+  }
+
+  if (workspace) {
+    optimizeWorkspace({ workspace, arm64 });
+  }
 };
+
 
 type StoreCodeParams = {
   conf: ContractConfig;
@@ -410,7 +410,7 @@ export const migrate = async ({
     if (error instanceof SyntaxError) {
       cli.error(resInstant.raw_log);
     } else {
-      cli.error(`Unexpcted Error: ${error}`);
+      cli.error(`Unexpected Error: ${error}`);
     }
   }
 

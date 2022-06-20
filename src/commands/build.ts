@@ -11,7 +11,7 @@ export default class Build extends Command {
     // }),
     optimize: flags.boolean({
       description: 'optimize the wasm after the build.',
-      default: false,
+      default: true,
     }),
     workspace: flags.string({
       default: undefined,
