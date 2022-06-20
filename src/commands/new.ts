@@ -3,15 +3,16 @@ import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import cli from 'cli-ux';
 import * as path from 'path';
 import * as fs from 'fs';
+import TerrainCLI from '../TerrainCLI';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
 
   static examples = [
-    '$ terrain new awesome-dapp',
-    '$ terrain new awesome-dapp --path path/to/dapp',
-    '$ terrain new awesome-dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
-    '$ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"',
+    '$ terrain new awesome_dapp',
+    '$ terrain new awesome_dapp --path path/to/dapp',
+    '$ terrain new awesome_dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
+    '$ terrain new awesome_dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"',
   ];
 
   static flags = {
@@ -37,6 +38,11 @@ export default class New extends Command {
 
   async run() {
     const { args, flags } = this.parse(New);
+
+    if(!/^[A-Za-z0-9_]*$/.exec(args.name)) {
+      TerrainCLI.error(`Workspace name '${args.name}' is invalid.\nTip: Use alphanumeric values separating words by underscore e.g: 'awesome_dapp'`);
+      return;
+    }
 
     if (fs.existsSync(path.join(flags.path, args.name))) {
       throw Error(
