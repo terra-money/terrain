@@ -74,8 +74,6 @@ const buildWorkspace = async ({ workspace }: BuildWorkspaceParams) => {
   process.chdir(folder);
 
   const { workspace: wksp } = parse(fs.readFileSync("./Cargo.toml", "utf-8"));
-  console.log(wksp);
-
   if (wksp === undefined) {
     cli.error(`The Cargo.toml must define a workspace`);
   }
@@ -274,6 +272,12 @@ export const instantiate = async ({
   const { instantiation } = conf;
 
   cli.action.start(`instantiating contract with code id: ${codeId}`);
+
+  cli.action.start(
+    `instantiating contract with msg: ${JSON.stringify(
+      instantiation.instantiateMsg
+    )}`
+  );
 
   // Allow manual account sequences.
   const manualSequence = sequence || (await signer.sequence());
