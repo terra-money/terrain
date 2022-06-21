@@ -1,8 +1,8 @@
-import { Command, flags } from "@oclif/command";
-import { build, optimize } from "../lib/deployment";
+import { Command, flags } from '@oclif/command';
+import { build, optimize } from '../lib/deployment';
 
 export default class Build extends Command {
-  static description = "Build and optimize wasm bytecode.";
+  static description = 'Build and optimize wasm bytecode.';
 
   static flags = {
     // "no-optimize": flags.boolean({
@@ -10,20 +10,20 @@ export default class Build extends Command {
     //   default: false,
     // }),
     optimize: flags.boolean({
-      description: "optimize the wasm after the build.",
-      default: false,
+      description: 'optimize the wasm after the build.',
+      default: true,
     }),
     workspace: flags.string({
       default: undefined,
     }),
     arm64: flags.boolean({
       description:
-        "use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.",
+        'use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.',
       default: false,
     }),
   };
 
-  static args = [{ name: "contract", required: false }];
+  static args = [{ name: 'contract', required: false }];
 
   async run() {
     const { args, flags } = this.parse(Build);

@@ -1,4 +1,4 @@
-import { LCDClient } from "@terra-money/terra.js";
+import { LCDClient } from '@terra-money/terra.js';
 
 export const waitForInclusionInBlock = async (lcd: LCDClient, txHash: string) => {
   let res;
