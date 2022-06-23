@@ -117,7 +117,14 @@ const optimizeContract = async ({
 
   const image = `cosmwasm/rust-optimizer${arm64 ? "-arm64" : ""}:0.12.5`;
 
-  execDockerOptimization(image, contract);
+  const { package: pkg } = parse(fs.readFileSync("./Cargo.toml", "utf-8"));
+  if (pkg.metadata?.scripts?.optimize) {
+    let optimize = pkg.metadata.scripts.optimize;
+    optimize.replace("${arm64?}", arm64 ? "arm64" : "");
+    execSync(pkg.metadata.scripts.optimize, { stdio: "inherit" });
+  } else {
+    execDockerOptimization(image, contract);
+  }
 
   process.chdir(workspace ? "../../.." : "../..");
 };

@@ -1,6 +1,6 @@
 import { MnemonicKey, RawKey } from '@terra-money/terra.js';
 import * as R from 'ramda';
-import { config, loadConfig, loadKeys } from './config';
+import { contractConfig, loadContractConfig, loadKeys } from './config';
 
 const _global = {
   _base: {
@@ -57,14 +57,14 @@ const local = {
 } as any;
 
 test('config without overrides should return global base for any contract in any network', () => {
-  const conf = config({ _global });
+  const conf = contractConfig({ _global });
 
   expect(conf('local', 'contract_a')).toEqual(_global._base);
   expect(conf('mainnet', 'contract_b')).toEqual(_global._base);
 });
 
 test('config with overrides in global should return overriden value for all networks', () => {
-  const conf = config({ _global: _globalWithOverrides });
+  const conf = contractConfig({ _global: _globalWithOverrides });
 
   const contractAUpdated = {
     store: {
@@ -95,7 +95,7 @@ test('config with overrides in global should return overriden value for all netw
 });
 
 test('config with overrides in _base for the network should overrides for all the contract within the network', () => {
-  const conf = config({ _global, local });
+  const conf = contractConfig({ _global, local });
   const localContractA = {
     store: {
       fee: {
@@ -142,7 +142,7 @@ test('config with overrides in _base for the network should overrides for all th
 });
 
 test('load config', () => {
-  const conf = loadConfig();
+  const conf = loadContractConfig();
   expect(conf('localterra', 'contract_a')).toEqual({
     store: {
       fee: {
