@@ -6,7 +6,7 @@ import {
   ContractConfig,
   ContractRef,
   InstantiateMessage,
-  loadConfig,
+  loadContractConfig,
   loadConnections,
   loadKeys,
   loadRefs,
@@ -53,7 +53,7 @@ export const getEnv = (
   network: string,
 ): Env => {
   const connections = loadConnections(configPath);
-  const config = loadConfig(configPath);
+  const config = loadContractConfig(configPath);
 
   const keys = loadKeys(keysPath);
   const refs = loadRefs(refsPath)[network];

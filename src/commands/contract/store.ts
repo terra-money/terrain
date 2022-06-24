@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
-import { loadConfig, loadConnections } from '../../config';
+import { loadContractConfig, loadConnections } from '../../config';
 import { storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -25,7 +25,7 @@ export default class CodeStore extends Command {
     const { args, flags } = this.parse(CodeStore);
 
     const connections = loadConnections(flags['config-path']);
-    const config = loadConfig(flags['config-path']);
+    const config = loadContractConfig(flags['config-path']);
     const conf = config(flags.network, args.contract);
 
     // @ts-ignore

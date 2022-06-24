@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
-import { loadConfig, loadConnections, loadRefs } from '../../config';
+import { loadContractConfig, loadConnections, loadRefs } from '../../config';
 import { instantiate } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -28,7 +28,7 @@ export default class ContractInstantiate extends Command {
     const { args, flags } = this.parse(ContractInstantiate);
 
     const connections = loadConnections(flags['config-path']);
-    const config = loadConfig(flags['config-path']);
+    const config = loadContractConfig(flags['config-path']);
     const conf = config(flags.network, args.contract);
 
     // @ts-ignore
