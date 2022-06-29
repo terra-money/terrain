@@ -494,7 +494,7 @@ npm unlink terrain
 
 ## `terrain console`
 
-Start a repl console that provides context and convinient utilities to interact with the blockchain and your contracts.
+Start a repl console that provides context and convenient utilities to interact with the blockchain and your contracts.
 
 ```
 USAGE
@@ -507,7 +507,7 @@ FLAGS
   --refs-path=<value>    [default: refs.terrain.json]
 
 DESCRIPTION
-  Start a repl console that provides context and convinient utilities to interact with the blockchain and your
+  Start a repl console that provides context and convenient utilities to interact with the blockchain and your
   contracts.
 ```
 

@@ -3,6 +3,7 @@ import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import cli from 'cli-ux';
 import * as path from 'path';
 import * as fs from 'fs';
+import capitalize from '../lib/capitalize';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
@@ -43,6 +44,7 @@ export default class New extends Command {
 
     const templateEntries = {
       'project-name': args.name,
+      'client-name': `${capitalize(args.name)}Client`,
       crate_name: args.name,
       authors: flags.authors,
       ' "now" | date: "%Y" ': `${new Date().getFullYear()}`,
@@ -78,7 +80,7 @@ export default class New extends Command {
     cli.action.start('- frontend');
     if (flags.framework === 'react') {
       await TemplateScaffolding.from({
-        remoteUrl: 'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main',
+        remoteUrl: 'https://codeload.github.com/octalmage/terrain-frontend-template/zip/refs/heads/main',
         subFolder: 'terrain-frontend-template-main',
         localOptions: {
           folderUrl: path.join(process.cwd(), flags.path, args.name, 'frontend'),

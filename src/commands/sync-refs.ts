@@ -15,10 +15,16 @@ export default class SyncRefs extends Command {
   async run() {
     const { flags } = this.parse(SyncRefs);
 
+    if (!fs.pathExistsSync('./frontend')) {
+      cli.info('no frontend directory found, not syncing refs');
+    }
+
     cli.action.start(
       `syncing refs from '${flags['refs-path']}' to '${flags.dest}`,
     );
+
     fs.copyFileSync(flags['refs-path'], flags.dest);
+
     cli.action.stop();
   }
 }

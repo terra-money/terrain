@@ -5,7 +5,10 @@ import * as terrajs from '@terra-money/terra.js';
 import { getEnv } from '../lib/env';
 
 // Needed for Terrain to be able to require typescript modules.
-require('ts-node').register();
+require('ts-node').register({
+  // Make sure we don't double transpile source code.
+  ignore: ['(?:^|/)node_modules/', 'src/commands/.*\\.ts', 'src/lib/.*\\.ts'],
+});
 
 export default class Console extends Command {
   static description = 'Start a repl console that provides context and convenient utilities to interact with the blockchain and your contracts.';
@@ -20,7 +23,7 @@ export default class Console extends Command {
   static args = [];
 
   async run() {
-    const { args, flags } = this.parse(Console);
+    const { flags } = this.parse(Console);
     const fromCwd = (p: string) => path.join(process.cwd(), p);
 
     const env = getEnv(
