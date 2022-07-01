@@ -3,7 +3,7 @@ import { cli } from 'cli-ux';
 import * as path from 'path';
 import { loadKeys } from '../config';
 
-export const getSigner = ({
+export const getSigner = async ({
   network,
   signerId,
   keysPath,
@@ -13,7 +13,7 @@ export const getSigner = ({
   signerId: string;
   keysPath: string;
   lcd: LCDClient;
-}): Wallet => {
+}): Promise<Wallet> => {
   const localterra = new LocalTerra();
   if (
     network === 'localterra'
@@ -23,7 +23,8 @@ export const getSigner = ({
     // @ts-ignore
     return localterra.wallets[signerId];
   }
-  const keys = loadKeys(path.join(process.cwd(), keysPath));
+
+  const keys = await loadKeys(lcd, path.join(process.cwd(), keysPath));
 
   if (!keys[signerId]) {
     cli.error(`key for '${signerId}' does not exists.`);

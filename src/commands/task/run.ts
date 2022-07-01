@@ -8,7 +8,7 @@ import * as fs from 'fs-extra';
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
     await fn(
-      getEnv(
+      await getEnv(
         process.env.configPath || '',
         process.env.keysPath || '',
         process.env.refsPath || '',

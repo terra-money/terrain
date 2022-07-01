@@ -2,6 +2,7 @@ import {
   AccAddress, LocalTerra, RawKey, Wallet,
 } from '@terra-money/terra.js';
 import * as R from 'ramda';
+import { LedgerKey } from '@terra-money/ledger-terra-js';
 import {
   ContractConfig,
   ContractRef,
@@ -34,7 +35,7 @@ export type Env = {
   deploy: DeployHelpers;
 };
 
-export const getEnv = (
+export const getEnv = async (
   configPath: string,
   keysPath: string,
   refsPath: string,
@@ -42,14 +43,13 @@ export const getEnv = (
 ): Env => {
   const connections = loadConnections(configPath);
   const config = loadConfig(configPath);
-
-  const keys = loadKeys(keysPath);
   const refs = loadRefs(refsPath)[network];
 
   const lcd = new LCDClientExtra(connections(network), refs);
+  const keys = await loadKeys(lcd, keysPath);
 
   const userDefinedWallets = R.map<
-    { [k: string]: RawKey },
+    { [k: string]: RawKey | LedgerKey },
     { [k: string]: Wallet }
   >((k) => new Wallet(lcd, k), keys);
 

@@ -23,7 +23,7 @@ export default class Console extends Command {
     const { args, flags } = this.parse(Console);
     const fromCwd = (p: string) => path.join(process.cwd(), p);
 
-    const env = getEnv(
+    const env = await getEnv(
       fromCwd(flags['config-path']),
       fromCwd(flags['keys-path']),
       fromCwd(flags['refs-path']),
