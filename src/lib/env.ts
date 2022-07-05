@@ -1,5 +1,5 @@
 import {
-  AccAddress, LocalTerra, RawKey, Wallet,
+  AccAddress, LocalTerra, RawKey, Wallet, SignatureV2,
 } from '@terra-money/terra.js';
 import * as R from 'ramda';
 import { LedgerKey } from '@terra-money/ledger-terra-js';
@@ -46,12 +46,37 @@ export const getEnv = async (
   const refs = loadRefs(refsPath)[network];
 
   const lcd = new LCDClientExtra(connections(network), refs);
-  const keys = await loadKeys(lcd, keysPath);
+  const keys = await loadKeys(keysPath);
 
   const userDefinedWallets = R.map<
     { [k: string]: RawKey | LedgerKey },
     { [k: string]: Wallet }
-  >((k) => new Wallet(lcd, k), keys);
+  >((k) => {
+    const w = new Wallet(lcd, k);
+    if ((w as any).key.transport) {
+      // TODO: wallet modifications should be pulled out.
+      w.createAndSignTx = async (input) => {
+        const { accAddress } = k;
+        const accountInfo = (await lcd.auth.accountInfo(accAddress)) as any;
+        let accountNumber;
+        let sequence;
+
+        if (accountInfo.base_vesting_account) {
+          accountNumber = accountInfo.base_vesting_account.base_account.account_number;
+          sequence = accountInfo.base_vesting_account.base_account.sequence;
+        } else {
+          accountNumber = accountInfo.account_number;
+          sequence = accountInfo.sequence;
+        }
+
+        const signMode = SignatureV2.SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
+        const unsignedTx = await lcd.tx.create([{ address: accAddress }], { feeDenoms: ['uluna'], ...input });
+        const options = { chainID: lcd.config.chainID, accountNumber, sequence, signMode };
+        return k.signTx(unsignedTx, options, true);
+      };
+    }
+    return w;
+  }, keys);
 
   return {
     config: (contract) => config(network, contract),

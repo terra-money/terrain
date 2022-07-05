@@ -1,9 +1,10 @@
 import * as R from 'ramda';
 import * as fs from 'fs-extra';
-import { LCDClientConfig, MnemonicKey, RawKey, SignatureV2 } from '@terra-money/terra.js';
+import { LCDClientConfig, MnemonicKey, RawKey } from '@terra-money/terra.js';
 import { cli } from 'cli-ux';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import { LedgerKey } from '@terra-money/ledger-terra-js';
+import { decrypt } from './crypto';
 
 type Fee = {
   gasLimit: number;
@@ -88,14 +89,16 @@ export const loadConfig = (
 ) => config(fs.readJSONSync(path));
 
 export const loadKeys = async (
-  lcd,
   path = `${__dirname}/template/keys.terrain.js`,
 ): Promise<{ [keyName: string]: RawKey | LedgerKey }> => {
   const keys = require(path);
   const body = R.map(
     async (w) => {
       if (w.privateKey) {
-        return new RawKey(Buffer.from(w.privateKey, 'base64'));
+        const password = await cli.prompt('What is your password?', { type: 'hide' })
+        const { encrypted_key: encryptedKey } = JSON.parse(Buffer.from(w.privateKey, 'base64').toString());
+
+        return new RawKey(Buffer.from(decrypt(encryptedKey, password), 'hex'));
       }
 
       if (w.mnemonic) {
@@ -106,24 +109,11 @@ export const loadKeys = async (
         const transport = await TransportNodeHid.open('');
         const key = await LedgerKey.create(transport, w.ledger.index ?? '0');
 
-        (key as any).createAndSign = async (input) => {
-          const { accAddress } = key;
-          const {
-            account_number: accountNumber,
-            sequence,
-          } = await lcd.auth.accountInfo(accAddress);
-
-          const signMode = SignatureV2.SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
-          const unsignedTx = await lcd.tx.create([{ address: accAddress }], { feeDenoms: ['uluna'], ...input });
-          const options = { chainID: 'columbus-5', accountNumber, sequence, signMode };
-          return key.signTx(unsignedTx, options, true);
-        };
-
         return key;
       }
 
       return cli.error(
-        'Error: Key must be defined with either `privateKey` or `mnemonic`',
+        'Error: Key must be defined with either `privateKey`, `ledger`, or `mnemonic`',
       );
     },
     keys,
