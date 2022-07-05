@@ -477,7 +477,7 @@ npm unlink terrain
 
 <!-- commands -->
 * [`terrain console`](#terrain-console)
-* [`terrain contract:generateClient [CONTRACT]`](#terrain-contractgenerateclient-contract)
+* [`terrain contract:generateClient CONTRACT`](#terrain-contractgenerateclient-contract)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
 * [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
 * [`terrain contract:new NAME`](#terrain-contractnew-name)
@@ -514,9 +514,9 @@ DESCRIPTION
 
 _See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/console.ts)_
 
-## `terrain contract:generateClient [CONTRACT]`
+## `terrain contract:generateClient CONTRACT`
 
-Sync configuration with frontend app.
+Generate a Wallet Provider or Terra.js compatible TypeScript client.
 
 ```
 USAGE
@@ -527,7 +527,7 @@ FLAGS
   --lib-path=<value>  [default: ./lib] location to place the generated client
 
 DESCRIPTION
-  Sync configuration with frontend app.
+  Generate a Wallet Provider or Terra.js compatible TypeScript client.
 ```
 
 _See code: [src/commands/contract/generateClient.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/contract/generateClient.ts)_

@@ -16,7 +16,7 @@ export default class SyncRefs extends Command {
     const { flags } = this.parse(SyncRefs);
 
     if (!fs.pathExistsSync('./frontend')) {
-      cli.info('no frontend directory found, not syncing refs');
+      cli.error('no frontend directory found, not syncing refs');
     }
 
     cli.action.start(

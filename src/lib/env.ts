@@ -30,6 +30,7 @@ export type Env = {
   config: (contract: string) => ContractConfig;
   refs: { [contractName: string]: ContractRef };
   wallets: { [key: string]: Wallet };
+  defaultWallet: Wallet;
   client: LCDClientExtra;
   deploy: DeployHelpers;
 };
@@ -39,6 +40,7 @@ export const getEnv = (
   keysPath: string,
   refsPath: string,
   network: string,
+  defaultWallet: string,
 ): Env => {
   const connections = loadConnections(configPath);
   const config = loadConfig(configPath);
@@ -53,13 +55,20 @@ export const getEnv = (
     { [k: string]: Wallet }
   >((k) => new Wallet(lcd, k), keys);
 
+  const wallets: { [k: string]: Wallet } = {
+    ...new LocalTerra().wallets,
+    ...userDefinedWallets,
+  };
+
+  if (!(defaultWallet in wallets)) {
+    throw new Error('default wallet not found');
+  }
+
   return {
     config: (contract) => config(network, contract),
     refs,
-    wallets: {
-      ...new LocalTerra().wallets,
-      ...userDefinedWallets,
-    },
+    wallets,
+    defaultWallet: wallets[defaultWallet],
     client: lcd,
     // Enable tasks to deploy code.
     deploy: {

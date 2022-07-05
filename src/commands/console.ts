@@ -3,9 +3,12 @@ import * as path from 'path';
 import * as repl from 'repl';
 import * as terrajs from '@terra-money/terra.js';
 import { getEnv } from '../lib/env';
+import { signer } from '../lib/flag';
 
 // Needed for Terrain to be able to require typescript modules.
 require('ts-node').register({
+  // Don't actually check types of libs.
+  transpileOnly: true,
   // Make sure we don't double transpile source code.
   ignore: ['(?:^|/)node_modules/', 'src/commands/.*\\.ts', 'src/lib/.*\\.ts'],
 });
@@ -14,6 +17,7 @@ export default class Console extends Command {
   static description = 'Start a repl console that provides context and convenient utilities to interact with the blockchain and your contracts.';
 
   static flags = {
+    signer,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: 'config.terrain.json' }),
     'refs-path': flags.string({ default: 'refs.terrain.json' }),
@@ -31,6 +35,7 @@ export default class Console extends Command {
       fromCwd(flags['keys-path']),
       fromCwd(flags['refs-path']),
       flags.network,
+      flags.signer,
     );
 
     // eslint-disable-next-line global-require, import/no-dynamic-require

@@ -5,8 +5,6 @@ import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
 import * as flag from '../lib/flag';
 import SyncRefs from './sync-refs';
-import generateClient from '../lib/generateClient';
-import capitalize from '../lib/capitalize';
 
 export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
