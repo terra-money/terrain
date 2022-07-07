@@ -6,12 +6,7 @@ import { getEnv } from '../lib/env';
 import { signer } from '../lib/flag';
 
 // Needed for Terrain to be able to require typescript modules.
-require('ts-node').register({
-  // Don't actually check types of libs.
-  transpileOnly: true,
-  // Make sure we don't double transpile source code.
-  ignore: ['(?:^|/)node_modules/', 'src/commands/.*\\.ts', 'src/lib/.*\\.ts'],
-});
+require('ts-node').register();
 
 export default class Console extends Command {
   static description = 'Start a repl console that provides context and convenient utilities to interact with the blockchain and your contracts.';
