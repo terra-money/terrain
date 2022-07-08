@@ -11,11 +11,23 @@ import {
   loadKeys,
   loadRefs,
 } from '../config';
-import { storeCode, instantiate } from './deployment';
+import {
+  storeCode, instantiate, build, optimize,
+} from './deployment';
 import { LCDClientExtra } from './LCDClientExtra';
 
 export type DeployHelpers = {
-  storeCode: (signer: Wallet, contract: string) => Promise<number>;
+  build: (contract?: string, workspace?: string) => Promise<void>;
+  optimize: (
+    contract: string,
+    workspace?: string,
+    arm64?: boolean
+  ) => Promise<void>;
+  storeCode: (
+    signer: Wallet,
+    contract: string,
+    workspace?: string
+  ) => Promise<number>;
   instantiate: (
     signer: Wallet,
     contract: string,
@@ -63,14 +75,23 @@ export const getEnv = (
     client: lcd,
     // Enable tasks to deploy code.
     deploy: {
-      storeCode: (signer: Wallet, contract: string) => storeCode({
+      build: (contract?: string, workspace?: string) => build({
+        contract,
+        workspace,
+      }),
+      optimize: (contract: string, workspace?: string, arm64?: boolean) => optimize({
+        contract,
+        workspace,
+        arm64,
+      }),
+      storeCode: (signer: Wallet, contract: string, workspace?: string) => storeCode({
         signer,
         contract,
+        workspace,
         network,
         refsPath,
         lcd,
         conf: config(network, contract),
-        noRebuild: false,
       }),
       instantiate: (
         signer: Wallet,
@@ -89,7 +110,9 @@ export const getEnv = (
         lcd,
         admin,
         // Use the instantiation message passed instead of default.
-        conf: init ? { instantiation: { instantiateMsg: init } } : config(network, contract),
+        conf: init
+          ? { instantiation: { instantiateMsg: init } }
+          : config(network, contract),
       }),
     },
   };

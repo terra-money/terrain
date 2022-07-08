@@ -2,8 +2,8 @@ import { Command, flags } from '@oclif/command';
 import * as path from 'path';
 import * as childProcess from 'child_process';
 import { cli } from 'cli-ux';
-import { Env, getEnv } from '../../lib/env';
 import * as fs from 'fs-extra';
+import { Env, getEnv } from '../../lib/env';
 
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
@@ -45,7 +45,7 @@ export default class Run extends Command {
     const { args, flags } = this.parse(Run);
     let scriptPath = this.fromCwd(`tasks/${args.task}.ts`);
 
-    if(!fs.existsSync(scriptPath)) {
+    if (!fs.existsSync(scriptPath)) {
       scriptPath = this.fromCwd(`tasks/${args.task}.js`);
     }
 
@@ -77,14 +77,15 @@ function runScript(
   // keep track of whether callback has been invoked to prevent multiple invocations
   let invoked = false;
 
-  const cProcess = childProcess.fork(scriptPath,
+  const cProcess = childProcess.fork(
+    scriptPath,
     {
       env: {
         ...process.env,
-        ...env
+        ...env,
       },
-      execArgv: ['-r', 'ts-node/register']
-    }
+      execArgv: ['-r', 'ts-node/register'],
+    },
   );
 
   // listen for errors as they may prevent the exit event from firing

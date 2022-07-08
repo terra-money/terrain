@@ -1,7 +1,9 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
 import { loadConfig, loadConnections } from '../../config';
-import { migrate, storeCode } from '../../lib/deployment';
+import {
+  migrate, storeCode, build, optimize,
+} from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 
@@ -10,20 +12,18 @@ export default class ContractMigrate extends Command {
 
   static flags = {
     signer: flag.signer,
-    'no-rebuild': flag.noRebuild,
+    arm64: flag.arm64,
+    // "no-rebuild": flag.noRebuild,
+    build: flag.build,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: './config.terrain.json' }),
     'refs-path': flags.string({ default: './refs.terrain.json' }),
     'keys-path': flags.string({ default: './keys.terrain.js' }),
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
-      description:
-        'target code id for migration',
+      description: 'target code id for migration',
     }),
-    arm64: flags.boolean({
-      description: 'use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.',
-      default: false,
-    }),
+    workspace: flags.string({ default: undefined }),
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -44,10 +44,22 @@ export default class ContractMigrate extends Command {
       lcd,
     });
 
+    if (flags.build) {
+      await build({
+        contract: args.contract,
+        workspace: flags.workspace,
+      });
+      await optimize({
+        contract: args.contract,
+        workspace: flags.workspace,
+        arm64: flags.arm64,
+      });
+    }
+
     const codeId = await storeCode({
       conf,
-      noRebuild: flags['no-rebuild'],
       contract: args.contract,
+      workspace: flags.workspace,
       signer,
       network: flags.network,
       refsPath: flags['refs-path'],

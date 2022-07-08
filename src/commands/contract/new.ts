@@ -3,6 +3,7 @@ import { cli } from 'cli-ux';
 import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import * as path from 'path';
 import * as fs from 'fs';
+import TerrainCLI from '../../TerrainCLI';
 
 export default class CodeNew extends Command {
   static description = 'Generate new contract.';
@@ -30,6 +31,11 @@ export default class CodeNew extends Command {
 
   async run() {
     const { args, flags } = this.parse(CodeNew);
+
+    if(!/^[A-Za-z0-9_]*$/.exec(args.name)) {
+      TerrainCLI.error(`Workspace name '${args.name}' is invalid.\nTip: Use alphanumeric values separating words by underscore e.g: 'awesome_dapp'`);
+      return;
+    }
 
     if (fs.existsSync(path.join(flags.path, args.name))) {
       throw Error(`Folder '${args.name}' already exists under path '${flags.path}'.\nTip: Use another path or contract name`);
