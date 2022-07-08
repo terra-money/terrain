@@ -3,6 +3,7 @@ import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import cli from 'cli-ux';
 import * as path from 'path';
 import * as fs from 'fs';
+import { execSync } from 'child_process';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
@@ -37,7 +38,12 @@ export default class New extends Command {
   async run() {
     const { args, flags } = this.parse(New);
 
-    if (fs.existsSync(path.join(flags.path, args.name))) {
+    const appDir = path.join(process.cwd(), flags.path, args.name);
+    const contractDir = path.join(appDir, 'contracts', args.name);
+    const frontendDir = path.join(appDir, 'frontend');
+
+
+    if (fs.existsSync(appDir)) {
       throw Error(`Folder '${args.name}' already exists under path '${flags.path}'.\nTip: Use another path or project name`);
     }
 
@@ -54,7 +60,7 @@ export default class New extends Command {
       remoteUrl: 'https://codeload.github.com/terra-money/terrain-core-template/zip/refs/heads/main',
       subFolder: 'terrain-core-template-main',
       localOptions: {
-        folderUrl: path.join(process.cwd(), flags.path, args.name),
+        folderUrl: appDir,
       },
       replace: {
         entries: templateEntries,
@@ -67,7 +73,7 @@ export default class New extends Command {
       remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/heads/${flags.version}`,
       subFolder: `cw-template-${flags.version}`,
       localOptions: {
-        folderUrl: path.join(process.cwd(), flags.path, args.name, 'contracts', args.name),
+        folderUrl: contractDir,
       },
       replace: {
         entries: templateEntries,
@@ -81,7 +87,7 @@ export default class New extends Command {
         remoteUrl: 'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main',
         subFolder: 'terrain-frontend-template-main',
         localOptions: {
-          folderUrl: path.join(process.cwd(), flags.path, args.name, 'frontend'),
+          folderUrl: frontendDir,
         },
         replace: {
           entries: templateEntries,
@@ -92,10 +98,22 @@ export default class New extends Command {
         remoteUrl: 'https://codeload.github.com/terra-money/wallet-provider/zip/refs/heads/main',
         subFolder: `wallet-provider-main/templates/${flags.framework}`,
         localOptions: {
-          folderUrl: path.join(process.cwd(), flags.path, args.name, 'frontend'),
+          folderUrl: frontendDir,
         },
       });
     }
+    cli.action.stop();
+
+    // Install dapp dependencies.
+    process.chdir(appDir);
+    cli.action.start('- installing dapp dependencies');
+    await execSync('npm i --silent', { stdio: 'inherit' });
+    cli.action.stop();
+
+    // Install frontend dependencies.
+    cli.action.start('- installing frontend dependencies');
+    process.chdir(frontendDir);
+    await execSync('npm i --silent', { stdio: 'inherit' });
     cli.action.stop();
   }
 }
