@@ -1,7 +1,8 @@
 import chalk, { Chalk } from 'chalk';
 import cli from 'cli-ux';
-const moon = require("get-the-moon");
 import boxen from 'boxen';
+
+const moon = require('get-the-moon');
 
 /** TerrainCLI offers default log styling for terrain commands. */
 class TerrainCLI {
@@ -58,12 +59,17 @@ class TerrainCLI {
     );
   }
 
-  // TerrainCLI.alert(alertMsg, title, max_width) styling
-  alert(alertMsg = '', title = 'Hey! 👋', max_width = 36) {
+  // TerrainCLI.alert(alertMsg, title, maxWidth) styling
+  alert(alertMsg = '', title = 'Hey! 👋', maxWidth = 36) {
     cli.log(
-      boxen(alertMsg.replace(
-        new RegExp(`(?![^\\n]{1,${max_width}}$)([^\\n]{1,${max_width}})\\s`, 'g'), '$1\n'
-    ), {title: title, titleAlignment: 'center', padding: 1, margin: 1})
+      this.alertStyle(
+        boxen(
+          alertMsg.replace(new RegExp(`(?![^\\n]{1,${maxWidth}}$)([^\\n]{1,${maxWidth}})\\s`, 'g'), '$1\n'),
+          {
+            title, titleAlignment: 'center', padding: 1, margin: 1,
+          },
+        ),
+      ),
     );
   }
 

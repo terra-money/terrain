@@ -42,7 +42,6 @@ export default class New extends Command {
     const contractDir = path.join(appDir, 'contracts', args.name);
     const frontendDir = path.join(appDir, 'frontend');
 
-
     if (fs.existsSync(appDir)) {
       throw Error(`Folder '${args.name}' already exists under path '${flags.path}'.\nTip: Use another path or project name`);
     }
@@ -104,9 +103,9 @@ export default class New extends Command {
     }
     cli.action.stop();
 
-    // Install dapp dependencies.
+    // Install app dependencies.
     process.chdir(appDir);
-    cli.action.start('- installing dapp dependencies');
+    cli.action.start('- installing app dependencies');
     await execSync('npm i --silent', { stdio: 'inherit' });
     cli.action.stop();
 
