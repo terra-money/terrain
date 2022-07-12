@@ -29,14 +29,13 @@ Terrain is **not**:
 # Table of contents
 
 <!-- toc -->
-
-- [Terrain](#terrain)
-- [Table of contents](#table-of-contents)
-- [Setup](#setup)
-- [Getting Started](#getting-started)
-- [Migrating CosmWasm Contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
-- [Use Terrain Main Branch Locally](#use-terrain-main-branch-locally)
-- [Terrain Commands](#terrain-commands)
+* [Terrain](#terrain)
+* [Table of contents](#table-of-contents)
+* [Setup](#setup)
+* [Getting Started](#getting-started)
+* [Migrating CosmWasm Contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
+* [Use Terrain Main Branch Locally](#use-terrain-main-branch-locally)
+* [Terrain Commands](#terrain-commands)
 <!-- tocstop -->
 
 # Setup
@@ -478,44 +477,23 @@ npm unlink terrain
 # Terrain Commands
 
 <!-- commands -->
-
-- [`terrain build [CONTRACT]`](#terrain-build-contract)
-- [`terrain console`](#terrain-console)
-- [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
-- [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
-- [`terrain contract:new NAME`](#terrain-contractnew-name)
-- [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
-- [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
-- [`terrain deploy CONTRACT`](#terrain-deploy-contract)
-- [`terrain help [COMMAND]`](#terrain-help-command)
-- [`terrain new NAME`](#terrain-new-name)
-- [`terrain optimize [CONTRACT]`](#terrain-optimize-contract)
-- [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
-- [`terrain task:new [TASK]`](#terrain-tasknew-task)
-- [`terrain task:run [TASK]`](#terrain-taskrun-task)
-- [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
-- [`terrain test:coverage [CONTRACT-NAME]`](#terrain-testcoverage-contract-name)
-- [`terrain wallet:new`](#terrain-walletnew)
-
-## `terrain build [CONTRACT]`
-
-Build and optimize wasm bytecode.
-
-```
-USAGE
-  $ terrain build [CONTRACT] [--optimize] [--workspace <value>] [--arm64]
-
-FLAGS
-  --arm64              use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
-                       quicker on arm64 hardware during development.
-  --optimize           optimize the wasm after the build.
-  --workspace=<value>
-
-DESCRIPTION
-  Build and optimize wasm bytecode.
-```
-
-_See code: [src/commands/build.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/build.ts)_
+* [`terrain console`](#terrain-console)
+* [`terrain contract:build [CONTRACT]`](#terrain-contractbuild-contract)
+* [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
+* [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
+* [`terrain contract:new NAME`](#terrain-contractnew-name)
+* [`terrain contract:optimize [CONTRACT]`](#terrain-contractoptimize-contract)
+* [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
+* [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
+* [`terrain deploy CONTRACT`](#terrain-deploy-contract)
+* [`terrain help [COMMAND]`](#terrain-help-command)
+* [`terrain new NAME`](#terrain-new-name)
+* [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
+* [`terrain task:new [TASK]`](#terrain-tasknew-task)
+* [`terrain task:run [TASK]`](#terrain-taskrun-task)
+* [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+* [`terrain test:coverage [CONTRACT-NAME]`](#terrain-testcoverage-contract-name)
+* [`terrain wallet:new`](#terrain-walletnew)
 
 ## `terrain console`
 
@@ -536,7 +514,27 @@ DESCRIPTION
   contracts.
 ```
 
-_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/console.ts)_
+_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/console.ts)_
+
+## `terrain contract:build [CONTRACT]`
+
+Build and optimize wasm bytecode.
+
+```
+USAGE
+  $ terrain contract:build [CONTRACT] [--no-optimize] [--workspace <value>] [--arm64]
+
+FLAGS
+  --arm64              use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
+                       quicker on arm64 hardware during development.
+  --no-optimize        do not optimize the wasm.
+  --workspace=<value>  TODO: Add description here.
+
+DESCRIPTION
+  Build and optimize wasm bytecode.
+```
+
+_See code: [src/commands/contract/build.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/contract/build.ts)_
 
 ## `terrain contract:instantiate CONTRACT`
 
@@ -561,7 +559,7 @@ DESCRIPTION
   Instantiate the contract.
 ```
 
-_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/contract/instantiate.ts)_
+_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/contract/instantiate.ts)_
 
 ## `terrain contract:migrate CONTRACT`
 
@@ -590,7 +588,7 @@ DESCRIPTION
   Migrate the contract.
 ```
 
-_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/contract/migrate.ts)_
+_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/contract/migrate.ts)_
 
 ## `terrain contract:new NAME`
 
@@ -616,7 +614,26 @@ EXAMPLES
   $ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
 ```
 
-_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/contract/new.ts)_
+_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/contract/new.ts)_
+
+## `terrain contract:optimize [CONTRACT]`
+
+Optimize wasm bytecode.
+
+```
+USAGE
+  $ terrain contract:optimize [CONTRACT] [--workspace <value>] [--arm64]
+
+FLAGS
+  --arm64              use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
+                       quicker on arm64 hardware during development.
+  --workspace=<value>  TODO: Add description here.
+
+DESCRIPTION
+  Optimize wasm bytecode.
+```
+
+_See code: [src/commands/contract/optimize.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/contract/optimize.ts)_
 
 ## `terrain contract:store CONTRACT`
 
@@ -641,7 +658,7 @@ DESCRIPTION
   Store code on chain.
 ```
 
-_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/contract/store.ts)_
+_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/contract/store.ts)_
 
 ## `terrain contract:updateAdmin CONTRACT ADMIN`
 
@@ -664,7 +681,7 @@ DESCRIPTION
   Update the admin of a contract.
 ```
 
-_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/contract/updateAdmin.ts)_
+_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/contract/updateAdmin.ts)_
 
 ## `terrain deploy CONTRACT`
 
@@ -672,31 +689,30 @@ Build wasm bytecode, store code on chain and instantiate.
 
 ```
 USAGE
-  $ terrain deploy [CONTRACT] [--signer <value>] [--arm64] [--build] [--set-signer-as-admin] [--network
-    <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
-    [--admin-address <value>] [--frontend-refs-path <value>] [--sync] [--workspace <value>]
+  $ terrain deploy [CONTRACT] [--signer <value>] [--arm64] [--workspace <value>] [--no-rebuild]
+    [--set-signer-as-admin] [--network <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+    [--instance-id <value>] [--admin-address <value>] [--frontend-refs-path <value>]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
   --arm64                       use rust-optimizer-arm64 for optimization. Not recommended for production, but it will
                                 optimize quicker on arm64 hardware during development.
-  --build                       rebuild the wasm before deploying.
   --config-path=<value>         [default: ./config.terrain.json]
   --frontend-refs-path=<value>  [default: ./frontend/src/refs.terrain.json]
   --instance-id=<value>         [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>           [default: ./keys.terrain.js]
   --network=<value>             [default: localterra]
+  --no-rebuild                  deploy the wasm bytecode as is.
   --refs-path=<value>           [default: ./refs.terrain.json]
   --set-signer-as-admin         set signer (deployer) as admin to allow migration.
   --signer=<value>              [default: test1]
-  --sync                        sync the contracts to the frontend.
-  --workspace=<value>
+  --workspace=<value>           TODO: Add description here.
 
 DESCRIPTION
   Build wasm bytecode, store code on chain and instantiate.
 ```
 
-_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/deploy.ts)_
+_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/deploy.ts)_
 
 ## `terrain help [COMMAND]`
 
@@ -748,26 +764,7 @@ EXAMPLES
   $ terrain new awesome_dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"
 ```
 
-_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/new.ts)_
-
-## `terrain optimize [CONTRACT]`
-
-Optimize wasm bytecode.
-
-```
-USAGE
-  $ terrain optimize [CONTRACT] [--workspace <value>] [--arm64]
-
-FLAGS
-  --arm64              use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
-                       quicker on arm64 hardware during development.
-  --workspace=<value>
-
-DESCRIPTION
-  Optimize wasm bytecode.
-```
-
-_See code: [src/commands/optimize.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/optimize.ts)_
+_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/new.ts)_
 
 ## `terrain sync-refs [FILE]`
 
@@ -785,7 +782,7 @@ DESCRIPTION
   Sync configuration with frontend app.
 ```
 
-_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/sync-refs.ts)_
+_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/sync-refs.ts)_
 
 ## `terrain task:new [TASK]`
 
@@ -799,7 +796,7 @@ DESCRIPTION
   create new task
 ```
 
-_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/task/new.ts)_
+_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/task/new.ts)_
 
 ## `terrain task:run [TASK]`
 
@@ -820,7 +817,7 @@ DESCRIPTION
   run predefined task
 ```
 
-_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/task/run.ts)_
+_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/task/run.ts)_
 
 ## `terrain test CONTRACT-NAME`
 
@@ -842,7 +839,7 @@ EXAMPLES
   $ terrain test counter --no-fail-fast
 ```
 
-_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/test.ts)_
+_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/test.ts)_
 
 ## `terrain test:coverage [CONTRACT-NAME]`
 
@@ -861,7 +858,7 @@ EXAMPLES
   $ terrain test:coverage counter
 ```
 
-_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/test/coverage.ts)_
+_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/test/coverage.ts)_
 
 ## `terrain wallet:new`
 
@@ -879,6 +876,5 @@ DESCRIPTION
   Generate a new wallet to use for signing contracts
 ```
 
-_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta1/src/commands/wallet/new.ts)_
-
+_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.5.0-beta7/src/commands/wallet/new.ts)_
 <!-- commandsstop -->

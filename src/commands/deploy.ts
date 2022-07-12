@@ -2,9 +2,7 @@ import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
 import * as fs from 'fs';
 import { loadConfig, loadConnections } from '../config';
-import {
-  instantiate, storeCode, build, optimize,
-} from '../lib/deployment';
+import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
 import * as flag from '../lib/flag';
 
@@ -14,8 +12,8 @@ export default class Deploy extends Command {
   static flags = {
     signer: flag.signer,
     arm64: flag.arm64,
-    // "no-rebuild": flag.noRebuild,
-    build: flag.build,
+    workspace: flag.workspace,
+    'no-rebuild': flag.noRebuild,
     'set-signer-as-admin': flag.setSignerAsAdmin,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: './config.terrain.json' }),
@@ -27,17 +25,6 @@ export default class Deploy extends Command {
     }),
     'frontend-refs-path': flags.string({
       default: './frontend/src/refs.terrain.json',
-    }),
-    // "no-sync": flags.boolean({
-    //   description: "do not sync the contracts to the frontend.",
-    //   default: false,
-    // }),
-    sync: flags.boolean({
-      description: 'sync the contracts to the frontend.',
-      default: true,
-    }),
-    workspace: flags.string({
-      default: undefined,
     }),
   };
 
@@ -59,18 +46,6 @@ export default class Deploy extends Command {
       lcd,
     });
 
-    if (flags.build) {
-      await build({
-        contract: args.contract,
-        workspace: flags.workspace,
-      });
-      await optimize({
-        contract: args.contract,
-        workspace: flags.workspace,
-        arm64: flags.arm64,
-      });
-    }
-
     // Store sequence to manually increment after code is stored.
     const sequence = await signer.sequence();
 
@@ -78,14 +53,16 @@ export default class Deploy extends Command {
       lcd,
       conf,
       signer,
-      contract: args.contract,
+      noRebuild: flags['no-rebuild'],
       workspace: flags.workspace,
+      contract: args.contract,
       network: flags.network,
       refsPath: flags['refs-path'],
       arm64: flags.arm64,
     });
 
     // pause for account sequence to update.
+    // eslint-disable-next-line no-promise-executor-return
     await new Promise((r) => setTimeout(r, 1000));
 
     const admin = flags['set-signer-as-admin']
@@ -105,8 +82,6 @@ export default class Deploy extends Command {
       lcd,
     });
 
-    if (flags.sync) {
-      fs.copyFileSync(flags['refs-path'], flags['frontend-refs-path']);
-    }
+    fs.copyFileSync(flags['refs-path'], flags['frontend-refs-path']);
   }
 }

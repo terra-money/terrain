@@ -27,3 +27,8 @@ export const instanceId = flags.string({
   default: 'default',
   description: 'enable management of multiple instances of the same contract',
 });
+
+export const workspace = flags.string({
+  default: undefined,
+  description: 'TODO: Add description here.',
+});
