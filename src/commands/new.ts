@@ -39,7 +39,7 @@ export default class New extends Command {
   async run() {
     const { args, flags } = this.parse(New);
 
-    if(!/^[A-Za-z0-9_]*$/.exec(args.name)) {
+    if (!/^[A-Za-z0-9_]*$/.exec(args.name)) {
       TerrainCLI.error(`Workspace name '${args.name}' is invalid.\nTip: Use alphanumeric values separating words by underscore e.g: 'awesome_dapp'`);
       return;
     }

@@ -23,7 +23,6 @@ export default class ContractMigrate extends Command {
     'code-id': flags.integer({
       description: 'target code id for migration',
     }),
-    workspace: flags.string({ default: undefined }),
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -47,11 +46,9 @@ export default class ContractMigrate extends Command {
     if (flags.build) {
       await build({
         contract: args.contract,
-        workspace: flags.workspace,
       });
       await optimize({
         contract: args.contract,
-        workspace: flags.workspace,
         arm64: flags.arm64,
       });
     }
@@ -59,7 +56,6 @@ export default class ContractMigrate extends Command {
     const codeId = await storeCode({
       conf,
       contract: args.contract,
-      workspace: flags.workspace,
       signer,
       network: flags.network,
       refsPath: flags['refs-path'],

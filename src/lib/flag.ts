@@ -28,7 +28,12 @@ export const instanceId = flags.string({
   description: 'enable management of multiple instances of the same contract',
 });
 
-export const workspace = flags.string({
-  default: undefined,
-  description: 'TODO: Add description here.',
-});
+export const configPath = flags.string({ default: './config.terrain.json' });
+export const refsPath = flags.string({ default: './refs.terrain.json' });
+export const keysPath = flags.string({ default: './keys.terrain.js' });
+
+export const terrainPaths = {
+  'config-path': configPath,
+  'refs-path': refsPath,
+  'keys-path': keysPath,
+};

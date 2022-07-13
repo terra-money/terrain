@@ -1,13 +1,14 @@
 import { Command } from '@oclif/command';
 import { optimize } from '../../lib/deployment';
 import * as flag from '../../lib/flag';
+import { loadGlobalConfig } from '../../config';
 
 export default class Optimize extends Command {
   static description = 'Optimize wasm bytecode.';
 
   static flags = {
-    workspace: flag.workspace,
     arm64: flag.arm64,
+    'config-path': flag.configPath,
   };
 
   static args = [{ name: 'contract', required: false }];
@@ -15,10 +16,12 @@ export default class Optimize extends Command {
   async run() {
     const { args, flags } = this.parse(Optimize);
 
+    const globalConfig = loadGlobalConfig(flags['config-path']);
+
     await optimize({
       contract: args.contract,
-      workspace: flags.workspace,
       arm64: flags.arm64,
+      useCargoWorkspace: globalConfig.useCargoWorkspace,
     });
   }
 }

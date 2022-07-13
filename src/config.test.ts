@@ -3,22 +3,15 @@ import * as R from 'ramda';
 import { config, loadConfig, loadKeys } from './config';
 
 const _global = {
-  _base: {
-    store: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-        },
+  contracts: {
+    counter: {
+      instantiation: {
+        instantiateMsg: { count: 5 },
       },
     },
+  },
+  _base: {
     instantiation: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-        },
-      },
       instantiateMsg: {},
     },
   },
@@ -30,12 +23,10 @@ const _globalWithOverrides = R.mergeDeepRight(_global, {
       instantiateMsg: { count: 0 },
     },
   },
-  contract_a: {
-    store: {
-      fee: {
-        amount: {
-          uusd: 99999999,
-        },
+  contracts: {
+    contract_a: {
+      instantiation: {
+        instantiateMsg: { count: 5 },
       },
     },
   },
@@ -47,10 +38,10 @@ const local = {
       instantiateMsg: { count: 99 },
     },
   },
-  contract_a: {
-    store: {
-      fee: {
-        gasLimit: 6969,
+  contracts: {
+    contract_a: {
+      instantiation: {
+        instantiateMsg: { count: 100 },
       },
     },
   },
@@ -63,27 +54,19 @@ test('config without overrides should return global base for any contract in any
   expect(conf('mainnet', 'contract_b')).toEqual(_global._base);
 });
 
+test('config without overrides should return specific config for counter contract', () => {
+  const conf = config({ _global });
+
+  expect(conf('local', 'counter')).toEqual(_global.contracts.counter);
+  expect(conf('mainnet', 'counter')).toEqual(_global.contracts.counter);
+});
+
 test('config with overrides in global should return overriden value for all networks', () => {
   const conf = config({ _global: _globalWithOverrides });
 
   const contractAUpdated = {
-    store: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-          uusd: 99999999,
-        },
-      },
-    },
     instantiation: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-        },
-      },
-      instantiateMsg: { count: 0 },
+      instantiateMsg: { count: 5 },
     },
   };
 
@@ -97,40 +80,12 @@ test('config with overrides in global should return overriden value for all netw
 test('config with overrides in _base for the network should overrides for all the contract within the network', () => {
   const conf = config({ _global, local });
   const localContractA = {
-    store: {
-      fee: {
-        gasLimit: 6969,
-        amount: {
-          uluna: 1000000,
-        },
-      },
-    },
     instantiation: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-        },
-      },
-      instantiateMsg: { count: 99 },
+      instantiateMsg: { count: 100 },
     },
   };
   const localOtherContract = {
-    store: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-        },
-      },
-    },
     instantiation: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-        },
-      },
       instantiateMsg: { count: 99 },
     },
   };
@@ -144,27 +99,14 @@ test('config with overrides in _base for the network should overrides for all th
 test('load config', () => {
   const conf = loadConfig();
   expect(conf('localterra', 'contract_a')).toEqual({
-    store: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-        },
-      },
-    },
     instantiation: {
-      fee: {
-        gasLimit: 2000000,
-        amount: {
-          uluna: 1000000,
-        },
-      },
       instantiateMsg: { count: 0 },
     },
   });
 });
 
-test('load wallets', () => {
+// TODO: keys were moved into a separate repo.
+test.skip('load wallets', () => {
   const wallets = loadKeys();
   const ct1 = wallets.custom_tester_1 as MnemonicKey;
   expect(ct1.mnemonic).toBe(

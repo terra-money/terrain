@@ -16,7 +16,6 @@ export default class CodeStore extends Command {
     'refs-path': flags.string({ default: './refs.terrain.json' }),
     'keys-path': flags.string({ default: './keys.terrain.js' }),
     'code-id': flags.integer({}),
-    workspace: flags.string({ default: undefined }),
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -40,7 +39,6 @@ export default class CodeStore extends Command {
     await storeCode({
       conf,
       contract: args.contract,
-      workspace: flags.workspace,
       signer,
       network: flags.network,
       refsPath: flags['refs-path'],

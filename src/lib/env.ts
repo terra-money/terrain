@@ -17,16 +17,14 @@ import {
 import { LCDClientExtra } from './LCDClientExtra';
 
 export type DeployHelpers = {
-  build: (contract?: string, workspace?: string) => Promise<void>;
+  build: (contract: string) => Promise<void>;
   optimize: (
     contract: string,
-    workspace?: string,
     arm64?: boolean
   ) => Promise<void>;
   storeCode: (
     signer: Wallet,
     contract: string,
-    workspace?: string
   ) => Promise<number>;
   instantiate: (
     signer: Wallet,
@@ -75,19 +73,16 @@ export const getEnv = (
     client: lcd,
     // Enable tasks to deploy code.
     deploy: {
-      build: (contract?: string, workspace?: string) => build({
+      build: (contract: string) => build({
         contract,
-        workspace,
       }),
-      optimize: (contract: string, workspace?: string, arm64?: boolean) => optimize({
+      optimize: (contract: string, arm64?: boolean) => optimize({
         contract,
-        workspace,
         arm64,
       }),
-      storeCode: (signer: Wallet, contract: string, workspace?: string) => storeCode({
+      storeCode: (signer: Wallet, contract: string) => storeCode({
         signer,
         contract,
-        workspace,
         network,
         refsPath,
         lcd,
