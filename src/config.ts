@@ -13,26 +13,28 @@ export type InstantiateMessage = Record<string, any>;
 export type ContractConfig = {
   // TODO: Remove since fee in config is deprecated.
   /**
- * @deprecated The property should not be used
- */
+   * @deprecated The property should not be used
+   */
   store?: { fee: Fee };
   instantiation: {
-  // TODO: Remove since fee in config is deprecated.
-  /**
- * @deprecated The property should not be used
- */
+    // TODO: Remove since fee in config is deprecated.
+    /**
+     * @deprecated The property should not be used
+     */
     fee?: Fee;
     instantiateMsg: InstantiateMessage;
   };
 };
 
 type Config = {
-  [contract: string]: ContractConfig;
+  _base: ContractConfig;
+  contracts?: { [contract: string]: ContractConfig };
 };
 
 type GlobalConfig = {
   _base: ContractConfig;
-  [contract: string]: ContractConfig;
+  useCargoWorkspace?: boolean;
+  contracts?: { [contract: string]: ContractConfig };
 };
 
 export type ContractRef = {
@@ -48,19 +50,38 @@ export type Refs = {
   };
 };
 
-export const connection = (networks: { [network: string]: { _connection: LCDClientConfig } }) => (network: string) => networks[network]._connection
+export const connection = (
+  networks: {
+    [network: string]: {
+      _connection: LCDClientConfig,
+    }
+  },
+) => (network: string) => networks[network]._connection
     || cli.error(`network '${network}' not found in config`);
 
 export const loadConnections = (
   path = `${__dirname}/template/config.terrain.json`,
 ) => connection(fs.readJSONSync(path));
 
-export const config = (allConfig: { _global: GlobalConfig; [network: string]: Partial<Config> }) => (network: string, contract: string): ContractConfig => {
+export const config = (
+  allConfig: {
+    _global: GlobalConfig;
+    [network: string]: Partial<Config>,
+  },
+) => (network: string, contract: string): ContractConfig => {
   const globalBaseConfig = (allConfig._global && allConfig._global._base) || {};
-  const globalContractConfig = (allConfig._global && allConfig._global[contract]) || {};
+  const globalContractConfig = (
+    allConfig._global
+    && allConfig._global.contracts
+    && allConfig._global.contracts[contract]
+  ) || {};
 
   const baseConfig = (allConfig[network] && allConfig[network]._base) || {};
-  const contractConfig = (allConfig[network] && allConfig[network][contract]) || {};
+  const contractConfig = (
+    allConfig[network]
+    && allConfig[network].contracts
+    && allConfig[network].contracts![contract]
+  ) || {};
 
   return [
     allConfig._global._base,
@@ -85,18 +106,30 @@ export const loadConfig = (
   path = `${__dirname}/template/config.terrain.json`,
 ) => config(fs.readJSONSync(path));
 
+export const loadGlobalConfig = (
+  path = `${__dirname}/template/config.terrain.json`,
+  // Extract useCargoWorkspace from global config.
+) => (({ _global: { useCargoWorkspace } }) => ({ useCargoWorkspace }))(fs.readJSONSync(path));
+
 export const loadKeys = (
   path = `${__dirname}/template/keys.terrain.js`,
 ): { [keyName: string]: RawKey } => {
+  // eslint-disable-next-line import/no-dynamic-require, global-require
   const keys = require(path);
   return R.map(
-    (w) => (w.privateKey
-      ? new RawKey(Buffer.from(w.privateKey, 'base64'))
-      : w.mnemonic
-        ? new MnemonicKey(w)
-        : cli.error(
-          'Error: Key must be defined with either `privateKey` or `mnemonic`',
-        )),
+    (w) => {
+      if (w.privateKey) {
+        return new RawKey(Buffer.from(w.privateKey, 'base64'));
+      }
+
+      if (w.mnemonic) {
+        return new MnemonicKey(w);
+      }
+
+      return cli.error(
+        'Error: Key must be defined with either `privateKey` or `mnemonic`',
+      );
+    },
     keys,
   );
 };

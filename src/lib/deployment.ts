@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import Os from 'os';
 import {
   AccAddress,
   LCDClient,
@@ -15,7 +16,7 @@ import { execSync } from 'child_process';
 import * as fs from 'fs-extra';
 import { cli } from 'cli-ux';
 import * as YAML from 'yaml';
-import { waitForInclusionInBlock } from '../lib/waitForInclusionBlock';
+import path from 'path';
 import {
   ContractConfig,
   loadRefs,
@@ -25,20 +26,96 @@ import {
 } from '../config';
 import TerrainCLI from '../TerrainCLI';
 
+type BuildParams = {
+  contract: string;
+};
+
+export const build = async ({ contract }: BuildParams) => {
+  const startingDirectory = process.cwd();
+  const folder = path.join('contracts', contract);
+  process.chdir(folder);
+
+  const { package: pkg } = parse(fs.readFileSync('./Cargo.toml', 'utf-8'));
+  if (contract !== pkg.name) {
+    cli.error(`Change the package name in Cargo.toml to ${contract} to build`);
+  }
+
+  execSync('cargo wasm', { stdio: 'inherit' });
+  process.chdir(startingDirectory);
+};
+
+const execDockerOptimization = (image: string, cache: string) => {
+  const dir = Os.platform() === 'win32' ? '%cd%' : '$(pwd)';
+
+  execSync(
+    `docker run --rm -v "${dir}":/code \
+      --mount type=volume,source="${cache}_cache",target=/code/target \
+      --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+      ${image}`,
+    { stdio: 'inherit' },
+  );
+};
+
+type OptimizeContractParams = {
+  contract: string;
+  arm64: boolean | undefined;
+};
+
+const optimizeContract = async ({
+  contract,
+  arm64,
+}: OptimizeContractParams) => {
+  const startingDirectory = process.cwd();
+  const folder = path.join('contracts', contract);
+  process.chdir(folder);
+
+  const image = `cosmwasm/rust-optimizer${arm64 ? '-arm64' : ''}:0.12.6`;
+
+  execDockerOptimization(image, contract);
+
+  process.chdir(startingDirectory);
+};
+
+const optimizeWorkspace = async ({
+  contract,
+  arm64,
+}: OptimizeContractParams) => {
+  const image = `cosmwasm/workspace-optimizer${arm64 ? '-arm64' : ''}:0.12.6`;
+  execDockerOptimization(image, contract);
+};
+
+type OptimizeParams = {
+  contract: string;
+  useCargoWorkspace?: boolean,
+  arm64?: boolean;
+};
+
+export const optimize = async ({
+  contract,
+  arm64,
+  useCargoWorkspace,
+}: OptimizeParams) => {
+  if (useCargoWorkspace) {
+    optimizeWorkspace({ contract, arm64 });
+  } else {
+    optimizeContract({ contract, arm64 });
+  }
+};
+
 type StoreCodeParams = {
   conf: ContractConfig;
   network: string;
   refsPath: string;
   lcd: LCDClient;
-  noRebuild: boolean;
   contract: string;
+  noRebuild?: boolean;
   signer: Wallet;
   codeId?: number;
   arm64?: boolean;
+  useCargoWorkspace?: boolean,
 };
 
 export const storeCode = async ({
-  noRebuild,
   contract,
   signer,
   network,
@@ -46,28 +123,12 @@ export const storeCode = async ({
   lcd,
   codeId,
   arm64,
+  noRebuild,
+  useCargoWorkspace,
 }: StoreCodeParams) => {
-  process.chdir(`contracts/${contract}`);
-  const { package: pkg } = parse(fs.readFileSync('./Cargo.toml', 'utf-8'));
-  if (contract !== pkg.name) {
-    cli.error(`Change the package name in Cargo.toml to ${contract} to build`);
-  }
-
   if (!noRebuild) {
-    execSync('cargo wasm', { stdio: 'inherit' });
-
-    if (arm64) {
-      // Need to use the rust-optimizer-arm64 image on arm64 architecture.
-      execSync('docker run --rm -v "$(pwd)":/code \
-        --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
-        --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-        cosmwasm/rust-optimizer-arm64:0.12.5', { stdio: 'inherit' });
-    } else {
-      execSync('docker run --rm -v "$(pwd)":/code \
-        --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
-        --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-        cosmwasm/rust-optimizer:0.12.5', { stdio: 'inherit' });
-    }
+    await build({ contract });
+    await optimize({ contract, arm64, useCargoWorkspace });
   }
 
   let wasmByteCodeFilename = `${contract.replace(/-/g, '_')}`;
@@ -79,9 +140,9 @@ export const storeCode = async ({
 
   wasmByteCodeFilename += '.wasm';
 
-  const wasmByteCode = fs
-    .readFileSync(`artifacts/${wasmByteCodeFilename}`)
-    .toString('base64');
+  const artifactFileName = path.join('contracts', contract, 'artifacts', wasmByteCodeFilename);
+
+  const wasmByteCode = fs.readFileSync(artifactFileName).toString('base64');
 
   cli.action.start('storing wasm bytecode on chain');
 
@@ -92,25 +153,14 @@ export const storeCode = async ({
         : new MsgStoreCode(signer.key.accAddress, wasmByteCode),
     ],
   });
-  const result = await lcd.tx.broadcastSync(storeCodeTx);
-  if ('code' in result) {
-    return cli.error(result.raw_log);
-  }
 
-  const res = await waitForInclusionInBlock(lcd, result.txhash);
-
-  cli.action.stop();
-
-  if (typeof res === 'undefined') {
-    return cli.error('transaction not included in a block before timeout');
-  }
+  const res = await lcd.tx.broadcast(storeCodeTx);
 
   try {
     const savedCodeId = JSON.parse((res && res.raw_log) || '')[0]
       .events.find((msg: { type: string }) => msg.type === 'store_code')
       .attributes.find((attr: { key: string }) => attr.key === 'code_id').value;
 
-    process.chdir('../..');
     const updatedRefs = setCodeId(
       network,
       contract,
@@ -124,9 +174,11 @@ export const storeCode = async ({
     if (error instanceof SyntaxError) {
       cli.error(res.raw_log);
     } else {
-      cli.error(`Unexpcted Error: ${error}`);
+      cli.error(`Unexpected Error: ${error}`);
     }
   }
+
+  return undefined;
 };
 
 type InstantiateParams = {
@@ -138,7 +190,7 @@ type InstantiateParams = {
   admin?: AccAddress;
   contract: string;
   codeId: number;
-  instanceId: string;
+  instanceId?: string;
   sequence?: number;
 };
 
@@ -156,17 +208,23 @@ export const instantiate = async ({
 }: InstantiateParams) => {
   const { instantiation } = conf;
 
-  cli.action.start(`instantiating contract with code id: ${codeId}`);
+  cli.action.start(
+    `instantiating contract with msg: ${JSON.stringify(
+      instantiation.instantiateMsg,
+    )}`,
+  );
 
   // Allow manual account sequences.
   const manualSequence = sequence || (await signer.sequence());
 
   // Create signerData and txOptions for fee estimation.
   const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress);
-  const signerData: [SignerData] = [{
-    sequenceNumber: manualSequence,
-    publicKey: accountInfo.getPublicKey(),
-  }];
+  const signerData: [SignerData] = [
+    {
+      sequenceNumber: manualSequence,
+      publicKey: accountInfo.getPublicKey(),
+    },
+  ];
   const txOptions: CreateTxOptions = {
     msgs: [
       new MsgInstantiateContract(
@@ -190,7 +248,9 @@ export const instantiate = async ({
   if (network === 'mainnet') {
     const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
     const gasFee = Number(feeEstimate.amount.get(txOptions.feeDenoms[0])!.amount) / 1000000;
-    await TerrainCLI.anykey(`The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`);
+    await TerrainCLI.anykey(
+      `The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`,
+    );
   }
 
   const instantiateTx = await signer.createAndSignTx({
@@ -198,8 +258,7 @@ export const instantiate = async ({
     ...txOptions,
   });
 
-  const result = await lcd.tx.broadcastSync(instantiateTx);
-  const res = await waitForInclusionInBlock(lcd, result.txhash);
+  const res = await lcd.tx.broadcast(instantiateTx);
 
   let log = [];
   try {
@@ -215,16 +274,21 @@ export const instantiate = async ({
 
   cli.action.stop();
 
-  const contractAddress: string = log[0].events
-    .find((event: { type: string }) => event.type === 'instantiate')
-    .attributes.find(
-      (attr: { key: string }) => attr.key === '_contract_address',
-    ).value;
+  const event = log[0].events.find(
+    (e: { type: string }) => e.type === 'instantiate_contract',
+  )
+    ?? log[0].events.find(
+      (e: { type: string }) => e.type === 'instantiate',
+    );
+
+  const contractAddress: string = event.attributes.find(
+    (attr: { key: string }) => attr.key === '_contract_address',
+  ).value;
 
   const updatedRefs = setContractAddress(
     network,
     contract,
-    instanceId,
+    instanceId || 'default',
     contractAddress,
   )(loadRefs(refsPath));
   saveRefs(updatedRefs, refsPath);
@@ -260,7 +324,9 @@ export const migrate = async ({
 
   const contractAddress = refs[network][contract].contractAddresses[instanceId];
 
-  cli.action.start(`migrating contract with address ${contractAddress} to code id: ${codeId}`);
+  cli.action.start(
+    `migrating contract with address ${contractAddress} to code id: ${codeId}`,
+  );
 
   const migrateTx = await signer.createAndSignTx({
     msgs: [
@@ -283,7 +349,7 @@ export const migrate = async ({
     if (error instanceof SyntaxError) {
       cli.error(resInstant.raw_log);
     } else {
-      cli.error(`Unexpcted Error: ${error}`);
+      cli.error(`Unexpected Error: ${error}`);
     }
   }
 

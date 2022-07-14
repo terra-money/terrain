@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
-import { loadConfig, loadConnections } from '../config';
+import { loadConfig, loadConnections, loadGlobalConfig } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
 import * as flag from '../lib/flag';
@@ -12,19 +12,14 @@ export default class Deploy extends Command {
   static flags = {
     signer: flag.signer,
     arm64: flag.arm64,
+    network: flag.network,
     'no-rebuild': flag.noRebuild,
     'set-signer-as-admin': flag.setSignerAsAdmin,
-    network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: './config.terrain.json' }),
-    'refs-path': flags.string({ default: './refs.terrain.json' }),
-    'keys-path': flags.string({ default: './keys.terrain.js' }),
     'instance-id': flag.instanceId,
     'admin-address': flags.string({
       description: 'set custom address as contract admin to allow migration.',
     }),
-    'frontend-refs-path': flags.string({
-      default: './frontend/src/refs.terrain.json',
-    }),
+    ...flag.terrainPaths,
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -34,6 +29,7 @@ export default class Deploy extends Command {
 
     const connections = loadConnections(flags['config-path']);
     const config = loadConfig(flags['config-path']);
+    const globalConfig = loadGlobalConfig(flags['config-path']);
     const conf = config(flags.network, args.contract);
 
     // @ts-ignore
@@ -57,12 +53,12 @@ export default class Deploy extends Command {
       network: flags.network,
       refsPath: flags['refs-path'],
       arm64: flags.arm64,
+      useCargoWorkspace: globalConfig.useCargoWorkspace,
     });
 
     // pause for account sequence to update.
-    await new Promise((r) => {
-      setTimeout(r, 1000);
-    });
+    // eslint-disable-next-line no-promise-executor-return
+    await new Promise((r) => setTimeout(r, 1000));
 
     const admin = flags['set-signer-as-admin']
       ? signer.key.accAddress

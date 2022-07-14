@@ -11,16 +11,29 @@ import {
   loadKeys,
   loadRefs,
 } from '../config';
-import { storeCode, instantiate } from './deployment';
+import {
+  storeCode,
+  instantiate,
+  build,
+  optimize,
+} from './deployment';
 import { LCDClientExtra } from './LCDClientExtra';
 
 export type DeployHelpers = {
-  storeCode: (signer: Wallet, contract: string) => Promise<number>;
+  build: (contract: string) => Promise<void>;
+  optimize: (
+    contract: string,
+    arm64?: boolean
+  ) => Promise<void>;
+  storeCode: (
+    signer: Wallet,
+    contract: string,
+  ) => Promise<number>;
   instantiate: (
     signer: Wallet,
     contract: string,
     codeId: number,
-    instanceId: string,
+    instanceId?: string,
     admin?: string,
     conf?: ContractConfig
   ) => Promise<string>;
@@ -72,6 +85,13 @@ export const getEnv = (
     client: lcd,
     // Enable tasks to deploy code.
     deploy: {
+      build: (contract: string) => build({
+        contract,
+      }),
+      optimize: (contract: string, arm64?: boolean) => optimize({
+        contract,
+        arm64,
+      }),
       storeCode: (signer: Wallet, contract: string) => storeCode({
         signer,
         contract,
@@ -85,7 +105,7 @@ export const getEnv = (
         signer: Wallet,
         contract: string,
         codeId: number,
-        instanceId: string,
+        instanceId?: string,
         admin?: AccAddress,
         init?: InstantiateMessage,
       ) => instantiate({
