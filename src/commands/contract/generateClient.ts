@@ -2,7 +2,7 @@ import { Command, flags } from '@oclif/command';
 import { cli } from 'cli-ux';
 import { execSync } from 'child_process';
 import * as fs from 'fs-extra';
-import capitalize from '../../lib/capitalize';
+import { pascal } from 'case';
 import TerrainCLI from '../../TerrainCLI';
 import generateClient from '../../lib/generateClient';
 
@@ -34,10 +34,10 @@ export default class GenerateClient extends Command {
     }
 
     cli.action.start(
-      `generating ${capitalize(args.contract)}Client.ts`,
+      `generating ${pascal(args.contract)}Client.ts`,
     );
 
-    await generateClient(capitalize(args.contract), `./contracts/${args.contract}/schema`, `${flags['lib-path']}/clients`);
+    await generateClient(pascal(args.contract), `./contracts/${args.contract}/schema`, `${flags['lib-path']}/clients`);
 
     cli.action.stop();
 
