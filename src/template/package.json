@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "@terra-money/terrain": "0.5.6"
+    "@terra-money/terrain": "0.5.7"
   },
   "workspaces": [
     "frontend"
