@@ -80,7 +80,7 @@ export default class New extends Command {
     cli.action.start('- frontend');
     if (flags.framework === 'react') {
       await TemplateScaffolding.from({
-        remoteUrl: 'https://codeload.github.com/octalmage/terrain-frontend-template/zip/refs/heads/main',
+        remoteUrl: 'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main',
         subFolder: 'terrain-frontend-template-main',
         localOptions: {
           folderUrl: path.join(process.cwd(), flags.path, args.name, 'frontend'),
