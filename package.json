@@ -30,7 +30,6 @@
     "prepack:use": "npm run prepack && npm run use",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "postpack": "rm -f oclif.manifest.json",
-    "postinstall": "cd ./packages/cosmwasm-typescript-gen && npm i && cd ../wasm-ast-types && npm i",
     "test": "jest",
     "test:watch": "jest --watch",
     "posttest": "eslint . --ext .ts --config .eslintrc",
