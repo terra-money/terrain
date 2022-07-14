@@ -477,6 +477,7 @@ npm unlink terrain
 
 <!-- commands -->
 * [`terrain console`](#terrain-console)
+* [`terrain contract:generateClient CONTRACT`](#terrain-contractgenerateclient-contract)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
 * [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
 * [`terrain contract:new NAME`](#terrain-contractnew-name)
@@ -494,24 +495,45 @@ npm unlink terrain
 
 ## `terrain console`
 
-Start a repl console that provides context and convinient utilities to interact with the blockchain and your contracts.
+Start a repl console that provides context and convenient utilities to interact with the blockchain and your contracts.
 
 ```
 USAGE
-  $ terrain console [--network <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain console [--signer <value>] [--network <value>] [--config-path <value>] [--refs-path <value>]
+    [--keys-path <value>]
 
 FLAGS
   --config-path=<value>  [default: config.terrain.json]
   --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra]
   --refs-path=<value>    [default: refs.terrain.json]
+  --signer=<value>       [default: test1]
 
 DESCRIPTION
-  Start a repl console that provides context and convinient utilities to interact with the blockchain and your
+  Start a repl console that provides context and convenient utilities to interact with the blockchain and your
   contracts.
 ```
 
 _See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/console.ts)_
+
+## `terrain contract:generateClient CONTRACT`
+
+Generate a Wallet Provider or Terra.js compatible TypeScript client.
+
+```
+USAGE
+  $ terrain contract:generateClient [CONTRACT] [--lib-path <value>] [--dest <value>] [--build-schema]
+
+FLAGS
+  --build-schema
+  --dest=<value>      [default: ./frontend/src/contract]
+  --lib-path=<value>  [default: ./lib] location to place the generated client
+
+DESCRIPTION
+  Generate a Wallet Provider or Terra.js compatible TypeScript client.
+```
+
+_See code: [src/commands/contract/generateClient.ts](https://github.com/terra-money/terrain/blob/v0.4.1/src/commands/contract/generateClient.ts)_
 
 ## `terrain contract:instantiate CONTRACT`
 
@@ -758,14 +780,15 @@ run predefined task
 
 ```
 USAGE
-  $ terrain task:run [TASK] [--network <value>] [--config-path <value>] [--refs-path <value>] [--keys-path
-    <value>]
+  $ terrain task:run [TASK] [--signer <value>] [--network <value>] [--config-path <value>] [--refs-path
+    <value>] [--keys-path <value>]
 
 FLAGS
   --config-path=<value>  [default: config.terrain.json]
   --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra]
   --refs-path=<value>    [default: refs.terrain.json]
+  --signer=<value>       [default: test1]
 
 DESCRIPTION
   run predefined task
