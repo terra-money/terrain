@@ -30,6 +30,7 @@
     "prepack:use": "npm run prepack && npm run use",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "postpack": "rm -f oclif.manifest.json",
+    "postinstall": "cd packages/cosmwasm-typescript-gen && npm i && cd ../wasm-ast-types && npm i",
     "test": "jest",
     "test:watch": "jest --watch",
     "posttest": "eslint . --ext .ts --config .eslintrc",
@@ -44,7 +45,6 @@
     "@oclif/plugin-help": "^5.1.12",
     "@oclif/plugin-not-found": "^2.3.1",
     "@terra-money/template-scaffolding": "1.0.1",
-    "@terra-money/terra-cosmwasm-typescript-gen": "file:packages/cosmwasm-typescript-gen",
     "@terra-money/terra.js": "^3.1.0",
     "adm-zip": "^0.5.9",
     "chalk": "^4.0.0",
@@ -55,7 +55,6 @@
     "toml": "^3.0.0",
     "ts-node": "^10.8.1",
     "tslib": "^1.14.1",
-    "wasm-ast-types": "file:packages/wasm-ast-types",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
