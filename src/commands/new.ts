@@ -3,7 +3,7 @@ import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import cli from 'cli-ux';
 import * as path from 'path';
 import * as fs from 'fs';
-import capitalize from '../lib/capitalize';
+import { pascal } from 'case';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
@@ -44,7 +44,7 @@ export default class New extends Command {
 
     const templateEntries = {
       'project-name': args.name,
-      'client-name': `${capitalize(args.name)}Client`,
+      'client-name': `${pascal(args.name)}Client`,
       crate_name: args.name,
       authors: flags.authors,
       ' "now" | date: "%Y" ': `${new Date().getFullYear()}`,
