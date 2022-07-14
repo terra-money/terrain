@@ -82,14 +82,15 @@ function runScript(
   // keep track of whether callback has been invoked to prevent multiple invocations
   let invoked = false;
 
-  const cProcess = childProcess.fork(scriptPath,
+  const cProcess = childProcess.fork(
+    scriptPath,
     {
       env: {
         ...process.env,
-        ...env
+        ...env,
       },
-      execArgv: ['-r', 'ts-node/register']
-    }
+      execArgv: ['-r', 'ts-node/register/transpile-only'],
+    },
   );
 
   // listen for errors as they may prevent the exit event from firing
