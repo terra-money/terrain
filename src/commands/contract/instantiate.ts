@@ -10,16 +10,14 @@ export default class ContractInstantiate extends Command {
 
   static flags = {
     signer: flag.signer,
+    network: flag.network,
     'set-signer-as-admin': flag.setSignerAsAdmin,
-    network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: './config.terrain.json' }),
-    'refs-path': flags.string({ default: './refs.terrain.json' }),
-    'keys-path': flags.string({ default: './keys.terrain.js' }),
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
       description:
-        'specfic codeId to instantiate',
+        'specific codeId to instantiate',
     }),
+    ...flag.terrainPaths,
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -47,7 +45,7 @@ export default class ContractInstantiate extends Command {
       ? signer.key.accAddress
       : undefined;
 
-    instantiate({
+    await instantiate({
       conf,
       signer,
       admin,

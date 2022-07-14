@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as repl from 'repl';
 import * as terrajs from '@terra-money/terra.js';
 import { getEnv } from '../lib/env';
-import { signer } from '../lib/flag';
+import { signer, network, terrainPaths} from '../lib/flag';
 
 // Needed for Terrain to be able to require typescript modules.
 require('ts-node').register({
@@ -18,10 +18,8 @@ export default class Console extends Command {
 
   static flags = {
     signer,
-    network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
+    network,
+    ...terrainPaths,
   };
 
   static args = [];
