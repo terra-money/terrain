@@ -1,6 +1,6 @@
 {
-  "name": "@terra-money/terra-cosmwasm-typescript-gen",
-  "version": "0.1.0",
+  "name": "@octalmage/terra-cosmwasm-typescript-gen",
+  "version": "0.1.1",
   "description": "A TypeScript Transpiler for CosmWasm Smart Contracts on Terra",
   "author": "Dan Lynch <pyramation@gmail.com>",
   "homepage": "https://github.com/pyramation/cosmwasm-typescript-gen",
@@ -79,6 +79,7 @@
     "@babel/runtime": "^7.18.3",
     "@babel/traverse": "7.18.5",
     "@babel/types": "7.18.4",
+    "@octalmage/wasm-ast-types": "^0.3.3",
     "case": "1.6.3",
     "dargs": "7.0.0",
     "fuzzy": "0.1.3",
