@@ -1,10 +1,10 @@
 import { Command, flags } from '@oclif/command';
 import * as path from 'path';
-import * as childProcess from 'child_process';
 import { cli } from 'cli-ux';
 import * as fs from 'fs-extra';
 import { Env, getEnv } from '../../lib/env';
 import * as flag from '../../lib/flag';
+import runScript from '../../lib/runScript';
 
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
@@ -42,22 +42,22 @@ export default class Run extends Command {
 
   static args = [{ name: 'task' }];
 
-  fromCwd = (p: string) => path.join(process.cwd(), p);
+  static fromCwd = (p: string) => path.join(process.cwd(), p);
 
   async run() {
     const { args, flags } = this.parse(Run);
-    let scriptPath = this.fromCwd(`tasks/${args.task}.ts`);
+    let scriptPath = Run.fromCwd(`tasks/${args.task}.ts`);
 
     if (!fs.existsSync(scriptPath)) {
-      scriptPath = this.fromCwd(`tasks/${args.task}.js`);
+      scriptPath = Run.fromCwd(`tasks/${args.task}.js`);
     }
 
     runScript(
       scriptPath,
       {
-        configPath: this.fromCwd(flags['config-path']),
-        keysPath: this.fromCwd(flags['keys-path']),
-        refsPath: this.fromCwd(flags['refs-path']),
+        configPath: Run.fromCwd(flags['config-path']),
+        keysPath: Run.fromCwd(flags['keys-path']),
+        refsPath: Run.fromCwd(flags['refs-path']),
         network: flags.network,
         signer: flags.signer,
       },
@@ -66,45 +66,4 @@ export default class Run extends Command {
       },
     );
   }
-}
-
-function runScript(
-  scriptPath: string,
-  env: {
-    configPath: string;
-    keysPath: string;
-    refsPath: string;
-    network: string;
-    signer: string;
-  },
-  callback: (err?: Error) => void,
-) {
-  // keep track of whether callback has been invoked to prevent multiple invocations
-  let invoked = false;
-
-  const cProcess = childProcess.fork(
-    scriptPath,
-    {
-      env: {
-        ...process.env,
-        ...env,
-      },
-      execArgv: ['-r', 'ts-node/register/transpile-only'],
-    },
-  );
-
-  // listen for errors as they may prevent the exit event from firing
-  cProcess.on('error', (err) => {
-    if (invoked) return;
-    invoked = true;
-    callback(err);
-  });
-
-  // execute the callback once the process has finished running
-  cProcess.on('exit', (code) => {
-    if (invoked) return;
-    invoked = true;
-    const err = code === 0 ? undefined : new Error(`exit code ${code}`);
-    callback(err);
-  });
 }
