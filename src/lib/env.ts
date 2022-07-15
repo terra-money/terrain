@@ -1,5 +1,7 @@
 import {
-  AccAddress, LocalTerra, RawKey, Wallet,
+  LocalTerra,
+  RawKey,
+  Wallet,
 } from '@terra-money/terra.js';
 import * as R from 'ramda';
 import {
@@ -7,6 +9,7 @@ import {
   ContractRef,
   InstantiateMessage,
   loadConfig,
+  loadGlobalConfig,
   loadConnections,
   loadKeys,
   loadRefs,
@@ -26,16 +29,21 @@ export type DeployHelpers = {
     arm64?: boolean
   ) => Promise<void>;
   storeCode: (
-    signer: Wallet,
     contract: string,
+    signer: Wallet,
+    options?: {
+      noRebuild?: boolean,
+    },
   ) => Promise<number>;
   instantiate: (
-    signer: Wallet,
     contract: string,
-    codeId: number,
-    instanceId?: string,
-    admin?: string,
-    conf?: ContractConfig
+    signer: Wallet,
+    options?: {
+      codeId?: number,
+      instanceId?: string,
+      admin?: string,
+      init?: InstantiateMessage,
+    },
   ) => Promise<string>;
 };
 
@@ -57,7 +65,7 @@ export const getEnv = (
 ): Env => {
   const connections = loadConnections(configPath);
   const config = loadConfig(configPath);
-
+  const globalConfig = loadGlobalConfig(configPath);
   const keys = loadKeys(keysPath);
   const refs = loadRefs(refsPath)[network];
 
@@ -91,34 +99,35 @@ export const getEnv = (
       optimize: (contract: string, arm64?: boolean) => optimize({
         contract,
         arm64,
+        useCargoWorkspace: globalConfig.useCargoWorkspace,
       }),
-      storeCode: (signer: Wallet, contract: string) => storeCode({
+      storeCode: (contract: string, signer: Wallet, options) => storeCode({
         signer,
         contract,
         network,
         refsPath,
         lcd,
         conf: config(network, contract),
-        noRebuild: false,
+        noRebuild: typeof options?.noRebuild === 'undefined' ? false : options.noRebuild,
+        useCargoWorkspace: globalConfig.useCargoWorkspace,
       }),
       instantiate: (
-        signer: Wallet,
         contract: string,
-        codeId: number,
-        instanceId?: string,
-        admin?: AccAddress,
-        init?: InstantiateMessage,
+        signer: Wallet,
+        options,
       ) => instantiate({
-        instanceId,
-        codeId,
+        instanceId: options?.instanceId,
+        codeId: options?.codeId,
         signer,
         contract,
         network,
         refsPath,
         lcd,
-        admin,
+        admin: options?.admin,
         // Use the instantiation message passed instead of default.
-        conf: init ? { instantiation: { instantiateMsg: init } } : config(network, contract),
+        conf: options?.init
+          ? { instantiation: { instantiateMsg: options.init } }
+          : config(network, contract),
       }),
     },
   };

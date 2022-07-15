@@ -27,6 +27,10 @@ export const refsPath = flags.string({ default: './refs.terrain.json' });
 
 export const keysPath = flags.string({ default: './keys.terrain.js' });
 
+export const frontendRefsPath = flags.string({
+  default: './frontend/src/',
+});
+
 // These three are commonly used together.
 export const terrainPaths = {
   'config-path': configPath,

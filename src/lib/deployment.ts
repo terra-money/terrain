@@ -140,7 +140,9 @@ export const storeCode = async ({
 
   wasmByteCodeFilename += '.wasm';
 
-  const artifactFileName = path.join('contracts', contract, 'artifacts', wasmByteCodeFilename);
+  const artifactFileName = useCargoWorkspace
+    ? path.join('artifacts', wasmByteCodeFilename)
+    : path.join('contracts', contract, 'artifacts', wasmByteCodeFilename);
 
   const wasmByteCode = fs.readFileSync(artifactFileName).toString('base64');
 
@@ -189,7 +191,7 @@ type InstantiateParams = {
   lcd: LCDClient;
   admin?: AccAddress;
   contract: string;
-  codeId: number;
+  codeId?: number;
   instanceId?: string;
   sequence?: number;
 };
@@ -207,6 +209,8 @@ export const instantiate = async ({
   sequence,
 }: InstantiateParams) => {
   const { instantiation } = conf;
+
+  const actualCodeId = codeId || loadRefs(refsPath)[network][contract].codeId;
 
   cli.action.start(
     `instantiating contract with msg: ${JSON.stringify(
@@ -230,7 +234,7 @@ export const instantiate = async ({
       new MsgInstantiateContract(
         signer.key.accAddress,
         admin, // can migrate
-        codeId,
+        actualCodeId,
         instantiation.instantiateMsg,
         undefined,
         'Instantiate',

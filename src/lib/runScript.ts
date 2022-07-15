@@ -20,8 +20,13 @@ export default (
       env: {
         ...process.env,
         ...env,
+        TS_NODE_COMPILER_OPTIONS: '{"module":"commonjs", "esModuleInterop": true, "moduleResolution": "node"}',
       },
-      execArgv: ['-r', 'ts-node/register/transpile-only'],
+      execArgv: [
+        '--no-warnings',
+        '--loader',
+        'ts-node/esm/transpile-only',
+      ],
     },
   );
 

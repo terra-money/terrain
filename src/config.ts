@@ -11,19 +11,18 @@ type Fee = {
 export type InstantiateMessage = Record<string, any>;
 
 export type ContractConfig = {
-  // TODO: Remove since fee in config is deprecated.
   /**
    * @deprecated The property should not be used
    */
   store?: { fee: Fee };
   instantiation: {
-    // TODO: Remove since fee in config is deprecated.
     /**
      * @deprecated The property should not be used
      */
     fee?: Fee;
     instantiateMsg: InstantiateMessage;
   };
+  deployTask?: string,
 };
 
 type Config = {
@@ -66,7 +65,7 @@ export const loadConnections = (
 export const config = (
   allConfig: {
     _global: GlobalConfig;
-    [network: string]: Partial<Config>,
+    [network: string]: Partial<Config>;
   },
 ) => (network: string, contract: string): ContractConfig => {
   const globalBaseConfig = (allConfig._global && allConfig._global._base) || {};

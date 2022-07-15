@@ -38,9 +38,6 @@ export default class ContractInstantiate extends Command {
       lcd,
     });
 
-    const codeId = flags['code-id']
-      || loadRefs(flags['refs-path'])[flags.network][args.contract].codeId;
-
     const admin = flags['set-signer-as-admin']
       ? signer.key.accAddress
       : undefined;
@@ -50,7 +47,7 @@ export default class ContractInstantiate extends Command {
       signer,
       admin,
       contract: args.contract,
-      codeId,
+      codeId: flags['code-id'],
       network: flags.network,
       instanceId: flags['instance-id'],
       refsPath: flags['refs-path'],

@@ -52,18 +52,21 @@ export default class Run extends Command {
       scriptPath = Run.fromCwd(`tasks/${args.task}.js`);
     }
 
-    runScript(
-      scriptPath,
-      {
-        configPath: Run.fromCwd(flags['config-path']),
-        keysPath: Run.fromCwd(flags['keys-path']),
-        refsPath: Run.fromCwd(flags['refs-path']),
-        network: flags.network,
-        signer: flags.signer,
-      },
-      (err) => {
-        if (err) throw err;
-      },
-    );
+    await new Promise<void | Error>((resolve, reject) => {
+      runScript(
+        scriptPath,
+        {
+          configPath: Run.fromCwd(flags['config-path']),
+          keysPath: Run.fromCwd(flags['keys-path']),
+          refsPath: Run.fromCwd(flags['refs-path']),
+          network: flags.network,
+          signer: flags.signer,
+        },
+        (err) => {
+          if (err) reject(err);
+          resolve();
+        },
+      );
+    });
   }
 }
