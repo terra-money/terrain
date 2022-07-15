@@ -1,9 +1,9 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import * as path from 'path';
 import * as repl from 'repl';
 import * as terrajs from '@terra-money/terra.js';
 import { getEnv } from '../lib/env';
-import { signer, network, terrainPaths} from '../lib/flag';
+import { signer, network, terrainPaths } from '../lib/flag';
 
 // Needed for Terrain to be able to require typescript modules.
 require('ts-node').register({
