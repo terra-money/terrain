@@ -50,7 +50,6 @@
     "chalk": "^4.0.0",
     "cli-ux": "^5.6.3",
     "fs-extra": "^8.1.0",
-    "get-the-moon": "^1.0.0",
     "ramda": "^0.26.1",
     "superagent": "^6.1.0",
     "toml": "^3.0.0",

@@ -2,8 +2,6 @@ import chalk, { Chalk } from 'chalk';
 import cli from 'cli-ux';
 import boxen from 'boxen';
 
-const moon = require('get-the-moon');
-
 /** TerrainCLI offers default log styling for terrain commands. */
 class TerrainCLI {
   prefix: string;
@@ -86,4 +84,4 @@ class TerrainCLI {
   }
 }
 
-export default new TerrainCLI(moon.getMoonEmoji(), chalk.white, chalk.green, chalk.hex('#FFA500'), chalk.hex('#CB48E8'), chalk.red, chalk.cyan);
+export default new TerrainCLI(chalk.yellow('>'), chalk.white, chalk.green, chalk.hex('#FFA500'), chalk.hex('#CB48E8'), chalk.red, chalk.cyan);
