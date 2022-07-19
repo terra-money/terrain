@@ -2,8 +2,9 @@ import { Command, flags } from '@oclif/command';
 import * as path from 'path';
 import * as childProcess from 'child_process';
 import { cli } from 'cli-ux';
-import { Env, getEnv } from '../../lib/env';
 import * as fs from 'fs-extra';
+import { Env, getEnv } from '../../lib/env';
+import * as flag from '../../lib/flag';
 
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
@@ -13,6 +14,7 @@ export const task = async (fn: (env: Env) => Promise<void>) => {
         process.env.keysPath || '',
         process.env.refsPath || '',
         process.env.network || '',
+        process.env.signer || '',
       ),
     );
   } catch (err) {
@@ -31,6 +33,7 @@ export default class Run extends Command {
   static description = 'run predefined task';
 
   static flags = {
+    signer: flag.signer,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: 'config.terrain.json' }),
     'refs-path': flags.string({ default: 'refs.terrain.json' }),
@@ -45,7 +48,7 @@ export default class Run extends Command {
     const { args, flags } = this.parse(Run);
     let scriptPath = this.fromCwd(`tasks/${args.task}.ts`);
 
-    if(!fs.existsSync(scriptPath)) {
+    if (!fs.existsSync(scriptPath)) {
       scriptPath = this.fromCwd(`tasks/${args.task}.js`);
     }
 
@@ -56,6 +59,7 @@ export default class Run extends Command {
         keysPath: this.fromCwd(flags['keys-path']),
         refsPath: this.fromCwd(flags['refs-path']),
         network: flags.network,
+        signer: flags.signer,
       },
       (err) => {
         if (err) throw err;
@@ -71,20 +75,22 @@ function runScript(
     keysPath: string;
     refsPath: string;
     network: string;
+    signer: string;
   },
   callback: (err?: Error) => void,
 ) {
   // keep track of whether callback has been invoked to prevent multiple invocations
   let invoked = false;
 
-  const cProcess = childProcess.fork(scriptPath,
+  const cProcess = childProcess.fork(
+    scriptPath,
     {
       env: {
         ...process.env,
-        ...env
+        ...env,
       },
-      execArgv: ['-r', 'ts-node/register']
-    }
+      execArgv: ['-r', 'ts-node/register/transpile-only'],
+    },
   );
 
   // listen for errors as they may prevent the exit event from firing

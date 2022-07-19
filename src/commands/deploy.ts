@@ -1,10 +1,10 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
-import * as fs from 'fs';
 import { loadConfig, loadConnections } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
 import * as flag from '../lib/flag';
+import SyncRefs from './sync-refs';
 
 export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
@@ -60,7 +60,9 @@ export default class Deploy extends Command {
     });
 
     // pause for account sequence to update.
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => {
+      setTimeout(r, 1000);
+    });
 
     const admin = flags['set-signer-as-admin']
       ? signer.key.accAddress
@@ -79,6 +81,6 @@ export default class Deploy extends Command {
       lcd,
     });
 
-    fs.copyFileSync(flags['refs-path'], flags['frontend-refs-path']);
+    await SyncRefs.run([]);
   }
 }
