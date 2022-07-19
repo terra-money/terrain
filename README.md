@@ -328,58 +328,6 @@ task(async ({ wallets, refs, config, client }) => {
 });
 ```
 
-As of Terrain 0.4.0 it is possible to deploy and instantiate contracts from tasks. This can be useful for multi-contract, or multi-stage deployments. 
-
-```js
-const { task } = require("@terra-money/terrain");
-
-task(async ({ wallets, client, deploy }) => {
-  // First deploy the counter smart contract.
-  const counterCodeId = await deploy.storeCode(wallets.test1, "counter");
-  const counterAddress = await deploy.instantiate(
-    // Signer
-    wallets.test1,
-    // Contract name
-    "counter",
-    // Code ID
-    counterCodeId,
-    // Instance ID
-    "default",
-    // Contract admin
-    wallets.test1.key.accAddress
-  );
-
-  // Now deploy a CW20 with the counter contract set as the minter in instantiation.
-  const cw20CodeId = await deploy.storeCode(wallets.test1, "cw20-base");
-  const cw20Address = await deploy.instantiate(
-    wallets.test1,
-    "cw20-base",
-    cw20CodeId,
-    "default",
-    wallets.test1.key.accAddress,
-    // Custom instantiation message.
-    // with no message provided the default from config.terrain will be used.
-    {
-      name: "counter",
-      symbol: "CTR",
-      decimals: 6,
-      initial_balances: [],
-      mint: {
-        minter: counterAddress,
-      },
-    }
-  );
-
-  // Update the CW20 address in counter.
-  // Note: It's important to use the address returned by deploy.instantiate
-  // Refs are only read into memory at the start of the task.
-  await client.execute(wallets.test1, counterAddress, {
-    update_token: { token: cw20Address },
-  });
-
-  console.log(`CW20 Address: ${cw20Address}`);
-});
-```
 ---
 
 # Migrating CosmWasm Contracts on Terra
@@ -477,16 +425,18 @@ npm unlink terrain
 
 <!-- commands -->
 * [`terrain console`](#terrain-console)
+* [`terrain contract:build CONTRACT`](#terrain-contractbuild-contract)
 * [`terrain contract:generateClient CONTRACT`](#terrain-contractgenerateclient-contract)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
 * [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
 * [`terrain contract:new NAME`](#terrain-contractnew-name)
+* [`terrain contract:optimize CONTRACT`](#terrain-contractoptimize-contract)
 * [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
 * [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
 * [`terrain deploy CONTRACT`](#terrain-deploy-contract)
 * [`terrain help [COMMAND]`](#terrain-help-command)
 * [`terrain new NAME`](#terrain-new-name)
-* [`terrain sync-refs [FILE]`](#terrain-sync-refs-file)
+* [`terrain sync-refs`](#terrain-sync-refs)
 * [`terrain task:new [TASK]`](#terrain-tasknew-task)
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
@@ -503,10 +453,10 @@ USAGE
     [--keys-path <value>]
 
 FLAGS
-  --config-path=<value>  [default: config.terrain.json]
-  --keys-path=<value>    [default: keys.terrain.js]
-  --network=<value>      [default: localterra]
-  --refs-path=<value>    [default: refs.terrain.json]
+  --config-path=<value>  [default: ./config.terrain.json]
+  --keys-path=<value>    [default: ./keys.terrain.js]
+  --network=<value>      [default: localterra] network to deploy to from config.terrain.json
+  --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
 DESCRIPTION
@@ -515,6 +465,26 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/console.ts)_
+
+## `terrain contract:build CONTRACT`
+
+Build and optimize wasm bytecode.
+
+```
+USAGE
+  $ terrain contract:build [CONTRACT] [--optimize] [--arm64] [--config-path <value>]
+
+FLAGS
+  --arm64                use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
+                         quicker on arm64 hardware during development.
+  --config-path=<value>  [default: ./config.terrain.json]
+  --optimize             optimize the wasm.
+
+DESCRIPTION
+  Build and optimize wasm bytecode.
+```
+
+_See code: [src/commands/contract/build.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/contract/build.ts)_
 
 ## `terrain contract:generateClient CONTRACT`
 
@@ -541,15 +511,15 @@ Instantiate the contract.
 
 ```
 USAGE
-  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--set-signer-as-admin] [--network <value>] [--config-path
-    <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>]
+  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--network <value>] [--set-signer-as-admin] [--instance-id
+    <value>] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
-  --code-id=<value>      specfic codeId to instantiate
+  --code-id=<value>      specific codeId to instantiate
   --config-path=<value>  [default: ./config.terrain.json]
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: localterra]
+  --network=<value>      [default: localterra] network to deploy to from config.terrain.json
   --refs-path=<value>    [default: ./refs.terrain.json]
   --set-signer-as-admin  set signer (deployer) as admin to allow migration.
   --signer=<value>       [default: test1]
@@ -613,6 +583,25 @@ EXAMPLES
 
 _See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/contract/new.ts)_
 
+## `terrain contract:optimize CONTRACT`
+
+Optimize wasm bytecode.
+
+```
+USAGE
+  $ terrain contract:optimize [CONTRACT] [--arm64] [--config-path <value>]
+
+FLAGS
+  --arm64                use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
+                         quicker on arm64 hardware during development.
+  --config-path=<value>  [default: ./config.terrain.json]
+
+DESCRIPTION
+  Optimize wasm bytecode.
+```
+
+_See code: [src/commands/contract/optimize.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/contract/optimize.ts)_
+
 ## `terrain contract:store CONTRACT`
 
 Store code on chain.
@@ -650,7 +639,7 @@ FLAGS
   --config-path=<value>  [default: ./config.terrain.json]
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: localterra]
+  --network=<value>      [default: localterra] network to deploy to from config.terrain.json
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -666,20 +655,21 @@ Build wasm bytecode, store code on chain and instantiate.
 
 ```
 USAGE
-  $ terrain deploy [CONTRACT] [--signer <value>] [--arm64] [--no-rebuild] [--set-signer-as-admin] [--network
-    <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
-    [--admin-address <value>] [--frontend-refs-path <value>]
+  $ terrain deploy [CONTRACT] [--signer <value>] [--arm64] [--network <value>] [--no-rebuild]
+    [--set-signer-as-admin] [--instance-id <value>] [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync
+    <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
   --arm64                       use rust-optimizer-arm64 for optimization. Not recommended for production, but it will
                                 optimize quicker on arm64 hardware during development.
   --config-path=<value>         [default: ./config.terrain.json]
-  --frontend-refs-path=<value>  [default: ./frontend/src/refs.terrain.json]
+  --frontend-refs-path=<value>  [default: ./frontend/src/]
   --instance-id=<value>         [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>           [default: ./keys.terrain.js]
-  --network=<value>             [default: localterra]
+  --network=<value>             [default: localterra] network to deploy to from config.terrain.json
   --no-rebuild                  deploy the wasm bytecode as is.
+  --no-sync=<value>             don't attempt to sync contract refs to frontend.
   --refs-path=<value>           [default: ./refs.terrain.json]
   --set-signer-as-admin         set signer (deployer) as admin to allow migration.
   --signer=<value>              [default: test1]
@@ -742,16 +732,16 @@ EXAMPLES
 
 _See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/new.ts)_
 
-## `terrain sync-refs [FILE]`
+## `terrain sync-refs`
 
 Sync configuration with frontend app.
 
 ```
 USAGE
-  $ terrain sync-refs [FILE] [--refs-path <value>] [--dest <value>]
+  $ terrain sync-refs [--refs-path <value>] [--dest <value>]
 
 FLAGS
-  --dest=<value>       [default: ./frontend/src/refs.terrain.json]
+  --dest=<value>       [default: ./frontend/src/]
   --refs-path=<value>  [default: ./refs.terrain.json]
 
 DESCRIPTION
@@ -776,8 +766,6 @@ _See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blo
 
 ## `terrain task:run [TASK]`
 
-run predefined task
-
 ```
 USAGE
   $ terrain task:run [TASK] [--signer <value>] [--network <value>] [--config-path <value>] [--refs-path
@@ -789,9 +777,6 @@ FLAGS
   --network=<value>      [default: localterra]
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
-
-DESCRIPTION
-  run predefined task
 ```
 
 _See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/task/run.ts)_

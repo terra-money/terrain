@@ -26,8 +26,8 @@ export class LCDClientExtra extends LCDClient {
   }
 
   async execute(
-    wallet: Wallet,
     contract: string,
+    wallet: Wallet,
     msg: Object,
     coins?: Coins.Input,
     options?: CreateTxOptions,
