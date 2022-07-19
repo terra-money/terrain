@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
-import { loadConfig, loadConnections, loadRefs } from '../../config';
+import { loadConfig, loadConnections } from '../../config';
 import { instantiate } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
