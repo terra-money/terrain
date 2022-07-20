@@ -742,24 +742,6 @@ EXAMPLES
 
 _See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/new.ts)_
 
-## `terrain sync-refs [FILE]`
-
-Sync configuration with frontend app.
-
-```
-USAGE
-  $ terrain sync-refs [FILE] [--refs-path <value>] [--dest <value>]
-
-FLAGS
-  --dest=<value>       [default: ./frontend/src/refs.terrain.json]
-  --refs-path=<value>  [default: ./refs.terrain.json]
-
-DESCRIPTION
-  Sync configuration with frontend app.
-```
-
-_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/sync-refs.ts)_
-
 ## `terrain task:new [TASK]`
 
 create new task
