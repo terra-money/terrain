@@ -358,7 +358,7 @@ task(async ({ wallets, client, deploy }) => {
       admin: wallets.test1.key.accAddress,
       // Custom instantiation message.
       // with no message provided the default from config.terrain will be used.
-      {
+      init: {
         name: "counter",
         symbol: "CTR",
         decimals: 6,
@@ -381,7 +381,17 @@ task(async ({ wallets, client, deploy }) => {
 });
 ```
 
-TODO: Document how to set a default deployment script.
+It is possible to tell Terrain to use a custom deploy task instead of the default deploy process. To do this, add the following to the `_global` section in `config.terrain.json`:
+
+```json
+"contracts": {
+  "counter": {
+    "deployTask": "deploy_counter"
+  }
+}
+```
+
+Now instead of running `terrain task:run deploy_counter` you can run `terrain deploy counter`.
 
 ---
 
