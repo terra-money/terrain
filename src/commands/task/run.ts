@@ -32,34 +32,6 @@ export const task = async (fn: (env: Env) => Promise<void>) => {
 export default class Run extends Command {
   static summary = 'run predefined task';
 
-  static description = `
-### Example task
-
-\`\`\`ts
-import { task } from '@terra-money/terrain';
-
-task(async ({ wallets, client, deploy }) => {
-  // First deploy the counter smart contract.
-  const codeId = await deploy.storeCode('my_terra_dapp', wallets.test1);
-  const contractAddress = await deploy.instantiate(
-    // Contract name
-    'my_terra_dapp',
-    // Signer
-    wallets.test1,
-    { codeId },
-  );
-
-  // Note: It's important to use the address returned by deploy.instantiate
-  // Refs are only read into memory at the start of the task.
-  await client.execute(contractAddress, wallets.test1, {
-    increment: {},
-  });
-
-  console.log(\`Counter Address: $\{contractAddress}\`);
-});
-\`\`\`
-`;
-
   static flags = {
     signer: flag.signer,
     network: flags.string({ default: 'localterra' }),

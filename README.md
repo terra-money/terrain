@@ -328,6 +328,61 @@ task(async ({ wallets, refs, config, client }) => {
 });
 ```
 
+## Scripting deployments
+
+As of Terrain 0.4.0 it is possible to deploy and instantiate contracts from tasks. This can be useful for multi-contract, or multi-stage deployments. 
+
+```js
+const { task } = require("@terra-money/terrain");
+
+task(async ({ wallets, client, deploy }) => {
+  // First deploy the counter smart contract.
+  await deploy.storeCode('counter', wallets.test1);
+  const counterAddress = await deploy.instantiate(
+    // Contract name
+    'counter',
+    // Signer
+    wallets.test1,
+    { 
+      // Contract admin
+      admin: wallets.test1.key.accAddress,
+    },
+  );
+
+  // Now deploy a CW20 with the counter contract set as the minter in instantiation.
+  await deploy.storeCode('cw20-base', wallets.test1);
+  const cw20Address = await deploy.instantiate(
+    'cw20-base',
+    wallets.test1,
+    { 
+      admin: wallets.test1.key.accAddress,
+      // Custom instantiation message.
+      // with no message provided the default from config.terrain will be used.
+      {
+        name: "counter",
+        symbol: "CTR",
+        decimals: 6,
+        initial_balances: [],
+        mint: {
+          minter: counterAddress,
+        },
+      }
+    }
+  );
+
+  // Update the CW20 address in counter.
+  // Note: It's important to use the address returned by deploy.instantiate
+  // Refs are only read into memory at the start of the task.
+  await client.execute(counterAddress, wallets.test1, {
+    update_token: { token: cw20Address },
+  });
+
+  console.log(`CW20 Address: ${cw20Address}`);
+});
+```
+
+TODO: Document how to set a default deployment script.
+
 ---
 
 # Migrating CosmWasm Contracts on Terra
@@ -367,7 +422,7 @@ pub fn migrate(_deps: DepsMut, _env: Env, _msg: MigrateMsg) -> StdResult<Respons
 
 ## Migrating the Contract
 
-In the previous Terrain tutorial, we deployed the contract, but did not initilize it as migratable.
+In the previous Terrain tutorial, we deployed the contract, but did not initialize it as migratable.
 
 After adding MigrateMsg to the smart contract, we can redeploy the contract and add the `--set-signer-as-admin` flag. This allows the transaction signer to migrate the contract in the future.
 
