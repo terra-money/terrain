@@ -30,7 +30,7 @@ export const task = async (fn: (env: Env) => Promise<void>) => {
 };
 
 export default class Run extends Command {
-  static summary = 'run predefined task';
+  static description = 'run predefined task';
 
   static flags = {
     signer: flag.signer,
