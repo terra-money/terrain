@@ -10,12 +10,10 @@ export default class CodeStore extends Command {
 
   static flags = {
     signer: flag.signer,
+    network: flag.network,
     'no-rebuild': flag.noRebuild,
-    network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: './config.terrain.json' }),
-    'refs-path': flags.string({ default: './refs.terrain.json' }),
-    'keys-path': flags.string({ default: './keys.terrain.js' }),
     'code-id': flags.integer({}),
+    ...flag.terrainPaths,
   };
 
   static args = [{ name: 'contract', required: true }];

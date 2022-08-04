@@ -1,5 +1,7 @@
 import {
-  AccAddress, LocalTerra, RawKey, Wallet,
+  LocalTerra,
+  RawKey,
+  Wallet,
 } from '@terra-money/terra.js';
 import * as R from 'ramda';
 import {
@@ -7,22 +9,41 @@ import {
   ContractRef,
   InstantiateMessage,
   loadConfig,
+  loadGlobalConfig,
   loadConnections,
   loadKeys,
   loadRefs,
 } from '../config';
-import { storeCode, instantiate } from './deployment';
+import {
+  storeCode,
+  instantiate,
+  build,
+  optimize,
+} from './deployment';
 import { LCDClientExtra } from './LCDClientExtra';
 
 export type DeployHelpers = {
-  storeCode: (signer: Wallet, contract: string) => Promise<number>;
-  instantiate: (
-    signer: Wallet,
+  build: (contract: string) => Promise<void>;
+  optimize: (
     contract: string,
-    codeId: number,
-    instanceId: string,
-    admin?: string,
-    conf?: ContractConfig
+    arm64?: boolean
+  ) => Promise<void>;
+  storeCode: (
+    contract: string,
+    signer: Wallet,
+    options?: {
+      noRebuild?: boolean,
+    },
+  ) => Promise<number>;
+  instantiate: (
+    contract: string,
+    signer: Wallet,
+    options?: {
+      codeId?: number,
+      instanceId?: string,
+      admin?: string,
+      init?: InstantiateMessage,
+    },
   ) => Promise<string>;
 };
 
@@ -44,7 +65,7 @@ export const getEnv = (
 ): Env => {
   const connections = loadConnections(configPath);
   const config = loadConfig(configPath);
-
+  const globalConfig = loadGlobalConfig(configPath);
   const keys = loadKeys(keysPath);
   const refs = loadRefs(refsPath)[network];
 
@@ -72,33 +93,41 @@ export const getEnv = (
     client: lcd,
     // Enable tasks to deploy code.
     deploy: {
-      storeCode: (signer: Wallet, contract: string) => storeCode({
+      build: (contract: string) => build({
+        contract,
+      }),
+      optimize: (contract: string, arm64?: boolean) => optimize({
+        contract,
+        arm64,
+        useCargoWorkspace: globalConfig.useCargoWorkspace,
+      }),
+      storeCode: (contract: string, signer: Wallet, options) => storeCode({
         signer,
         contract,
         network,
         refsPath,
         lcd,
         conf: config(network, contract),
-        noRebuild: false,
+        noRebuild: typeof options?.noRebuild === 'undefined' ? false : options.noRebuild,
+        useCargoWorkspace: globalConfig.useCargoWorkspace,
       }),
       instantiate: (
-        signer: Wallet,
         contract: string,
-        codeId: number,
-        instanceId: string,
-        admin?: AccAddress,
-        init?: InstantiateMessage,
+        signer: Wallet,
+        options,
       ) => instantiate({
-        instanceId,
-        codeId,
+        instanceId: options?.instanceId,
+        codeId: options?.codeId,
         signer,
         contract,
         network,
         refsPath,
         lcd,
-        admin,
+        admin: options?.admin,
         // Use the instantiation message passed instead of default.
-        conf: init ? { instantiation: { instantiateMsg: init } } : config(network, contract),
+        conf: options?.init
+          ? { instantiation: { instantiateMsg: options.init } }
+          : config(network, contract),
       }),
     },
   };

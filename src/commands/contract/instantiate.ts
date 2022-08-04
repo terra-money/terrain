@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
-import { loadConfig, loadConnections, loadRefs } from '../../config';
+import { loadConfig, loadConnections } from '../../config';
 import { instantiate } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -10,16 +10,14 @@ export default class ContractInstantiate extends Command {
 
   static flags = {
     signer: flag.signer,
+    network: flag.network,
     'set-signer-as-admin': flag.setSignerAsAdmin,
-    network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: './config.terrain.json' }),
-    'refs-path': flags.string({ default: './refs.terrain.json' }),
-    'keys-path': flags.string({ default: './keys.terrain.js' }),
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
       description:
-        'specfic codeId to instantiate',
+        'specific codeId to instantiate',
     }),
+    ...flag.terrainPaths,
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -40,19 +38,16 @@ export default class ContractInstantiate extends Command {
       lcd,
     });
 
-    const codeId = flags['code-id']
-      || loadRefs(flags['refs-path'])[flags.network][args.contract].codeId;
-
     const admin = flags['set-signer-as-admin']
       ? signer.key.accAddress
       : undefined;
 
-    instantiate({
+    await instantiate({
       conf,
       signer,
       admin,
       contract: args.contract,
-      codeId,
+      codeId: flags['code-id'],
       network: flags.network,
       instanceId: flags['instance-id'],
       refsPath: flags['refs-path'],

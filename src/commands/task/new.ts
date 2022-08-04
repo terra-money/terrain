@@ -26,8 +26,10 @@ export default class TaskNew extends Command {
 task(async (env:Env) => {
   console.log(env);
   console.log("Template")
-});`
+});`,
     );
     cli.action.stop();
+
+    return undefined;
   }
 }
