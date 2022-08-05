@@ -25,6 +25,7 @@ import {
   setContractAddress,
 } from '../config';
 import TerrainCLI from '../TerrainCLI';
+import useARM64 from './useARM64';
 
 type BuildParams = {
   contract: string;
@@ -87,14 +88,15 @@ const optimizeWorkspace = async ({
 type OptimizeParams = {
   contract: string;
   useCargoWorkspace?: boolean,
-  arm64?: boolean;
+  network?: string,
 };
 
 export const optimize = async ({
   contract,
-  arm64,
   useCargoWorkspace,
+  network,
 }: OptimizeParams) => {
+  const arm64 = useARM64(network);
   if (useCargoWorkspace) {
     optimizeWorkspace({ contract, arm64 });
   } else {
@@ -111,7 +113,6 @@ type StoreCodeParams = {
   noRebuild?: boolean;
   signer: Wallet;
   codeId?: number;
-  arm64?: boolean;
   useCargoWorkspace?: boolean,
 };
 
@@ -122,13 +123,13 @@ export const storeCode = async ({
   refsPath,
   lcd,
   codeId,
-  arm64,
   noRebuild,
   useCargoWorkspace,
 }: StoreCodeParams) => {
+  const arm64 = useARM64(network);
   if (!noRebuild) {
     await build({ contract });
-    await optimize({ contract, arm64, useCargoWorkspace });
+    await optimize({ contract, useCargoWorkspace, network });
   }
 
   let wasmByteCodeFilename = `${contract.replace(/-/g, '_')}`;
