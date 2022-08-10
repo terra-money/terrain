@@ -81,7 +81,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.3",
-    "@babel/types": "7.18.4",
+    "@babel/types": "7.18.9",
     "ast-stringify": "0.1.0",
     "case": "1.6.3"
   }
