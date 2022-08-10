@@ -33,6 +33,8 @@ export default class WalletNew extends Command {
       this.exit(0);
     }
 
+    this.log('address:');
+    this.log(mk.accAddress);
     this.log('mnemonic key:');
     this.log(mk.mnemonic);
 
