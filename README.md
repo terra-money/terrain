@@ -673,14 +673,14 @@ Store code on chain.
 
 ```
 USAGE
-  $ terrain contract:store [CONTRACT] [--signer <value>] [--no-rebuild] [--network <value>] [--config-path <value>]
-    [--refs-path <value>] [--keys-path <value>] [--code-id <value>]
+  $ terrain contract:store [CONTRACT] [--signer <value>] [--network <value>] [--no-rebuild] [--code-id <value>]
+    [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --code-id=<value>
   --config-path=<value>  [default: ./config.terrain.json]
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: localterra]
+  --network=<value>      [default: localterra] network to deploy to from config.terrain.json
   --no-rebuild           deploy the wasm bytecode as is.
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
@@ -831,6 +831,8 @@ _See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blo
 
 ## `terrain task:run [TASK]`
 
+run predefined task
+
 ```
 USAGE
   $ terrain task:run [TASK] [--signer <value>] [--network <value>] [--config-path <value>] [--refs-path
@@ -842,6 +844,9 @@ FLAGS
   --network=<value>      [default: localterra]
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
+
+DESCRIPTION
+  run predefined task
 ```
 
 _See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.5.8/src/commands/task/run.ts)_
