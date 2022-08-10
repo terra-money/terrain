@@ -7,11 +7,6 @@ export const noRebuild = flags.boolean({
   default: false,
 });
 
-export const arm64 = flags.boolean({
-  description: 'use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize quicker on arm64 hardware during development.',
-  default: false,
-});
-
 export const setSignerAsAdmin = flags.boolean({
   description: 'set signer (deployer) as admin to allow migration.',
   default: false,

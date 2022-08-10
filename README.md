@@ -533,20 +533,17 @@ _See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob
 
 ## `terrain contract:build CONTRACT`
 
-Build and optimize wasm bytecode.
+Build wasm bytecode.
 
 ```
 USAGE
-  $ terrain contract:build [CONTRACT] [--optimize] [--arm64] [--config-path <value>]
+  $ terrain contract:build [CONTRACT] [--config-path <value>]
 
 FLAGS
-  --arm64                use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
-                         quicker on arm64 hardware during development.
   --config-path=<value>  [default: ./config.terrain.json]
-  --optimize             optimize the wasm.
 
 DESCRIPTION
-  Build and optimize wasm bytecode.
+  Build wasm bytecode.
 ```
 
 _See code: [src/commands/contract/build.ts](https://github.com/terra-money/terrain/blob/v0.6.0/src/commands/contract/build.ts)_
@@ -602,11 +599,9 @@ Migrate the contract.
 ```
 USAGE
   $ terrain contract:migrate [CONTRACT] [--signer <value>] [--no-rebuild] [--network <value>] [--config-path <value>]
-    [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>] [--arm64]
+    [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>]
 
 FLAGS
-  --arm64                use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
-                         quicker on arm64 hardware during development.
   --code-id=<value>      target code id for migration
   --config-path=<value>  [default: ./config.terrain.json]
   --instance-id=<value>  [default: default]
@@ -654,11 +649,9 @@ Optimize wasm bytecode.
 
 ```
 USAGE
-  $ terrain contract:optimize [CONTRACT] [--arm64] [--config-path <value>]
+  $ terrain contract:optimize [CONTRACT] [--config-path <value>]
 
 FLAGS
-  --arm64                use rust-optimizer-arm64 for optimization. Not recommended for production, but it will optimize
-                         quicker on arm64 hardware during development.
   --config-path=<value>  [default: ./config.terrain.json]
 
 DESCRIPTION
@@ -720,14 +713,12 @@ Build wasm bytecode, store code on chain and instantiate.
 
 ```
 USAGE
-  $ terrain deploy [CONTRACT] [--signer <value>] [--arm64] [--network <value>] [--no-rebuild]
-    [--set-signer-as-admin] [--instance-id <value>] [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync
-    <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain deploy [CONTRACT] [--signer <value>] [--network <value>] [--no-rebuild] [--set-signer-as-admin]
+    [--instance-id <value>] [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync <value>] [--config-path
+    <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
-  --arm64                       use rust-optimizer-arm64 for optimization. Not recommended for production, but it will
-                                optimize quicker on arm64 hardware during development.
   --config-path=<value>         [default: ./config.terrain.json]
   --frontend-refs-path=<value>  [default: ./frontend/src/]
   --instance-id=<value>         [default: default] enable management of multiple instances of the same contract

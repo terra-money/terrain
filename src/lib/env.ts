@@ -26,7 +26,6 @@ export type DeployHelpers = {
   build: (contract: string) => Promise<void>;
   optimize: (
     contract: string,
-    arm64?: boolean
   ) => Promise<void>;
   storeCode: (
     contract: string,
@@ -96,9 +95,8 @@ export const getEnv = (
       build: (contract: string) => build({
         contract,
       }),
-      optimize: (contract: string, arm64?: boolean) => optimize({
+      optimize: (contract: string) => optimize({
         contract,
-        arm64,
         useCargoWorkspace: globalConfig.useCargoWorkspace,
       }),
       storeCode: (contract: string, signer: Wallet, options) => storeCode({

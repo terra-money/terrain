@@ -10,7 +10,6 @@ export default class Deploy extends Command {
 
   static flags = {
     signer: flag.signer,
-    arm64: flag.arm64,
     network: flag.network,
     'no-rebuild': flag.noRebuild,
     'set-signer-as-admin': flag.setSignerAsAdmin,
@@ -70,7 +69,6 @@ export default class Deploy extends Command {
         contract: args.contract,
         network: flags.network,
         refsPath: flags['refs-path'],
-        arm64: flags.arm64,
         useCargoWorkspace: globalConfig.useCargoWorkspace,
       });
 
