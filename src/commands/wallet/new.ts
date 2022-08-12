@@ -1,5 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { MnemonicKey } from '@terra-money/terra.js';
+import TerrainCLI from '../../TerrainCLI';
 import * as fs from 'fs';
 
 export default class WalletNew extends Command {
@@ -32,6 +33,8 @@ export default class WalletNew extends Command {
       fs.writeFileSync(flags.outfile, mk.mnemonic);
       this.exit(0);
     }
+
+    TerrainCLI.warning('Anyone who gains access to your seed phrase can access the contents of the corresponding wallet. Be cognizant of the fact that there is no recourse for theft of a seed phrase.');
 
     this.log('address:');
     this.log(mk.accAddress);
