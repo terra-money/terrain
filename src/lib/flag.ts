@@ -7,11 +7,6 @@ export const noRebuild = flags.boolean({
   default: false,
 });
 
-export const setSignerAsAdmin = flags.boolean({
-  description: 'set signer (deployer) as admin to allow migration.',
-  default: false,
-});
-
 export const instanceId = flags.string({ default: 'default', description: 'enable management of multiple instances of the same contract' });
 
 export const network = flags.string({ default: 'localterra', description: 'network to deploy to from config.terrain.json' });
