@@ -11,7 +11,6 @@ export default class ContractInstantiate extends Command {
   static flags = {
     signer: flag.signer,
     network: flag.network,
-    'set-signer-as-admin': flag.setSignerAsAdmin,
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
       description:
@@ -38,9 +37,7 @@ export default class ContractInstantiate extends Command {
       lcd,
     });
 
-    const admin = flags['set-signer-as-admin']
-      ? signer.key.accAddress
-      : undefined;
+    const admin = signer.key.accAddress;
 
     await instantiate({
       conf,

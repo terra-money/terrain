@@ -397,16 +397,13 @@ Now instead of running `terrain task:run deploy_counter` you can run `terrain de
 
 # Migrating CosmWasm Contracts on Terra
 
-On Terra it is possible to initalize contracts as migratable. This functionallity allows the adminstrator to upload a new version of the contract, then send a migrate message to move to the new code.
+On Terra, it is possible to initialize a contract as migratable. This functionallity allows the adminstrator to upload a new version of the contract and then send a migrate message to move to the new code.
 
-<a href="https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html" target="_blank">This tutorial</a> builds on top of the Terrain Quick Start Guide and walks you through a contract migration.
+The <a href="https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html" target="_blank">contract migration tutorial</a> builds on top of the Terrain Quick Start Guide and walks you through a contract migration.
 
 ## Adding MigrateMsg to the Contract
 
-In order for a contract to be migratable, it must satisfy the following two requirements:
-
-1. The smart contract handles the `MigrateMsg` transaction.
-2. The smart contract has an admininstrator set.
+In order for a contract to be migratable, it must be able to handle a `MigrateMsg` transaction.
 
 To implement support for `MigrateMsg`, add the message to the `msg.rs` file. To do so, navigate to `msg.rs` and place the following code just above the `InstantiateMsg` struct.
 
@@ -432,18 +429,22 @@ pub fn migrate(_deps: DepsMut, _env: Env, _msg: MigrateMsg) -> StdResult<Respons
 
 ## Migrating the Contract
 
-In the previous Terrain tutorial, we deployed the contract, but did not initialize it as migratable.
-
-After adding MigrateMsg to the smart contract, we can redeploy the contract and add the `--set-signer-as-admin` flag. This allows the transaction signer to migrate the contract in the future.
+Adding the MigrateMsg to the smart contract allows the contract's administrator to migrate the contract in the future.  When we deploy our contract, the wallet address of the signer will be automatically designated as the contract administrator.  In the following command, the contract is deployed with the preconfigured LocalTerra `test1` wallet as the signer and administrator of our counter contract. 
 
 ```sh
-terrain deploy counter --signer test1 --set-signer-as-admin
+terrain deploy counter --signer test1
 ```
 
 If you decide to make changes to the deployed contract, you can migrate to the updated code by executing the following command.
 
 ```sh
 terrain contract:migrate counter --signer test1
+```
+
+If you would like to specify the address of the desired administrator for your smart contract, you may utilize the `--admin-address` flag in the deploy command followed by the wallet address of the desired administrator.
+
+```sh
+terrain deploy counter --signer test1 --admin-address <insert-admin-wallet-address>
 ```
 
 # Use Terrain Main Branch Locally
@@ -573,7 +574,7 @@ Instantiate the contract.
 
 ```
 USAGE
-  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--network <value>] [--set-signer-as-admin] [--instance-id
+  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--network <value>] [--instance-id
     <value>] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
@@ -583,7 +584,6 @@ FLAGS
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
   --refs-path=<value>    [default: ./refs.terrain.json]
-  --set-signer-as-admin  set signer (deployer) as admin to allow migration.
   --signer=<value>       [default: test1]
 
 DESCRIPTION
@@ -713,7 +713,7 @@ Build wasm bytecode, store code on chain and instantiate.
 
 ```
 USAGE
-  $ terrain deploy [CONTRACT] [--signer <value>] [--network <value>] [--no-rebuild] [--set-signer-as-admin]
+  $ terrain deploy [CONTRACT] [--signer <value>] [--network <value>] [--no-rebuild]
     [--instance-id <value>] [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync <value>] [--config-path
     <value>] [--refs-path <value>] [--keys-path <value>]
 
@@ -727,7 +727,6 @@ FLAGS
   --no-rebuild                  deploy the wasm bytecode as is.
   --no-sync=<value>             don't attempt to sync contract refs to frontend.
   --refs-path=<value>           [default: ./refs.terrain.json]
-  --set-signer-as-admin         set signer (deployer) as admin to allow migration.
   --signer=<value>              [default: test1]
 
 DESCRIPTION

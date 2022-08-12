@@ -12,7 +12,6 @@ export default class Deploy extends Command {
     signer: flag.signer,
     network: flag.network,
     'no-rebuild': flag.noRebuild,
-    'set-signer-as-admin': flag.setSignerAsAdmin,
     'instance-id': flag.instanceId,
     'frontend-refs-path': flag.frontendRefsPath,
     'admin-address': flags.string({
@@ -76,9 +75,9 @@ export default class Deploy extends Command {
       // eslint-disable-next-line no-promise-executor-return
       await new Promise((r) => setTimeout(r, 1000));
 
-      const admin = flags['set-signer-as-admin']
-        ? signer.key.accAddress
-        : flags['admin-address'];
+      const admin = flags['admin-address']
+        ? flags['admin-address']
+        : signer.key.accAddress;
 
       await instantiate({
         conf,
