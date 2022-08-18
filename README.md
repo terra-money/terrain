@@ -1,18 +1,23 @@
 # Terrain
 
-<p align="center" >
-<a alt="terrain logo is generative, click to see the code!" href="https://editor.p5js.org/iboss-ptk/sketches/-mAM5HzH_">
-<img src="./logo.png" alt="terrain logo" width="200"/>
-</a>
-</p>
-
-<p align="center" >
-<b>Terrain</b> – A Terra development environment for seamless smart contract development.
-</p>
+<div align="center">
+  <a alt="The Terrain logo is generative, click to see the code!" href="https://editor.p5js.org/iboss-ptk/sketches/-mAM5HzH_">
+  <img src="./logo.png" alt="Terrain logo" width="200"/>
+  </a>
+  <p>
+  <b>Terrain</b> - A Terra development environment for seamless smart contract development.
+  </p>
+</div>
 
 ---
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io) [![Version](https://img.shields.io/npm/v/@terra-money/terrain)](https://npmjs.org/package/terrain) [![Downloads/week](https://img.shields.io/npm/dm/@terra-money/terrain)](https://npmjs.org/package/@terra-money/terrain)
+<div align="center">
+  <a href="https://oclif.io"><img src="https://img.shields.io/badge/cli-oclif-brightgreen.svg" height="23px" /></a>
+  <a href="https://npmjs.org/package/@terra-money/terrain"><img src="https://img.shields.io/npm/v/@terra-money/terrain" height="23px" /></a>
+  <a href="https://npmjs.org/package/@terra-money/terrain"><img src="https://img.shields.io/npm/dm/@terra-money/terrain" height="23px" /></a>
+</div>
+
+<br />
 
 Terrain allows you to:
 
