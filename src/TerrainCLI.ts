@@ -1,6 +1,7 @@
 import chalk, { Chalk } from 'chalk';
 import cli from 'cli-ux';
 import boxen from 'boxen';
+import semver from 'semver';
 
 /** TerrainCLI offers default log styling for terrain commands. */
 class TerrainCLI {
@@ -81,6 +82,19 @@ class TerrainCLI {
   // await TerrainCLI.anykey(anykeyMsg) styling.
   async anykey(anykeyMsg = '') {
     await cli.anykey(`\n${this.prefix} ${this.anykeyStyle(`${anykeyMsg}`)}`);
+  }
+
+  // TerrainCLI.nodeVersionCheck() styling.
+  nodeVersionCheck() {
+    if (!semver.satisfies(process.version, '^16')) {
+      this.alert(`
+Terrain requires Node version 16!\n
+Please switch your version of Node before running Terrain commands.\n
+If you are utilizing nvm, simply utilize the following command:\n
+nvm use 16
+      `, '🚨 Incompatible Node Version 🚨');
+      process.exit();
+    }
   }
 }
 
