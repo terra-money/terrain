@@ -3,6 +3,7 @@ import { LCDClient } from '@terra-money/terra.js';
 import { loadConfig, loadConnections, loadGlobalConfig } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
+import GenerateClient from './contract/generateClient';
 import * as flag from '../lib/flag';
 
 export default class Deploy extends Command {
@@ -32,7 +33,7 @@ export default class Deploy extends Command {
     const config = loadConfig(flags['config-path']);
     const globalConfig = loadGlobalConfig(flags['config-path']);
     const conf = config(flags.network, args.contract);
-
+    
     // @ts-ignore
     const lcd = new LCDClient(connections(flags.network));
     const signer = getSigner({
@@ -91,6 +92,8 @@ export default class Deploy extends Command {
         refsPath: flags['refs-path'],
         lcd,
       });
+
+      await GenerateClient.run([args.name])
     }
 
     if (!flags['no-sync']) {
