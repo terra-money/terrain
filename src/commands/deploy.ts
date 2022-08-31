@@ -32,7 +32,6 @@ export default class Deploy extends Command {
     const config = loadConfig(flags['config-path']);
     const globalConfig = loadGlobalConfig(flags['config-path']);
     const conf = config(flags.network, args.contract);
-    
     // @ts-ignore
     const lcd = new LCDClient(connections(flags.network));
     const signer = getSigner({
@@ -94,8 +93,8 @@ export default class Deploy extends Command {
 
       await this.config.runCommand('contract:generateClient', [
         args.contract,
-        '--build-schema'
-      ])
+        '--build-schema',
+      ]);
     }
 
     if (!flags['no-sync']) {
