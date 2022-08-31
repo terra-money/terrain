@@ -93,7 +93,8 @@ export default class Deploy extends Command {
         lcd,
       });
 
-      await GenerateClient.run([args.name])
+      // GenerateClient.run([args.contract])
+      await this.config.runCommand('contract:generateClient', [args.contract])
     }
 
     if (!flags['no-sync']) {
