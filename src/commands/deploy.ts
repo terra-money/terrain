@@ -3,7 +3,6 @@ import { LCDClient } from '@terra-money/terra.js';
 import { loadConfig, loadConnections, loadGlobalConfig } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
-import GenerateClient from './contract/generateClient';
 import * as flag from '../lib/flag';
 
 export default class Deploy extends Command {
@@ -93,8 +92,10 @@ export default class Deploy extends Command {
         lcd,
       });
 
-      // GenerateClient.run([args.contract])
-      await this.config.runCommand('contract:generateClient', [args.contract])
+      await this.config.runCommand('contract:generateClient', [
+        args.contract,
+        '--build-schema'
+      ])
     }
 
     if (!flags['no-sync']) {
