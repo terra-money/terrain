@@ -27,8 +27,10 @@
   },
   "scripts": {
     "use": "node ./bin/run",
+    "watch": "tsc-watch --onSuccess \"npm run build:oclif\"",
     "prepack:use": "npm run prepack && npm run use",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "build:oclif": "oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc -b && npm run build:oclif",
     "postpack": "rm -f oclif.manifest.json",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -80,6 +82,7 @@
     "eslint-plugin-jest": "^26.6.0",
     "jest": "^27.3.1",
     "prettier": "2.4.1",
+    "tsc-watch": "^5.0.3",
     "typescript": "^3.9.10"
   },
   "engines": {
