@@ -30,7 +30,7 @@ export default class ContractUpdateAdmin extends Command {
     const refs = loadRefs(flags['refs-path']);
     const { network } = flags;
     const lcd = new LCDClient(connections(flags.network));
-    const signer = getSigner({
+    const signer = await getSigner({
       network: flags.network,
       signerId: flags.signer,
       keysPath: flags['keys-path'],
