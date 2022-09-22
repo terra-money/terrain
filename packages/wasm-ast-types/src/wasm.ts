@@ -8,6 +8,7 @@ import {
   classProperty,
   arrowFunctionExpression,
   getMessageProperties,
+  convertToQueryMethod,
 } from "./utils";
 
 import { QueryMsg, ExecuteMsg } from "./types";
@@ -49,7 +50,7 @@ export const createWasmQueryMethod = (jsonschema: any, responses: string[]) => {
   );
 
   return t.classProperty(
-    t.identifier(methodName),
+    t.identifier(convertToQueryMethod(methodName)),
     arrowFunctionExpression(
       obj ? [obj] : [],
       t.blockStatement([
@@ -95,7 +96,7 @@ export const createQueryClass = (
     .map((method) => Object.keys(method.properties)?.[0])
     .filter(Boolean);
 
-  const bindings = propertyNames.map(camel).map(bindMethod);
+  const bindings = propertyNames.map(camel).map(convertToQueryMethod).map(bindMethod);
 
   const methods = getMessageProperties(queryMsg).map((schema) => {
     return createWasmQueryMethod(schema, responses);
@@ -529,6 +530,7 @@ export const createQueryInterface = (className: string, queryMsg: QueryMsg, resp
   const methods = getMessageProperties(queryMsg).map((jsonschema) => {
     const underscoreName = Object.keys(jsonschema.properties)[0];
     const methodName = camel(underscoreName);
+    const queryMethodName = convertToQueryMethod(underscoreName);
     let responseType = pascal(`${methodName}Response`);
 
     // Support naming query responses exactly like the method, or without a preceding "Get".
@@ -538,7 +540,7 @@ export const createQueryInterface = (className: string, queryMsg: QueryMsg, resp
     }
 
     return createPropertyFunctionWithObjectParams(
-      methodName,
+      queryMethodName,
       responseType,
       jsonschema.properties[underscoreName]
     );
