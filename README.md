@@ -256,26 +256,16 @@ npm run start
 
 ## Run Contract Functions with Terrain
 
-Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. The default contents of the `lib/index.js` file are presented below.
+Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. 
 
-```js
-// lib/index.js
-
-module.exports = ({ wallets, refs, config, client }) => ({
-  getCount: () => client.query("counter", { get_count: {} }),
-  increment: (signer = wallets.test1) =>
-    client.execute(signer, "counter", { increment: {} }),
-});
-```
-
-You can call the functions defined above inside of the `terrain console`. An example using the `counter` smart contract is shown below.
+You can call the functions defined in `lib/index.js` inside of the `terrain console`. An example using the `counter` smart contract is shown below.
 
 ```sh
 terrain console
-terrain > await lib.getCount()
+terrain > await lib.getCountQuery()
 { count: 0 }
 terrain > await lib.increment()
-terrain > await lib.getCount()
+terrain > await lib.getCountQuery()
 { count: 1 }
 ```
 
@@ -296,10 +286,10 @@ const { task } = require("@terra-money/terrain");
 const lib = require("../lib");
 
 task(async (env) => {
-  const { getCount, increment } = lib(env);
-  console.log("count 1 = ", await getCount());
+  const { getCountQuery, increment } = lib(env);
+  console.log("count 1 = ", await getCountQuery());
   await increment();
-  console.log("count 2 = ", await getCount());
+  console.log("count 2 = ", await getCountQuery());
 });
 ```
 
