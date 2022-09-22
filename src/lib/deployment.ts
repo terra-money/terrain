@@ -127,6 +127,7 @@ export const storeCode = async ({
   useCargoWorkspace,
 }: StoreCodeParams) => {
   const arm64 = useARM64(network);
+
   if (!noRebuild) {
     await build({ contract });
     await optimize({ contract, useCargoWorkspace, network });
@@ -140,6 +141,25 @@ export const storeCode = async ({
   }
 
   wasmByteCodeFilename += '.wasm';
+
+  // Check if user is attempting to store ARM64 wasm binary on mainnet.
+  const wasmFiles = fs.readdirSync(path.join('contracts', contract, 'artifacts'));
+  const storingARM64Mainnet = (
+    !wasmFiles.includes(wasmByteCodeFilename)
+    && process.arch === 'arm64'
+    && network === 'mainnet'
+  );
+
+  // Check if user is attempting to store ARM64 type wasm on mainnet.
+  // If so, reoptimize to default wasm binary to store on mainnet.
+  if (storingARM64Mainnet) {
+    TerrainCLI.alert(`
+ARM64 wasm files should not be stored on mainnet.\n
+Rebuilding contract to deploy default wasm binary.
+    `, '🚨 ARM64 Wasm Detected 🚨');
+
+    await optimize({ contract, useCargoWorkspace, network });
+  }
 
   const artifactFileName = useCargoWorkspace
     ? path.join('artifacts', wasmByteCodeFilename)
