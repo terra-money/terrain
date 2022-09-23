@@ -77,6 +77,7 @@ class TerrainCLI {
     cli.log(
       `\n${this.prefix} ${this.errorStyle(`Error: ${errorMsg}`)}\n`,
     );
+    process.exit();
   }
 
   // await TerrainCLI.anykey(anykeyMsg) styling.
