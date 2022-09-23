@@ -28,7 +28,6 @@ export default class ContractInstantiate extends Command {
     const config = loadConfig(flags['config-path']);
     const conf = config(flags.network, args.contract);
 
-    // @ts-ignore
     const lcd = new LCDClient(connections(flags.network));
     const signer = await getSigner({
       network: flags.network,

@@ -15,34 +15,29 @@ export const getSigner = async ({
   keysPath: string;
   lcd: LCDClient;
 }): Promise<Wallet> => {
+  // If transaction is being attempted on LocalTerra...
   const localterra = new LocalTerra();
   if (
     network === 'localterra'
     && Object.prototype.hasOwnProperty.call(localterra.wallets, signerId)
   ) {
-    cli.log(`using pre-baked '${signerId}' wallet on localterra as signer`);
-
-    // @ts-ignore
-    const signer = localterra.wallets[signerId];
-
-    // Attempt to make a request to LocalTerra.
+    // Attempt to request sequence from LocalTerra.
     // Alert user if LocalTerra request fails.
     try {
+      cli.log(`Using pre-baked '${signerId}' wallet on LocalTerra as signer...`);
+      const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
       await signer.sequence();
-      return new Promise(signer);
+      return signer;
     } catch {
       TerrainCLI.error('LocalTerra is currently not running.');
       process.exit();
     }
   }
-
+  // If using testnet or mainnet, evaluate if key of provided signer
+  // is available in keysPath. If so, return signer Wallet.
   const keys = loadKeys(path.join(process.cwd(), keysPath));
-
   if (!keys[signerId]) {
-    cli.error(`key for '${signerId}' does not exist.`);
+    cli.error(`The key corresponding to '${signerId}' does not exist.`);
   }
-
-  const signer = await Promise.resolve(new Wallet(lcd, keys[signerId]));
-
-  return signer;
+  return new Wallet(lcd, keys[signerId]);
 };
