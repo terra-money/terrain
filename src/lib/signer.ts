@@ -37,7 +37,7 @@ export const getSigner = async ({
   // is available in keysPath. If so, return signer Wallet.
   const keys = loadKeys(path.join(process.cwd(), keysPath));
   if (!keys[signerId]) {
-    cli.error(`The key corresponding to '${signerId}' does not exist.`);
+    TerrainCLI.error(`The key corresponding to '${signerId}' does not exist in '${keysPath}'.`);
   }
   return new Wallet(lcd, keys[signerId]);
 };
