@@ -14,7 +14,7 @@ export default class TaskNew extends Command {
 
     const pathToTasks = path.join(process.cwd(), 'tasks', `${args.task}.ts`);
     if (fs.existsSync(pathToTasks)) {
-      TerrainCLI.error(`Task with name ${args.task} already exists chose another name for the task.`);
+      TerrainCLI.error(`A task with the name ${args.task} already exists. Try using another name for the task.`);
     }
 
     cli.action.start(`Creating task: ${args.task}`);
