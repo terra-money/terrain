@@ -2,8 +2,9 @@ import { LCDClient, LocalTerra, Wallet } from '@terra-money/terra.js';
 import { cli } from 'cli-ux';
 import * as path from 'path';
 import { loadKeys } from '../config';
+import TerrainCLI from '../TerrainCLI';
 
-export const getSigner = ({
+export const getSigner = async ({
   network,
   signerId,
   keysPath,
@@ -13,21 +14,29 @@ export const getSigner = ({
   signerId: string;
   keysPath: string;
   lcd: LCDClient;
-}): Wallet => {
+}): Promise<Wallet> => {
+  // If transaction is being attempted on LocalTerra...
   const localterra = new LocalTerra();
   if (
     network === 'localterra'
     && Object.prototype.hasOwnProperty.call(localterra.wallets, signerId)
   ) {
-    cli.log(`using pre-baked '${signerId}' wallet on localterra as signer`);
-    // @ts-ignore
-    return localterra.wallets[signerId];
+    // Attempt to request sequence from LocalTerra.
+    // Alert user if LocalTerra request fails.
+    try {
+      cli.log(`Using pre-baked '${signerId}' wallet on LocalTerra as signer...`);
+      const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
+      await signer.sequence();
+      return signer;
+    } catch {
+      TerrainCLI.error('LocalTerra is currently not running.');
+    }
   }
+  // If using testnet or mainnet, evaluate if key of provided signer
+  // is available in keysPath. If so, return signer Wallet.
   const keys = loadKeys(path.join(process.cwd(), keysPath));
-
   if (!keys[signerId]) {
-    cli.error(`key for '${signerId}' does not exists.`);
+    TerrainCLI.error(`The key corresponding to '${signerId}' does not exist in '${keysPath}'.`);
   }
-
   return new Wallet(lcd, keys[signerId]);
 };

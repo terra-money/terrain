@@ -33,9 +33,8 @@ export default class Deploy extends Command {
     const globalConfig = loadGlobalConfig(flags['config-path']);
     const conf = config(flags.network, args.contract);
 
-    // @ts-ignore
     const lcd = new LCDClient(connections(flags.network));
-    const signer = getSigner({
+    const signer = await getSigner({
       network: flags.network,
       signerId: flags.signer,
       keysPath: flags['keys-path'],
