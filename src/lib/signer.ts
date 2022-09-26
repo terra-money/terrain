@@ -30,7 +30,6 @@ export const getSigner = async ({
       return signer;
     } catch {
       TerrainCLI.error('LocalTerra is currently not running.');
-      process.exit();
     }
   }
   // If using testnet or mainnet, evaluate if key of provided signer

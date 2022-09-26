@@ -1,5 +1,5 @@
 import * as t from '@babel/types';
-import { snake } from "case";
+import { snake, camel } from "case";
 import { Field, QueryMsg, ExecuteMsg } from '../types';
 import { TSTypeAnnotation, TSExpressionWithTypeArguments } from '@babel/types';
 
@@ -66,6 +66,8 @@ export const callExpression = (
     callExpr.typeParameters = typeParameters;
     return callExpr;
 };
+
+export const convertToQueryMethod = (name: string) => `${camel(name)}Query`;
 
 export const bindMethod = (name: string) => {
     return t.expressionStatement(

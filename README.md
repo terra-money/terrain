@@ -256,26 +256,16 @@ npm run start
 
 ## Run Contract Functions with Terrain
 
-Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. The default contents of the `lib/index.js` file are presented below.
+Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. 
 
-```js
-// lib/index.js
-
-module.exports = ({ wallets, refs, config, client }) => ({
-  getCount: () => client.query("counter", { get_count: {} }),
-  increment: (signer = wallets.test1) =>
-    client.execute(signer, "counter", { increment: {} }),
-});
-```
-
-You can call the functions defined above inside of the `terrain console`. An example using the `counter` smart contract is shown below.
+You can call the functions defined in `lib/index.js` inside of the `terrain console`. An example using the `counter` smart contract is shown below.
 
 ```sh
 terrain console
-terrain > await lib.getCount()
+terrain > await lib.getCountQuery()
 { count: 0 }
 terrain > await lib.increment()
-terrain > await lib.getCount()
+terrain > await lib.getCountQuery()
 { count: 1 }
 ```
 
@@ -296,10 +286,10 @@ const { task } = require("@terra-money/terrain");
 const lib = require("../lib");
 
 task(async (env) => {
-  const { getCount, increment } = lib(env);
-  console.log("count 1 = ", await getCount());
+  const { getCountQuery, increment } = lib(env);
+  console.log("count 1 = ", await getCountQuery());
   await increment();
-  console.log("count 2 = ", await getCount());
+  console.log("count 2 = ", await getCountQuery());
 });
 ```
 
@@ -534,7 +524,7 @@ DESCRIPTION
   contracts.
 ```
 
-_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/console.ts)_
+_See code: [src/commands/console.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/console.ts)_
 
 ## `terrain contract:build CONTRACT`
 
@@ -551,7 +541,7 @@ DESCRIPTION
   Build wasm bytecode.
 ```
 
-_See code: [src/commands/contract/build.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/contract/build.ts)_
+_See code: [src/commands/contract/build.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/build.ts)_
 
 ## `terrain contract:generateClient CONTRACT`
 
@@ -570,7 +560,7 @@ DESCRIPTION
   Generate a Wallet Provider or Terra.js compatible TypeScript client.
 ```
 
-_See code: [src/commands/contract/generateClient.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/contract/generateClient.ts)_
+_See code: [src/commands/contract/generateClient.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/generateClient.ts)_
 
 ## `terrain contract:instantiate CONTRACT`
 
@@ -594,7 +584,7 @@ DESCRIPTION
   Instantiate the contract.
 ```
 
-_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/contract/instantiate.ts)_
+_See code: [src/commands/contract/instantiate.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/instantiate.ts)_
 
 ## `terrain contract:migrate CONTRACT`
 
@@ -619,7 +609,7 @@ DESCRIPTION
   Migrate the contract.
 ```
 
-_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/contract/migrate.ts)_
+_See code: [src/commands/contract/migrate.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/migrate.ts)_
 
 ## `terrain contract:new NAME`
 
@@ -645,7 +635,7 @@ EXAMPLES
   $ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
 ```
 
-_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/contract/new.ts)_
+_See code: [src/commands/contract/new.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/new.ts)_
 
 ## `terrain contract:optimize CONTRACT`
 
@@ -662,7 +652,7 @@ DESCRIPTION
   Optimize wasm bytecode.
 ```
 
-_See code: [src/commands/contract/optimize.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/contract/optimize.ts)_
+_See code: [src/commands/contract/optimize.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/optimize.ts)_
 
 ## `terrain contract:store CONTRACT`
 
@@ -686,7 +676,7 @@ DESCRIPTION
   Store code on chain.
 ```
 
-_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/contract/store.ts)_
+_See code: [src/commands/contract/store.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/store.ts)_
 
 ## `terrain contract:updateAdmin CONTRACT ADMIN`
 
@@ -709,7 +699,7 @@ DESCRIPTION
   Update the admin of a contract.
 ```
 
-_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/contract/updateAdmin.ts)_
+_See code: [src/commands/contract/updateAdmin.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/updateAdmin.ts)_
 
 ## `terrain deploy CONTRACT`
 
@@ -737,7 +727,7 @@ DESCRIPTION
   Build wasm bytecode, store code on chain and instantiate.
 ```
 
-_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/deploy.ts)_
+_See code: [src/commands/deploy.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/deploy.ts)_
 
 ## `terrain help [COMMAND]`
 
@@ -789,7 +779,7 @@ EXAMPLES
   $ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"
 ```
 
-_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/new.ts)_
+_See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/new.ts)_
 
 ## `terrain sync-refs`
 
@@ -807,7 +797,7 @@ DESCRIPTION
   Sync configuration with frontend app.
 ```
 
-_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/sync-refs.ts)_
+_See code: [src/commands/sync-refs.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/sync-refs.ts)_
 
 ## `terrain task:new [TASK]`
 
@@ -821,7 +811,7 @@ DESCRIPTION
   create new task
 ```
 
-_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/task/new.ts)_
+_See code: [src/commands/task/new.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/task/new.ts)_
 
 ## `terrain task:run [TASK]`
 
@@ -843,7 +833,7 @@ DESCRIPTION
   run predefined task
 ```
 
-_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/task/run.ts)_
+_See code: [src/commands/task/run.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/task/run.ts)_
 
 ## `terrain test CONTRACT-NAME`
 
@@ -865,7 +855,7 @@ EXAMPLES
   $ terrain test counter --no-fail-fast
 ```
 
-_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/test.ts)_
+_See code: [src/commands/test.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/test.ts)_
 
 ## `terrain test:coverage [CONTRACT-NAME]`
 
@@ -884,7 +874,7 @@ EXAMPLES
   $ terrain test:coverage counter
 ```
 
-_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/test/coverage.ts)_
+_See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/test/coverage.ts)_
 
 ## `terrain wallet:new`
 
@@ -902,5 +892,5 @@ DESCRIPTION
   Generate a new wallet to use for signing contracts
 ```
 
-_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.6.2/src/commands/wallet/new.ts)_
+_See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/wallet/new.ts)_
 <!-- commandsstop -->
