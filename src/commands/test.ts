@@ -51,7 +51,6 @@ export default class Test extends Command {
         TerrainCLI.error(
           `Contract '${args['contract-name']}' not available in contracts directory.`,
         );
-        process.exit();
       }
 
       // If contracts directory does not exist in current directory, step back one directory.
