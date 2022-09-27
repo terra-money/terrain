@@ -1,6 +1,7 @@
 import * as childProcess from 'child_process';
+import TerrainCLI from '../TerrainCLI';
 
-export default (
+async function runScript(
   scriptPath: string,
   env: {
     configPath: string;
@@ -9,12 +10,9 @@ export default (
     network: string;
     signer: string;
   },
-  callback: (err?: Error) => void,
-) => {
-  // keep track of whether callback has been invoked to prevent multiple invocations
-  let invoked = false;
-
-  const cProcess = childProcess.fork(
+): Promise<void | Error> {
+  // Create child process.
+  const child = childProcess.fork(
     scriptPath,
     {
       env: {
@@ -30,18 +28,12 @@ export default (
     },
   );
 
-  // listen for errors as they may prevent the exit event from firing
-  cProcess.on('error', (err) => {
-    if (invoked) return;
-    invoked = true;
-    callback(err);
+  // Evaluate result of child process.
+  child.on('exit', (code) => {
+    if (code === 1) {
+      TerrainCLI.error(`Exit code ${code}.`);
+    }
   });
+}
 
-  // execute the callback once the process has finished running
-  cProcess.on('exit', (code) => {
-    if (invoked) return;
-    invoked = true;
-    const err = code === 0 ? undefined : new Error(`exit code ${code}`);
-    callback(err);
-  });
-};
+export default runScript;
