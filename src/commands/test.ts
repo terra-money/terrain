@@ -1,6 +1,8 @@
 import { Command, flags } from '@oclif/command';
 import { execSync } from 'child_process';
+import { join } from 'path';
 import { existsSync } from 'fs';
+import runCommand from '../lib/runCommand';
 import TerrainCLI from '../TerrainCLI';
 
 /**
@@ -31,36 +33,32 @@ export default class Test extends Command {
     // Extract args and flags specified in executed test command.
     const { args, flags } = this.parse(Test);
 
-    // Specify default contract path from terrain project root directory.
-    let contractPath = `contracts/${args['contract-name']}`;
+    // Command execution path.
+    const execPath = join('contracts', args['contract-name']);
 
-    // Backtrack, up to 4 times, through file tree to find contract directory.
-    for (let stepBack = 0; stepBack < 5; stepBack += 1) {
-      // If contractPath available, alert user of testing initialization,
-      // change working directory to contractPath and execute cargo test command.
-      if (existsSync(contractPath)) {
-        TerrainCLI.success(`Testing '${args['contract-name']}' contract.`);
-        process.chdir(contractPath);
-        execSync(`cargo test ${flags['no-fail-fast'] ? '--no-fail-fast' : ''}`, { stdio: 'inherit' });
-        process.exit();
-      }
+    // Command to be performed.
+    const command = () => {
+      process.chdir(execPath);
+      execSync(
+        `cargo test ${flags['no-fail-fast'] ? '--no-fail-fast' : ''}`,
+        { stdio: 'inherit' },
+      );
+    };
 
-      // If contracts directory exists, but contractPath does not,
-      // then contract referenced in terrain test command does not exist.
-      if (existsSync('contracts/') && !existsSync(contractPath)) {
+    // Error check to be performed upon each backtrack iteration.
+    const errorCheck = () => {
+      if (existsSync('contracts/') && !existsSync(execPath)) {
         TerrainCLI.error(
-          `Contract '${args['contract-name']}' not available in contracts directory.`,
+          `Contract '${args['contract-name']}' not available in 'contracts/' directory.`,
         );
       }
+    };
 
-      // If contracts directory does not exist in current directory, step back one directory.
-      contractPath = `../${contractPath}`;
-    }
-
-    // If contractPath not found after stepping back 4 directories,
-    // tell user to run command in a terrain project directory.
-    TerrainCLI.warning(
-      'Please ensure that you are in a terrain project directory.',
+    // Attempt to execute command while backtracking through file tree.
+    await runCommand(
+      execPath,
+      command,
+      errorCheck,
     );
   }
 }

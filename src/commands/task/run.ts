@@ -1,10 +1,12 @@
 import { Command, flags } from '@oclif/command';
-import * as path from 'path';
+import { join } from 'path';
 import { cli } from 'cli-ux';
-import * as fs from 'fs-extra';
+import { existsSync } from 'fs';
 import { Env, getEnv } from '../../lib/env';
 import * as flag from '../../lib/flag';
 import runScript from '../../lib/runScript';
+import runCommand from '../../lib/runCommand';
+import TerrainCLI from '../../TerrainCLI';
 
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
@@ -42,23 +44,20 @@ export default class Run extends Command {
 
   static args = [{ name: 'task' }];
 
-  static fromCwd = (p: string) => path.join(process.cwd(), p);
-
   async run() {
     const { args, flags } = this.parse(Run);
-    let scriptPath = Run.fromCwd(`tasks/${args.task}.ts`);
 
-    if (!fs.existsSync(scriptPath)) {
-      scriptPath = Run.fromCwd(`tasks/${args.task}.js`);
-    }
+    // Command execution path.
+    const execPath = join('tasks', `${args.task}.ts`);
 
-    await new Promise<void | Error>((resolve, reject) => {
+    // Command to be performed.
+    const command = async () => new Promise<void | Error>((resolve, reject) => {
       runScript(
-        scriptPath,
+        execPath,
         {
-          configPath: Run.fromCwd(flags['config-path']),
-          keysPath: Run.fromCwd(flags['keys-path']),
-          refsPath: Run.fromCwd(flags['refs-path']),
+          configPath: join(process.cwd(), flags['config-path']),
+          keysPath: join(process.cwd(), flags['keys-path']),
+          refsPath: join(process.cwd(), flags['refs-path']),
           network: flags.network,
           signer: flags.signer,
         },
@@ -68,5 +67,41 @@ export default class Run extends Command {
         },
       );
     });
+
+    // Error check to be performed upon each backtrack iteration.
+    const errorCheck = async () => {
+      if (existsSync('tasks') && !existsSync(execPath)) {
+        const jsExecutablePath = join('tasks', `${args.task}.js`);
+        if (existsSync(jsExecutablePath)) {
+          return new Promise<void | Error>((resolve, reject) => {
+            runScript(
+              jsExecutablePath,
+              {
+                configPath: join(process.cwd(), flags['config-path']),
+                keysPath: join(process.cwd(), flags['keys-path']),
+                refsPath: join(process.cwd(), flags['refs-path']),
+                network: flags.network,
+                signer: flags.signer,
+              },
+              (err) => {
+                if (err) reject(err);
+                resolve();
+              },
+            );
+          });
+        }
+        TerrainCLI.error(
+          `Task '${args.task}' not available in 'tasks/' directory.`,
+        );
+      }
+      return null;
+    };
+
+    // Attempt to execute command while backtracking through file tree.
+    await runCommand(
+      execPath,
+      command,
+      errorCheck,
+    );
   }
 }
