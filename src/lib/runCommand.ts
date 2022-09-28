@@ -13,7 +13,6 @@ async function runCommand(execPath: string, command: () => void, errorCheck: () 
 
     // If execPath available, execute command.
     if (existsSync(execPath)) {
-      TerrainCLI.success('Command executing...');
       return command();
     }
 

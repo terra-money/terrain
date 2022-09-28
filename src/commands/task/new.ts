@@ -21,7 +21,7 @@ export default class TaskNew extends Command {
     const newTaskPath = join(execPath, `${args.task}.ts`);
 
     // Command to be performed.
-    async function command() {
+    const command = async () => {
       cli.action.start(`Creating task: ${args.task}`);
       await writeFile(
         newTaskPath,
@@ -35,17 +35,17 @@ export default class TaskNew extends Command {
         `,
       );
       cli.action.stop();
-    }
+    };
 
     // Error check to be performed upon each backtrack iteration.
-    function errorCheck() {
+    const errorCheck = () => {
       if (existsSync(newTaskPath)) {
         TerrainCLI.error(`A task with the name ${args.task} already exists. Try using another name for the task.`);
       }
-    }
+    };
 
     // Attempt to execute command while backtracking through file tree.
-    runCommand(
+    await runCommand(
       execPath,
       command,
       errorCheck,

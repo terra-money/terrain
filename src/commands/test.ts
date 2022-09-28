@@ -37,25 +37,25 @@ export default class Test extends Command {
     const execPath = join('contracts', args['contract-name']);
 
     // Command to be performed.
-    function command() {
+    const command = () => {
       process.chdir(execPath);
       execSync(
         `cargo test ${flags['no-fail-fast'] ? '--no-fail-fast' : ''}`,
         { stdio: 'inherit' },
       );
-    }
+    };
 
     // Error check to be performed upon each backtrack iteration.
-    function errorCheck() {
+    const errorCheck = () => {
       if (existsSync('contracts/') && !existsSync(execPath)) {
         TerrainCLI.error(
           `Contract '${args['contract-name']}' not available in 'contracts/' directory.`,
         );
       }
-    }
+    };
 
     // Attempt to execute command while backtracking through file tree.
-    runCommand(
+    await runCommand(
       execPath,
       command,
       errorCheck,

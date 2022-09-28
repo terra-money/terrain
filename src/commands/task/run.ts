@@ -51,30 +51,42 @@ export default class Run extends Command {
     const execPath = join('tasks', `${args.task}.ts`);
 
     // Command to be performed.
-    function command() {
-      runScript(
-        execPath,
-        {
-          configPath: join(process.cwd(), flags['config-path']),
-          keysPath: join(process.cwd(), flags['keys-path']),
-          refsPath: join(process.cwd(), flags['refs-path']),
-          network: flags.network,
-          signer: flags.signer,
-        },
-      );
-    }
+    const command = async () => runScript(
+      execPath,
+      {
+        configPath: join(process.cwd(), flags['config-path']),
+        keysPath: join(process.cwd(), flags['keys-path']),
+        refsPath: join(process.cwd(), flags['refs-path']),
+        network: flags.network,
+        signer: flags.signer,
+      },
+    );
 
     // Error check to be performed upon each backtrack iteration.
-    function errorCheck() {
+    const errorCheck = async () => {
       if (existsSync('tasks') && !existsSync(execPath)) {
+        const jsFileExecutable = join('tasks', `${args.task}.js`);
+        if (existsSync(jsFileExecutable)) {
+          return runScript(
+            jsFileExecutable,
+            {
+              configPath: join(process.cwd(), flags['config-path']),
+              keysPath: join(process.cwd(), flags['keys-path']),
+              refsPath: join(process.cwd(), flags['refs-path']),
+              network: flags.network,
+              signer: flags.signer,
+            },
+          );
+        }
         TerrainCLI.error(
           `Task '${args.task}' not available in 'tasks/' directory.`,
         );
       }
-    }
+      return null;
+    };
 
     // Attempt to execute command while backtracking through file tree.
-    runCommand(
+    await runCommand(
       execPath,
       command,
       errorCheck,
