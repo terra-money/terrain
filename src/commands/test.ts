@@ -47,7 +47,7 @@ export default class Test extends Command {
 
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = () => {
-      if (existsSync('contracts/') && !existsSync(execPath)) {
+      if (existsSync('contracts') && !existsSync(execPath)) {
         TerrainCLI.error(
           `Contract '${args['contract-name']}' not available in 'contracts/' directory.`,
         );
