@@ -51,32 +51,44 @@ export default class Run extends Command {
     const execPath = join('tasks', `${args.task}.ts`);
 
     // Command to be performed.
-    const command = async () => runScript(
-      execPath,
-      {
-        configPath: join(process.cwd(), flags['config-path']),
-        keysPath: join(process.cwd(), flags['keys-path']),
-        refsPath: join(process.cwd(), flags['refs-path']),
-        network: flags.network,
-        signer: flags.signer,
-      },
-    );
+    const command = async () => new Promise<void | Error>((resolve, reject) => {
+      runScript(
+        execPath,
+        {
+          configPath: join(process.cwd(), flags['config-path']),
+          keysPath: join(process.cwd(), flags['keys-path']),
+          refsPath: join(process.cwd(), flags['refs-path']),
+          network: flags.network,
+          signer: flags.signer,
+        },
+        (err) => {
+          if (err) reject(err);
+          resolve();
+        },
+      );
+    });
 
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = async () => {
       if (existsSync('tasks') && !existsSync(execPath)) {
-        const jsFileExecutable = join('tasks', `${args.task}.js`);
-        if (existsSync(jsFileExecutable)) {
-          return runScript(
-            jsFileExecutable,
-            {
-              configPath: join(process.cwd(), flags['config-path']),
-              keysPath: join(process.cwd(), flags['keys-path']),
-              refsPath: join(process.cwd(), flags['refs-path']),
-              network: flags.network,
-              signer: flags.signer,
-            },
-          );
+        const jsExecutablePath = join('tasks', `${args.task}.js`);
+        if (existsSync(jsExecutablePath)) {
+          return new Promise<void | Error>((resolve, reject) => {
+            runScript(
+              jsExecutablePath,
+              {
+                configPath: join(process.cwd(), flags['config-path']),
+                keysPath: join(process.cwd(), flags['keys-path']),
+                refsPath: join(process.cwd(), flags['refs-path']),
+                network: flags.network,
+                signer: flags.signer,
+              },
+              (err) => {
+                if (err) reject(err);
+                resolve();
+              },
+            );
+          });
         }
         TerrainCLI.error(
           `Task '${args.task}' not available in 'tasks/' directory.`,
