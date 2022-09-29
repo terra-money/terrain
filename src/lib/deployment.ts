@@ -231,7 +231,13 @@ export const instantiate = async ({
 }: InstantiateParams) => {
   const { instantiation } = conf;
 
-  const actualCodeId = codeId || loadRefs(refsPath)[network][contract].codeId;
+  // Ensure contract refs are available in refs.terrain.json.
+  const refs = loadRefs(refsPath);
+  if (!(network in refs) || !(contract in refs[network])) {
+    TerrainCLI.error(`Contract '${contract}' has not been deployed on the '${network}' network.`);
+  }
+
+  const actualCodeId = codeId || refs[network][contract].codeId;
 
   cli.action.start(
     `instantiating contract with msg: ${JSON.stringify(
