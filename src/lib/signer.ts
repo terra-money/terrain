@@ -24,9 +24,9 @@ export const getSigner = async ({
     // Attempt to request sequence from LocalTerra.
     // Alert user if LocalTerra request fails.
     try {
-      cli.log(`Using pre-baked '${signerId}' wallet on LocalTerra as signer...`);
       const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
       await signer.sequence();
+      cli.log(`Using pre-baked '${signerId}' wallet on LocalTerra as signer...`);
       return signer;
     } catch {
       TerrainCLI.error('LocalTerra is currently not running.');

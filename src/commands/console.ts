@@ -1,5 +1,5 @@
 import { Command } from '@oclif/command';
-import { join, resolve } from 'path';
+import { join } from 'path';
 import { existsSync } from 'fs';
 import { start } from 'repl';
 import * as terrajs from '@terra-money/terra.js';
