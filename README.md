@@ -553,8 +553,8 @@ USAGE
 
 FLAGS
   --build-schema
-  --dest=<value>      [default: ./frontend/src/contract]
-  --lib-path=<value>  [default: ./lib] location to place the generated client
+  --dest=<value>      [default: frontend/src/contract]
+  --lib-path=<value>  [default: lib] location to place the generated client
 
 DESCRIPTION
   Generate a Wallet Provider or Terra.js compatible TypeScript client.
@@ -597,12 +597,12 @@ USAGE
 
 FLAGS
   --code-id=<value>      target code id for migration
-  --config-path=<value>  [default: ./config.terrain.json]
+  --config-path=<value>  [default: config.terrain.json]
   --instance-id=<value>  [default: default]
-  --keys-path=<value>    [default: ./keys.terrain.js]
+  --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra]
   --no-rebuild           deploy the wasm bytecode as is.
-  --refs-path=<value>    [default: ./refs.terrain.json]
+  --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 
 DESCRIPTION
@@ -621,7 +621,7 @@ USAGE
 
 FLAGS
   --authors=<value>  [default: Terra Money <core@terra.money>]
-  --path=<value>     [default: ./contracts] path to keep the contracts
+  --path=<value>     [default: contracts] path to keep the contracts
   --version=<value>  [default: 1.0-beta6]
 
 DESCRIPTION
@@ -688,11 +688,11 @@ USAGE
     [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
 
 FLAGS
-  --config-path=<value>  [default: ./config.terrain.json]
+  --config-path=<value>  [default: config.terrain.json]
   --instance-id=<value>  [default: default]
-  --keys-path=<value>    [default: ./keys.terrain.js]
+  --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
-  --refs-path=<value>    [default: ./refs.terrain.json]
+  --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 
 DESCRIPTION
