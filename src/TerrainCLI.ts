@@ -49,7 +49,7 @@ class TerrainCLI {
       '$1\n',
     );
 
-    // Replace variables, surrounded by single quotes, by the stylized variable.
+    // Replace variables, surrounded by double quotes, by the stylized variable.
     const variableRegex = /"(.+)"/g;
     const varHighlightMsg = textWrapMsg.replace(
       variableRegex,

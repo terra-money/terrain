@@ -95,9 +95,7 @@ cargo install cargo-run-script
 
 ## Install Node JS and NPM
 
-To run Terrain, you will need to install Node.js and NPM. We recommend that you install <a href="https://nodejs.org/en/download/" target="_blank">Node.js v16 (LTS)</a>. Node Package Manager (NPM) is automatically installed along with your Node.js download.
-
-<sub>**Note:** _Use Node.js v16 (LTS) if you encounter the following error code: `error:0308010C:digital envelope routines::unsupported`_</sub>
+To run Terrain, you will need to install version 16 of Node.js and download Node Package Manager (npm). It is recommend that you install [Node.js v16 (LTS)](https://nodejs.org/en/download/). If you download the LTS version of Node.js v16, npm will be automatically installed along with your download.
 
 # Getting Started
 
@@ -117,26 +115,20 @@ npm install -g @terra-money/terrain
 terrain new my-terra-dapp
 ```
 
-3. Navigate to the new `my-terra-dapp` directory.
+3. After the project is generated and all necessary Node dependencies are installed, navigate to the new `my-terra-dapp` directory to interact with your app.
 
 ```sh
 cd my-terra-dapp
 ```
 
-4. Install all necessary Node dependencies in your project.
-
-```sh
-npm install
-```
-
 ## Project Structure
 
-The `terrain new` command generates a project that contains a template smart contract called `counter` and a corresponding frontend. Other supporting files are generated to provide further functionality. You may view the project structure below.
+The `terrain new` command generates a project that contains a template smart contract, which is named after the specified app name, `my-terra-dapp`, and a corresponding frontend. Other supporting files are generated to provide further functionality. You may view the project structure below.
 
 ```
 .
 ├── contracts              # the smart contract directory
-│   ├── counter            # template smart contract
+│   ├── my-terra-dapp      # template smart contract
 │   └── ...
 ├── frontend               # template frontend application
 ├── lib                    # predefined task and console functions
@@ -150,20 +142,28 @@ The `terrain new` command generates a project that contains a template smart con
 
 The `terrain deploy` command does the following:
 
-- Builds, optimizes and stores the wasm code on the blockchain.
+- Builds, optimizes, and stores the wasm code on the blockchain.
 - Instantiates the contract.
 
-To deploy your new counter smart contract, run the following command in the terminal.
+To deploy your new my-terra-dapp smart contract, run the following command in the terminal.
 
 ```sh
-terrain deploy counter --signer test1
+terrain deploy my-terra-dapp --signer test1
 ```
-
-<sub> **Note:** _You can also store the wasm code and instantiate the contract separately using the command [`terrain code:store CONTRACT`](#terrain-codestore-contract) followed by [`terrain contract:instantiate CONTRACT`](#terrain-contractmigrate-contract). In this case, you must also run the command `terrain sync-refs` in your project directory to update the `refs.terrain.json` file which references contract deployments on all networks._</sub>
 
 In this case, we specify one of the <a href="https://github.com/terra-money/LocalTerra#accounts" target="_blank">preconfigured accounts</a> with balances on LocalTerra, `test1`, as our signer. The signer account will be responsible for paying the gas fee associated with deploying the contract to the Terra blockchain and will be assigned as the owner of the project.
 
-You can also specify the network on which you would like to deploy your contract by adding the `--network` flag. If the network is not specified, as is the case in our above example, your contract will be deployed to `localterra` by default. You may also deploy to `mainnet`, the live Terra blockchain, as well as `testnet`, a network similar to mainnet used for testing.
+You can also specify the network on which you would like to deploy your contract by adding the `--network` flag. If the network is not specified, as is the case in our above example, your contract will be deployed to `localterra` by default. If your deployment command in the prior step resulted in an error, you will need to ensure that LocalTerra is up and running in the background and that you have properly spelled out your contract name and are utilizing the appropriate Terrain command. You may also deploy to `mainnet`, the live Terra blockchain, as well as `testnet`, a network similar to mainnet used for testing.
+
+### Step-by-step Deployment
+
+You can also execute the build, optimize, store, and instantiate processes separately by executing the following commands in sequential order.
+1. [`terrain contract:build CONTRACT`](#terrain-contractbuild-contract)
+2. [`terrain contract:optimize CONTRACT`](#terrain-contractoptimize-contract)
+3. [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
+4. [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
+
+Afterward, you will have to run the `terrain sync-refs` command in your project directory to sync the `refs.terrain.json` file in the app root directory to the frontend directory. This file contains references to all contracts in the project which have been stored on any Terra network.
 
 <br/>
 
@@ -171,7 +171,7 @@ You can also specify the network on which you would like to deploy your contract
 
 The predefined accounts in the `keys.terrain.js` file shown below can be utilized as signers on `testnet`. We will demonstrate how to deploy your smart contract utilizing the preconfigured `custom_tester_1` account. You may also add a personal account to the `keys.terrain.js` file by adding the account name as well as its corresponding private key. You can then use that account as the signer specifying the account name after the `--signer` flag in the `terrain deploy` command.
 
-<sub>**Warning:** _Utilizing a personal account for deployment requires the use of a private key or mnemonic. These are private keys that are generated upon the creation of your personal wallet. Saving or utilizing these keys on your personal computer may expose them to malicious actors who could gain access to your personal wallet if they are able to obtain them. You can create a wallet solely for testing purposes to eliminate risk. Alternatively, you can store your private keys as secret enviroment variables which you can then reference utilizing `process.env.SECRET_VAR` in `keys.terrain.json`. Use your private key or mnemonic at your own discretion._</sub>
+<sub>**Warning:** _Utilizing a personal account for deployment requires the use of a private key or mnemonic. These are private keys that are generated upon the creation of your personal wallet. Saving or utilizing these keys on your personal computer may expose them to malicious actors who could gain access to your personal wallet if they are able to obtain them. You can create a wallet solely for testing purposes to eliminate risk. Alternatively, you can store your private keys as secret environment variables which you can then reference utilizing `process.env.SECRET_VAR` in `keys.terrain.json`. Use your private key or mnemonic at your own discretion._</sub>
 
 ```js
 // can use `process.env.SECRET_MNEMONIC` or `process.env.SECRET_PRIV_KEY`
@@ -190,7 +190,7 @@ module.exports = {
 
 Prior to deploying your contract, ensure that your signer wallet contains the funds needed to pay for associated transaction fees. You can request funds from the <a href="https://faucet.terra.money/" target="_blank">Terra Testnet Faucet</a> by submitting the wallet address of the account where you would like to receive the funds and clicking on the `Send me tokens` button.
 
-You can retrieve the wallet address associated with the `custom_tester_1` account by utilizing the `terrain console` in your terminal.
+You can retrieve the wallet address associated with the `custom_tester_1` account by executing the `terrain console` command in your terminal while in your project directory.
 
 ```sh
 terrain console
@@ -213,7 +213,7 @@ terrain deploy counter --signer custom_tester_1 --network testnet
 
 ## Initializing the Frontend Template
 
-After deployment, the `refs.terrain.json` file will be updated in the project directory as well as the `frontend/src` directory. These files contain all contract references on all networks. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
+After deployment, the `refs.terrain.json` file will be updated in the project directory as well as the `frontend/src` directory. These files contain references to all contracts inside of your project which have been stored on any Terra network. This information is utilized by terrain's utility functions and also the frontend template. An example of `refs.terrain.json` can be found below:
 
 ```json
 {
@@ -236,7 +236,7 @@ After deployment, the `refs.terrain.json` file will be updated in the project di
 }
 ```
 
-<sub> **Important:** _If you have initialized the contract without using the `terrain deploy` command or have manually changed the `refs.terrain.json` file in the project directory, you will need to sync the references to the `frontend/src` directory in order to ensure frontend functionality. To do so, use the following command: `terrain sync-refs`_</sub>
+<sub> **Important:** _If you have initialized the contract without using the `terrain deploy` command or have manually changed the `refs.terrain.json` file in the project directory, you will need to sync the references to the `frontend/src` directory in order to ensure frontend functionality. To do so, utilize the `terrain sync-refs` command._</sub>
 
 After you have synced the contract references, navigate to the `frontend` directory and start the application.
 
@@ -258,7 +258,7 @@ npm run start
 
 Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. 
 
-You can call the functions defined in `lib/index.js` inside of the `terrain console`. An example using the `counter` smart contract is shown below.
+You can call the functions defined in `lib/index.js` inside of the `terrain console`. An example using the template counter smart contract is shown below.
 
 ```sh
 terrain console
@@ -277,7 +277,7 @@ terrain console --network NETWORK
 
 ## Creating Tasks
 
-You can also utilize the functions available inside of the `lib/index.js` file to create tasks. Tasks are utilized in order to automate the execution of sequential functions or commands. An example task is provided for you in the `tasks/example-with-lib.js` file in your project directory.
+You can utilize the functions available inside of the `lib/index.js` file to create tasks. Tasks are utilized in order to automate the execution of sequential functions or commands. An example task is provided for you in the `tasks/example-with-lib.js` file in your project directory.
 
 ```js
 // tasks/example-with-lib.js
@@ -305,7 +305,7 @@ In order to create a new task, run the following command replacing `<task-name>`
 terrain task:new <task-name>
 ```
 
-If you would like to utilize JavaScript in your functions or tasks, you can import Terra.js. The `tasks/example-custom-logic.js` file contains an example of a task that utilizes Terra.js functionality. To learn more about Terra.js, view the <a href="https://terra-money.github.io/terra.js/" target="_blank">Terra.js documentation</a>.
+If you would like to utilize JavaScript in your functions or tasks, you can import [Terra.js](https://github.com/terra-money/terra.js). The `tasks/example-custom-logic.js` file contains an example of a task that utilizes Terra.js functionality. To learn more about Terra.js, view the <a href="https://terra-money.github.io/terra.js/" target="_blank">Terra.js documentation</a>.
 
 ```js
 // tasks/example-custom-logic.js
@@ -387,11 +387,9 @@ It is possible to tell Terrain to use a custom deploy task instead of the defaul
 
 Now instead of running `terrain task:run deploy_counter` you can run `terrain deploy counter`.
 
----
-
 # Migrating CosmWasm Contracts on Terra
 
-On Terra, it is possible to initialize a contract as migratable. This functionallity allows the adminstrator to upload a new version of the contract and then send a migrate message to move to the new code.
+On Terra, it is possible to initialize a contract as migratable. This functionality allows the administrator to upload a new version of the contract and then send a migrate message to move to the new code. Contracts that have been deployed before implementing the following changes will not be able to be migrated and implemented changes will only be realized when redeploying the contract.
 
 The <a href="https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html" target="_blank">contract migration tutorial</a> builds on top of the Terrain Quick Start Guide and walks you through a contract migration.
 
@@ -447,7 +445,7 @@ In some cases, the latest features or bug fixes may be integrated into the main 
 
 <sub>**Warning:** _Features and bug fixes that are implemented on the latest version of Terrain may still be subject to testing. As such, you should only use the main branch of the Terrain github repo in exceptional circumstances. In all other cases, use the npm package._</sub>
 
-To use the main branch of the Terrain repo on your local machine, do the following:
+To use the main branch of the Terrain repo on your local machine, follow the procedure below.
 
 1. Clone the repo.
 
@@ -467,13 +465,19 @@ cd terrain
 npm install
 ```
 
-4.  Run the `npm link` command to link the project to your global terrain instance.
+4.  Run the `npm link` command to set up the local repository as your global terrain instance.
 
 ```
 npm link
 ```
 
-To unlink the terrain command from the cloned repository and revert back to the default functionality you can run the command below.
+If you would like to witness your changes immediately upon saving them, you may execute the following command while in your local Terrain directory and allow it to run in a tab in your terminal.
+
+```
+npm run watch
+```
+
+To unlink the terrain command from the cloned repository and revert back to the default functionality, you can execute the below command.
 
 ```
 npm unlink terrain
@@ -553,8 +557,8 @@ USAGE
 
 FLAGS
   --build-schema
-  --dest=<value>      [default: ./frontend/src/contract]
-  --lib-path=<value>  [default: ./lib] location to place the generated client
+  --dest=<value>      [default: frontend/src/contract]
+  --lib-path=<value>  [default: lib] location to place the generated client
 
 DESCRIPTION
   Generate a Wallet Provider or Terra.js compatible TypeScript client.
@@ -597,12 +601,12 @@ USAGE
 
 FLAGS
   --code-id=<value>      target code id for migration
-  --config-path=<value>  [default: ./config.terrain.json]
+  --config-path=<value>  [default: config.terrain.json]
   --instance-id=<value>  [default: default]
-  --keys-path=<value>    [default: ./keys.terrain.js]
+  --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra]
   --no-rebuild           deploy the wasm bytecode as is.
-  --refs-path=<value>    [default: ./refs.terrain.json]
+  --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 
 DESCRIPTION
@@ -621,7 +625,7 @@ USAGE
 
 FLAGS
   --authors=<value>  [default: Terra Money <core@terra.money>]
-  --path=<value>     [default: ./contracts] path to keep the contracts
+  --path=<value>     [default: contracts] path to keep the contracts
   --version=<value>  [default: 1.0-beta6]
 
 DESCRIPTION
@@ -688,11 +692,11 @@ USAGE
     [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
 
 FLAGS
-  --config-path=<value>  [default: ./config.terrain.json]
+  --config-path=<value>  [default: config.terrain.json]
   --instance-id=<value>  [default: default]
-  --keys-path=<value>    [default: ./keys.terrain.js]
+  --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
-  --refs-path=<value>    [default: ./refs.terrain.json]
+  --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 
 DESCRIPTION

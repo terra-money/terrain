@@ -16,6 +16,7 @@ import { execSync } from 'child_process';
 import * as fs from 'fs-extra';
 import { cli } from 'cli-ux';
 import * as YAML from 'yaml';
+import dedent from 'dedent';
 import path from 'path';
 import {
   ContractConfig,
@@ -26,7 +27,6 @@ import {
 } from '../config';
 import TerrainCLI from '../TerrainCLI';
 import useARM64 from './useARM64';
-import dedent from 'dedent';
 
 type BuildParams = {
   contract: string;
