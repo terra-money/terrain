@@ -17,7 +17,7 @@ export default class SyncRefs extends Command {
     const { flags } = this.parse(SyncRefs);
 
     if (!fs.pathExistsSync(flags.dest)) {
-      TerrainCLI.error(`Failed to sync refs. Destination directory '${flags.dest}' not found.`);
+      TerrainCLI.error(`Destination directory "${flags.dest}" not found.`, 'Failed to Sync Refs');
     }
 
     // Append "refs.terrain.json" to flags.dest path if file unavailable.

@@ -29,14 +29,20 @@ export const getSigner = async ({
       await signer.sequence();
       return signer;
     } catch {
-      TerrainCLI.error('LocalTerra is currently not running.');
+      TerrainCLI.error(
+        'LocalTerra is currently not running.',
+        'Network Unavailable',
+      );
     }
   }
   // If using testnet or mainnet, evaluate if key of provided signer
   // is available in keysPath. If so, return signer Wallet.
   const keys = loadKeys(path.join(process.cwd(), keysPath));
   if (!keys[signerId]) {
-    TerrainCLI.error(`The key corresponding to '${signerId}' does not exist in '${keysPath}'.`);
+    TerrainCLI.error(
+      `The key corresponding to "${signerId}" does not exist in "${keysPath}".`,
+      'Signer Not Found',
+    );
   }
   return new Wallet(lcd, keys[signerId]);
 };

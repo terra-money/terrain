@@ -32,7 +32,8 @@ export default class Build extends Command {
     const errorCheck = () => {
       if (existsSync('contracts') && !existsSync(execPath)) {
         TerrainCLI.error(
-          `Contract '${args.contract}' not available in 'contracts/' directory.`,
+          `Contract "${args.contract}" not available in "contracts/" directory.`,
+          'Contract Unavailable',
         );
       }
     };

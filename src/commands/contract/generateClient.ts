@@ -45,8 +45,8 @@ export default class GenerateClient extends Command {
       'syncing clients to frontend',
     );
 
-    if (!fs.pathExistsSync('./frontend')) {
-      TerrainCLI.warning('no frontend directory found, not syncing refs');
+    if (!fs.pathExistsSync('frontend')) {
+      TerrainCLI.error('The "frontend/" directory was not found.', 'Failed to Sync Refs');
       cli.action.stop();
       return;
     }

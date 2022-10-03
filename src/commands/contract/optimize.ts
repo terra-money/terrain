@@ -36,7 +36,8 @@ export default class Optimize extends Command {
     const errorCheck = () => {
       if (existsSync('contracts') && !existsSync(join('contracts', args.contract))) {
         TerrainCLI.error(
-          `Contract '${args.contract}' not available in 'contracts/' directory.`,
+          `Contract "${args.contract}" not available in "contracts/" directory.`,
+          'Contract Unavailable',
         );
       }
     };

@@ -24,8 +24,9 @@ async function runCommand(execPath: string, command: () => void, errorCheck: () 
 
   // If terrainAppRootPath not found after stepping back 4 directories,
   // tell user to run command in a terrain project directory.
-  return TerrainCLI.warning(
-    `Command execution path ${execPath} not found. Please ensure that you are in a terrain project directory.`,
+  return TerrainCLI.error(
+    `Command execution path "${execPath}" not found. Please ensure that you are in a terrain project directory.`,
+    'Execution Path Not Found',
   );
 }
 
