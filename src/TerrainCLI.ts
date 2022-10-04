@@ -3,6 +3,9 @@ import cli from 'cli-ux';
 import boxen from 'boxen';
 import semver from 'semver';
 import dedent from 'dedent';
+import { spawn } from 'child_process';
+import terminalOverwrite from 'terminal-overwrite';
+import { chunksToLinesAsync, chomp } from '@rauschma/stringio';
 
 /** TerrainCLI offers default log styling for terrain commands. */
 class TerrainCLI {
@@ -104,6 +107,41 @@ class TerrainCLI {
       );
       process.exit();
     }
+  }
+
+  // Parse cargo command output to only display progress bar.
+  // eslint-disable-next-line class-methods-use-this
+  async parseAndDisplayProgressBar(readable: AsyncIterable<string>) {
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const line of chunksToLinesAsync(readable)) {
+      const chompedLine = chomp(line).split('\r');
+      // eslint-disable-next-line no-restricted-syntax
+      for (const splitLine of chompedLine) {
+        if (splitLine.includes('Building')) {
+          terminalOverwrite(splitLine);
+        }
+      }
+    }
+  }
+
+  // Run supplied cargo command with custom output.
+  async runCargoCommand(command: string) {
+    // stdio params: ['stdin', 'stdout', 'stderr'].
+    const source = spawn(
+      'cargo',
+      [command, '--color', 'always'],
+      {
+        env: {
+          ...process.env,
+          CARGO_TERM_PROGRESS_WHEN: 'always',
+          CARGO_TERM_PROGRESS_WIDTH: process.stdout.columns?.toString(),
+        },
+        stdio: ['ignore', 'ignore', 'pipe'],
+      },
+    );
+
+    // Only print progress bar and exclude all verbose output from Cargo.
+    await this.parseAndDisplayProgressBar(source.stderr);
   }
 }
 

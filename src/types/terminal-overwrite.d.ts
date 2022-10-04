@@ -1,4 +1,4 @@
 declare module 'terminal-overwrite' {
-  function log(string: string): void; 
+  function log(string: string): void;
   export = log;
 }
