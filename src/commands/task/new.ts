@@ -40,7 +40,10 @@ export default class TaskNew extends Command {
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = () => {
       if (existsSync(newTaskPath)) {
-        TerrainCLI.error(`A task with the name ${args.task} already exists. Try using another name for the task.`);
+        TerrainCLI.error(
+          `A task with the name "${args.task}" already exists in the "tasks/" directory. Try using another name for the task.`,
+          'Task Available',
+        );
       }
     };
 

@@ -91,7 +91,8 @@ export default class Run extends Command {
           });
         }
         TerrainCLI.error(
-          `Task '${args.task}' not available in 'tasks/' directory.`,
+          `Task "${args.task}" not available in "tasks/" directory.`,
+          'Task Not Found',
         );
       }
       return null;

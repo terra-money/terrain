@@ -34,13 +34,14 @@ export default class WalletNew extends Command {
       this.exit(0);
     }
 
-    TerrainCLI.warning('Anyone who gains access to your seed phrase can access the contents of the corresponding wallet. Be cognizant of the fact that there is no recourse for theft of a seed phrase.');
-
     this.log('address:');
     this.log(mk.accAddress);
     this.log('mnemonic key:');
     this.log(mk.mnemonic);
 
-    this.exit(0);
+    TerrainCLI.error(
+      'Anyone who gains access to your seed phrase can access the contents of the corresponding wallet. Be cognizant of the fact that there is no recourse for theft of a seed phrase.',
+      'Private Key Warning',
+    );
   }
 }

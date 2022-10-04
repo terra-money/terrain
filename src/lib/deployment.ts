@@ -16,6 +16,7 @@ import { execSync } from 'child_process';
 import * as fs from 'fs-extra';
 import { cli } from 'cli-ux';
 import * as YAML from 'yaml';
+import dedent from 'dedent';
 import path from 'path';
 import {
   ContractConfig,
@@ -153,10 +154,9 @@ export const storeCode = async ({
   // Check if user is attempting to store ARM64 wasm binary on mainnet.
   // If so, reoptimize to default wasm binary to store on mainnet.
   if (storingARM64Mainnet) {
-    TerrainCLI.alert(`
-ARM64 wasm files should not be stored on mainnet.\n
-Rebuilding contract to deploy default wasm binary.
-    `, '🚨 ARM64 Wasm Detected 🚨');
+    TerrainCLI.error(dedent`
+ARM64 wasm files should not be stored on mainnet. Rebuilding contract to deploy default wasm binary.
+    `, 'ARM64 Wasm Detected');
 
     await optimize({ contract, useCargoWorkspace, network });
   }
@@ -234,7 +234,10 @@ export const instantiate = async ({
   // Ensure contract refs are available in refs.terrain.json.
   const refs = loadRefs(refsPath);
   if (!(network in refs) || !(contract in refs[network])) {
-    TerrainCLI.error(`Contract '${contract}' has not been deployed on the '${network}' network.`);
+    TerrainCLI.error(
+      `Contract "${contract}" has not been deployed on the "${network}" network.`,
+      'Contract Not Deployed',
+    );
   }
 
   const actualCodeId = codeId || refs[network][contract].codeId;
