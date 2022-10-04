@@ -12,7 +12,8 @@ import {
   CreateTxOptions,
 } from '@terra-money/terra.js';
 import { parse } from 'toml';
-import { execSync } from 'child_process';
+import { chunksToLinesAsync, chomp } from '@rauschma/stringio';
+import { execSync, spawn } from 'child_process';
 import * as fs from 'fs-extra';
 import { cli } from 'cli-ux';
 import * as YAML from 'yaml';
@@ -26,10 +27,21 @@ import {
 } from '../config';
 import TerrainCLI from '../TerrainCLI';
 import useARM64 from './useARM64';
-
+import terminalOverwrite from 'terminal-overwrite';
 type BuildParams = {
   contract: string;
 };
+
+async function parseAndDisplayProgressBar(readable: AsyncIterable<string>) {
+  for await (const line of chunksToLinesAsync(readable)) { // (C)
+    const chompedLine = chomp(line).split('\r');
+    for (const splitLine of chompedLine) {
+      if (splitLine.includes('Building')) {
+        terminalOverwrite(splitLine);
+      }
+    }
+  }
+}
 
 export const build = async ({ contract }: BuildParams) => {
   const startingDirectory = process.cwd();
@@ -41,7 +53,23 @@ export const build = async ({ contract }: BuildParams) => {
     cli.error(`Change the package name in Cargo.toml to ${contract} to build`);
   }
 
-  execSync('cargo wasm', { stdio: 'inherit' });
+  // stdio params: ['stdin', 'stdout', 'stderr'].
+  const source = spawn(
+    'cargo', 
+    ['wasm', '--color', 'always'], 
+    { 
+      env: { 
+        ...process.env, 
+        CARGO_TERM_PROGRESS_WHEN: 'always', 
+        CARGO_TERM_PROGRESS_WIDTH: process.stdout.columns?.toString(),
+      }, 
+      stdio: ['ignore', 'ignore', 'pipe'],
+    }
+  );
+  
+  // Only print progress bar and exclude all verbose output from Cargo.
+  await parseAndDisplayProgressBar(source.stderr);
+
   process.chdir(startingDirectory);
 };
 
