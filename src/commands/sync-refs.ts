@@ -42,7 +42,8 @@ export default class SyncRefs extends Command {
     const errorCheck = () => {
       if (existsSync(execPath) && !existsSync('refs.terrain.json')) {
         TerrainCLI.error(
-          'refs.terrain.json file not available in project root directory.',
+          'The "refs.terrain.json" file was not found in the project root directory.',
+          'Failed to Sync Refs',
         );
       }
     };
