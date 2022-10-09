@@ -2,11 +2,12 @@ import { Command, flags } from '@oclif/command';
 import { cli } from 'cli-ux';
 import { join } from 'path';
 import { execSync } from 'child_process';
-import { pathExistsSync, existsSync, copySync } from 'fs-extra';
+import { pathExistsSync, copySync } from 'fs-extra';
 import { pascal } from 'case';
 import TerrainCLI from '../../TerrainCLI';
 import runCommand from '../../lib/runCommand';
 import generateClient from '../../lib/generateClient';
+import defaultErrorCheck from '../../lib/defaultErrorCheck';
 
 export default class GenerateClient extends Command {
   static description = 'Generate a Wallet Provider or Terra.js compatible TypeScript client.';
@@ -56,7 +57,7 @@ export default class GenerateClient extends Command {
       );
 
       if (!pathExistsSync('frontend')) {
-        TerrainCLI.error('The "frontend/" directory was not found.', 'Failed to Sync Refs');
+        TerrainCLI.error('The "frontend" directory was not found.', 'Failed to Sync Refs');
         cli.action.stop();
         return;
       }
@@ -66,20 +67,11 @@ export default class GenerateClient extends Command {
       cli.action.stop();
     };
 
-    // Error check to be performed upon each backtrack iteration.
-    const errorCheck = () => {
-      if (existsSync('contracts') && !existsSync(execPath)) {
-        TerrainCLI.error(
-          `Contract '${args.contract}' not available in 'contracts/' directory.`,
-        );
-      }
-    };
-
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
-      errorCheck,
+      defaultErrorCheck(args.contract),
     );
   }
 }

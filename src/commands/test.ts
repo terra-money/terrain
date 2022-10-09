@@ -1,9 +1,8 @@
 import { Command, flags } from '@oclif/command';
 import { execSync } from 'child_process';
 import { join } from 'path';
-import { existsSync } from 'fs';
 import runCommand from '../lib/runCommand';
-import TerrainCLI from '../TerrainCLI';
+import defaultErrorCheck from '../lib/defaultErrorCheck';
 
 /**
  * Runs unit tests for a contract directory.
@@ -45,21 +44,11 @@ export default class Test extends Command {
       );
     };
 
-    // Error check to be performed upon each backtrack iteration.
-    const errorCheck = () => {
-      if (existsSync('contracts') && !existsSync(execPath)) {
-        TerrainCLI.error(
-          `Contract "${args['contract-name']}" not available in "contracts/" directory.`,
-          'Contract Unavailable',
-        );
-      }
-    };
-
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
-      errorCheck,
+      defaultErrorCheck(args['contract-name']),
     );
   }
 }

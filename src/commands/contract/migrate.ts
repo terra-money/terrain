@@ -1,13 +1,11 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
-import { existsSync } from 'fs';
-import { join } from 'path';
 import { loadConfig, loadConnections } from '../../config';
 import { migrate, storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
-import TerrainCLI from '../../TerrainCLI';
 import runCommand from '../../lib/runCommand';
+import defaultErrorCheck from '../../lib/defaultErrorCheck';
 
 export default class ContractMigrate extends Command {
   static description = 'Migrate the contract.';
@@ -70,20 +68,11 @@ export default class ContractMigrate extends Command {
       });
     };
 
-    // Error check to be performed upon each backtrack iteration.
-    const errorCheck = () => {
-      if (existsSync('contracts') && !existsSync(join('contracts', args.contract))) {
-        TerrainCLI.error(
-          `Contract '${args.contract}' not available in 'contracts/' directory.`,
-        );
-      }
-    };
-
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
-      errorCheck,
+      defaultErrorCheck(args.contract),
     );
   }
 }

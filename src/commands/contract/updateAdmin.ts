@@ -2,12 +2,11 @@ import { Command, flags } from '@oclif/command';
 import * as YAML from 'yaml';
 import { LCDClient, MsgUpdateContractAdmin } from '@terra-money/terra.js';
 import { cli } from 'cli-ux';
-import { existsSync } from 'fs';
 import { loadConnections, loadRefs } from '../../config';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
-import TerrainCLI from '../../TerrainCLI';
 import runCommand from '../../lib/runCommand';
+import defaultErrorCheck from '../../lib/defaultErrorCheck';
 
 export default class ContractUpdateAdmin extends Command {
   static description = 'Update the admin of a contract.';
@@ -72,20 +71,11 @@ export default class ContractUpdateAdmin extends Command {
       }
     };
 
-    // Error check to be performed upon each backtrack iteration.
-    const errorCheck = () => {
-      if (existsSync('contracts') && !existsSync(execPath)) {
-        TerrainCLI.error(
-          `Contract '${args.contract}' not available in 'contracts/' directory.`,
-        );
-      }
-    };
-
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
-      errorCheck,
+      defaultErrorCheck(args.contract),
     );
   }
 }
