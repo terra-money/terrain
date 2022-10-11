@@ -1,7 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { cli } from 'cli-ux';
 import { join } from 'path';
-import { execSync } from 'child_process';
 import { pathExistsSync, copySync } from 'fs-extra';
 import { pascal } from 'case';
 import TerrainCLI from '../../TerrainCLI';
@@ -15,7 +14,6 @@ export default class GenerateClient extends Command {
   static flags = {
     'lib-path': flags.string({ default: 'lib', description: 'location to place the generated client' }),
     dest: flags.string({ default: join('frontend', 'src', 'contract') }),
-    'build-schema': flags.boolean({ default: false }),
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -28,18 +26,6 @@ export default class GenerateClient extends Command {
 
     // Command to be performed.
     const command = async () => {
-      if (flags['build-schema']) {
-        cli.action.start('running cargo schema');
-        const workingDirectory = process.cwd();
-        process.chdir(execPath);
-        execSync('cargo schema', { stdio: 'inherit' });
-
-        // Move back to starting point.
-        process.chdir(workingDirectory);
-
-        cli.action.stop();
-      }
-
       cli.action.start(
         `Generating ${pascal(args.contract)}Client.ts`,
       );

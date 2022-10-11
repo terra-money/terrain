@@ -553,10 +553,9 @@ Generate a Wallet Provider or Terra.js compatible TypeScript client.
 
 ```
 USAGE
-  $ terrain contract:generateClient [CONTRACT] [--lib-path <value>] [--dest <value>] [--build-schema]
+  $ terrain contract:generateClient [CONTRACT] [--lib-path <value>] [--dest <value>]
 
 FLAGS
-  --build-schema
   --dest=<value>      [default: frontend/src/contract]
   --lib-path=<value>  [default: lib] location to place the generated client
 

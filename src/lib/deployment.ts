@@ -42,7 +42,9 @@ export const build = async ({ contract }: BuildParams) => {
     cli.error(`Change the package name in Cargo.toml to ${contract} to build`);
   }
 
-  execSync('cargo wasm', { stdio: 'inherit' });
+  await TerrainCLI.runCargoCommand('wasm');
+  await TerrainCLI.runCargoCommand('schema');
+
   process.chdir(startingDirectory);
 };
 
