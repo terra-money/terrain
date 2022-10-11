@@ -236,7 +236,7 @@ export const instantiate = async ({
   if (!(network in refs) || !(contract in refs[network])) {
     TerrainCLI.error(
       `Contract "${contract}" has not been deployed on the "${network}" network.`,
-      'Contract Not Deployed',
+      'Contract Not Yet Deployed',
     );
   }
 

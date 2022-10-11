@@ -1,11 +1,9 @@
 import { Command } from '@oclif/command';
-import { existsSync } from 'fs';
-import { join } from 'path';
 import { optimize } from '../../lib/deployment';
 import { configPath } from '../../lib/flag';
 import { loadGlobalConfig } from '../../config';
-import TerrainCLI from '../../TerrainCLI';
 import runCommand from '../../lib/runCommand';
+import defaultErrorCheck from '../../lib/defaultErrorCheck';
 
 export default class Optimize extends Command {
   static description = 'Optimize wasm bytecode.';
@@ -32,21 +30,11 @@ export default class Optimize extends Command {
       });
     };
 
-    // Error check to be performed upon each backtrack iteration.
-    const errorCheck = () => {
-      if (existsSync('contracts') && !existsSync(join('contracts', args.contract))) {
-        TerrainCLI.error(
-          `Contract "${args.contract}" not available in "contracts/" directory.`,
-          'Contract Unavailable',
-        );
-      }
-    };
-
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
-      errorCheck,
+      defaultErrorCheck(args.contract),
     );
   }
 }
