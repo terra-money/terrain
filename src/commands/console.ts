@@ -85,7 +85,8 @@ export default class Console extends Command {
     const errorCheck = () => {
       if (existsSync('contracts') && !existsSync(execPath)) {
         TerrainCLI.error(
-          `Execution directory '${execPath}' not available.`,
+          `Execution directory "${execPath}" not available in root application path.`,
+          'Execution Path Not Found',
         );
       }
     };

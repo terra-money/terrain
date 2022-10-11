@@ -1,13 +1,11 @@
 import { Command, flags } from '@oclif/command';
 import { LCDClient } from '@terra-money/terra.js';
-import { join } from 'path';
-import { existsSync } from 'fs';
 import { loadConfig, loadConnections, loadGlobalConfig } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
 import * as flag from '../lib/flag';
-import TerrainCLI from '../TerrainCLI';
 import runCommand from '../lib/runCommand';
+import defaultErrorCheck from '../lib/defaultErrorCheck';
 
 export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
@@ -116,20 +114,11 @@ export default class Deploy extends Command {
       }
     };
 
-    // Error check to be performed upon each backtrack iteration.
-    const errorCheck = () => {
-      if (existsSync('contracts') && !existsSync(join('contracts', args.contract))) {
-        TerrainCLI.error(
-          `Contract '${args.contract}' not available in 'contracts/' directory.`,
-        );
-      }
-    };
-
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
-      errorCheck,
+      defaultErrorCheck(args.contract),
     );
   }
 }

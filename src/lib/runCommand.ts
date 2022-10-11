@@ -2,7 +2,11 @@ import { existsSync } from 'fs';
 import * as path from 'path';
 import TerrainCLI from '../TerrainCLI';
 
-async function runCommand(execPath: string, command: () => void, errorCheck: () => void) {
+async function runCommand(
+  execPath: string,
+  command: () => void,
+  errorCheck: () => void,
+) {
   // Initialize terrainAppRootPath directory to current working directory.
   let terrainAppRootPath = process.cwd();
 

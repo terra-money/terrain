@@ -53,7 +53,7 @@ class TerrainCLI {
     );
 
     // Replace variables, surrounded by double quotes, by the stylized variable.
-    const variableRegex = /"(.+)"/g;
+    const variableRegex = /"(.+?)"/g;
     const varHighlightMsg = textWrapMsg.replace(
       variableRegex,
       variableStyle('$1'),
@@ -103,7 +103,6 @@ class TerrainCLI {
           "nvm use 16"
         `,
         'Incompatible Node Version',
-        '🚨',
       );
       process.exit();
     }
