@@ -28,6 +28,6 @@ export default async (argv) => {
 
   console.log(argv);
   const { schema, out, name } = await prompt(questions, argv);
-  const schemas = readSchemas({ schemaDir: schema, argv });
-  await cosmscript(name, schemas, out);
+  const contractInfo = await readSchemas({ schemaDir: schema });
+  await cosmscript(name, contractInfo.schemas, out);
 };

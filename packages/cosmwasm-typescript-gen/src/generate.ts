@@ -7,15 +7,15 @@ import * as t from "@babel/types";
 import { writeFileSync } from "fs";
 import generate from "@babel/generator";
 import { clean } from "./clean";
-import { getMessageProperties } from "@octalmage/wasm-ast-types";
-import { findAndParseTypes, findExecuteMsg, findQueryMsg, findResponses } from "./utils";
+import { getMessageProperties, ContractInfo } from "@octalmage/wasm-ast-types";
+import { findAndParseTypes, findExecuteMsg, findQueryMsg } from "./utils";
 
-export default async (name: string, schemas: any[], outPath: string) => {
+export default async (name: string, contract: ContractInfo, outPath: string) => {
+  const { schemas } = contract;
   const Contract = pascal(`${name}Client`) + ".ts";
 
   const QueryMsg = findQueryMsg(schemas);
   const ExecuteMsg = findExecuteMsg(schemas);
-  const Responses = findResponses(schemas);
   const typeHash = await findAndParseTypes(schemas);
 
   let Client = null;
@@ -56,14 +56,14 @@ export default async (name: string, schemas: any[], outPath: string) => {
     } catch (error) {
       // NOOP
     }
-      
+
     if (res) {
       break;
     }
-      
+
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-      
+
   return res;
 }`)
     )
@@ -79,8 +79,8 @@ export default async (name: string, schemas: any[], outPath: string) => {
     QueryClient = pascal(`${name}QueryClient`);
     ReadOnlyInstance = pascal(`${name}ReadOnlyInterface`);
 
-    body.push(w.createQueryInterface(ReadOnlyInstance, QueryMsg, Responses));
-    body.push(w.createQueryClass(QueryClient, ReadOnlyInstance, QueryMsg, Responses));
+    body.push(w.createQueryInterface(contract, ReadOnlyInstance, QueryMsg));
+    body.push(w.createQueryClass(contract, QueryClient, ReadOnlyInstance, QueryMsg));
   }
 
   // execute messages

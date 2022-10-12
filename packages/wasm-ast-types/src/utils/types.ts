@@ -1,6 +1,7 @@
 import * as t from '@babel/types';
-import { camel } from 'case';
+import { camel, pascal } from 'case';
 import { propertySignature } from './babel';
+import { ContractInfo } from '../types';
 
 const getTypeFromRef = ($ref) => {
     switch ($ref) {
@@ -13,6 +14,19 @@ const getTypeFromRef = ($ref) => {
             throw new Error('what is $ref: ' + $ref);
     }
 }
+
+export function getResponseType(
+  contract: ContractInfo,
+  underscoreName: string
+) {
+  const methodName = camel(underscoreName);
+  return pascal(
+    contract?.responses?.[underscoreName]?.title
+    ??
+    // after v1.1 is adopted, we can deprecate this and require the above response
+    `${methodName}Response`
+  );
+};
 
 const getArrayTypeFromRef = ($ref) => {
     return t.tsArrayType(

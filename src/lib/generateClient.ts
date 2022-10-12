@@ -2,6 +2,10 @@
 import { generate, readSchemas } from '@octalmage/terra-cosmwasm-typescript-gen';
 
 export default async (name: string, schemaDir: string, out: string) => {
-  const schemas = readSchemas({ schemaDir, argv: {} });
-  await generate(name, schemas, out);
+  const contractInfo = await readSchemas({ schemaDir, argv: {} });
+  try {
+    await generate(name, contractInfo, out);
+  } catch (e) {
+    console.error(e);
+  }
 };

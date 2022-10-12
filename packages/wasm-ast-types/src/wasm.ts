@@ -11,25 +11,20 @@ import {
   convertToQueryMethod,
 } from "./utils";
 
-import { QueryMsg, ExecuteMsg } from "./types";
+import { QueryMsg, ExecuteMsg, ContractInfo } from "./types";
 
 import {
   getPropertyType,
+  getResponseType,
   getType,
   createTypedObjectParams,
 } from "./utils/types";
 import { identifier, propertySignature } from "./utils/babel";
 
-export const createWasmQueryMethod = (jsonschema: any, responses: string[]) => {
+export const createWasmQueryMethod = (contract: ContractInfo, jsonschema: any) => {
   const underscoreName = Object.keys(jsonschema.properties)[0];
   const methodName = camel(underscoreName);
-  let responseType = pascal(`${methodName}Response`);
-
-  // Support naming query responses exactly like the method, or without a preceding "Get".
-  if (!responses.includes(responseType)) {
-    const modifiedMethodName = methodName.replace('get', '');
-    responseType = pascal(`${modifiedMethodName}Response`);
-  }
+  const responseType = getResponseType(contract, methodName);
 
   const properties = jsonschema.properties[underscoreName].properties ?? {};
 
@@ -87,10 +82,10 @@ export const createWasmQueryMethod = (jsonschema: any, responses: string[]) => {
 };
 
 export const createQueryClass = (
+  contract: ContractInfo,
   className: string,
   implementsClassName: string,
   queryMsg: QueryMsg,
-  responses: string[],
 ) => {
   const propertyNames = getMessageProperties(queryMsg)
     .map((method) => Object.keys(method.properties)?.[0])
@@ -99,7 +94,7 @@ export const createQueryClass = (
   const bindings = propertyNames.map(camel).map(convertToQueryMethod).map(bindMethod);
 
   const methods = getMessageProperties(queryMsg).map((schema) => {
-    return createWasmQueryMethod(schema, responses);
+    return createWasmQueryMethod(contract, schema);
   });
 
   return t.exportNamedDeclaration(
@@ -526,18 +521,12 @@ export const createPropertyFunctionWithObjectParamsForExec = (
   );
 };
 
-export const createQueryInterface = (className: string, queryMsg: QueryMsg, responses: string[]) => {
+export const createQueryInterface = (contract: ContractInfo, className: string, queryMsg: QueryMsg) => {
   const methods = getMessageProperties(queryMsg).map((jsonschema) => {
     const underscoreName = Object.keys(jsonschema.properties)[0];
     const methodName = camel(underscoreName);
     const queryMethodName = convertToQueryMethod(underscoreName);
-    let responseType = pascal(`${methodName}Response`);
-
-    // Support naming query responses exactly like the method, or without a preceding "Get".
-    if (!responses.includes(responseType)) {
-      const modifiedMethodName = methodName.replace('get', '');
-      responseType = pascal(`${modifiedMethodName}Response`);
-    }
+    const responseType = getResponseType(contract, underscoreName);
 
     return createPropertyFunctionWithObjectParams(
       queryMethodName,

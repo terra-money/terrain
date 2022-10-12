@@ -3,29 +3,82 @@ import { readFileSync } from 'fs';
 import { cleanse } from './cleanse';
 import { compile } from 'json-schema-to-typescript';
 import { parser } from "./parse";
+import { ContractInfo } from '@octalmage/wasm-ast-types';
 
-export const readSchemas = ({
-    schemaDir, argv, clean = true
-}) => {
+
+interface ReadSchemaOpts {
+    schemaDir: string;
+    clean?: boolean;
+};
+
+export const readSchemas = async ({
+    schemaDir, clean = true
+}: ReadSchemaOpts): Promise<ContractInfo> => {
     const fn = clean ? cleanse : (str) => str;
     const files = glob(schemaDir + '/**/*.json');
-    const schemas = files.map(file => JSON.parse(readFileSync(file, 'utf-8')));
-    if (argv.packed) {
-        if (schemas.length !== 1) {
-            throw new Error('packed option only supports one file');
-        }
-        return Object.values(fn(schemas[0]));
+    const schemas = files
+        .map(file => JSON.parse(readFileSync(file, 'utf-8')));
+
+    if (schemas.length > 1) {
+        // legacy
+        // TODO add console.warn here
+        return {
+            schemas: fn(schemas)
+        };
     }
-    return fn(schemas);
+
+    if (schemas.length === 0) {
+        throw new Error('Error [too few files]: requires one schema file per contract');
+    }
+
+    if (schemas.length !== 1) {
+        throw new Error('Error [too many files]: CosmWasm v1.1 schemas supports one file');
+    }
+
+    const idlObject = schemas[0];
+    const {
+        contract_name,
+        contract_version,
+        idl_version,
+        responses,
+        instantiate,
+        execute,
+        query,
+        migrate,
+        sudo
+    } = idlObject;
+
+    if (typeof idl_version !== 'string') {
+        // legacy
+        return {
+            schemas: fn(schemas)
+        };
+    }
+
+    // TODO use contract_name, etc.
+    return {
+        schemas: [
+            ...Object.values(fn({
+                instantiate,
+                execute,
+                query,
+                migrate,
+                sudo
+            })).filter(Boolean),
+            ...Object.values(fn({ ...responses })).filter(Boolean)
+        ],
+        responses,
+        idlObject
+    };
 };
 
 export const findQueryMsg = (schemas) => {
-    const QueryMsg = schemas.find(schema => schema.title === 'QueryMsg');
+    const QueryMsg = schemas.find(schema => schema.title === 'QueryMsg' || schema.title === 'QueryMsgForEmpty');
     return QueryMsg;
 };
 
 export const findResponses = (schemas) => {
-    return schemas.filter(schema => schema.title.includes('Response')).map(i => i.title);
+    return schemas.filter(schema => schema.title && schema.title.includes('Response')).map(i => i.title);
 };
 
 export const findExecuteMsg = (schemas) => {
@@ -52,4 +105,4 @@ export const findAndParseTypes = async (schemas) => {
     }
     const typeHash = parser(allTypes);
     return typeHash;
-}
+};
