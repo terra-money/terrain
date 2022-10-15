@@ -495,6 +495,7 @@ npm unlink terrain
 * [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
 * [`terrain contract:new NAME`](#terrain-contractnew-name)
 * [`terrain contract:optimize CONTRACT`](#terrain-contractoptimize-contract)
+* [`terrain contract:schema CONTRACT`](#terrain-contractschema-contract)
 * [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
 * [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
 * [`terrain deploy CONTRACT`](#terrain-deploy-contract)
@@ -656,6 +657,20 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/contract/optimize.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/optimize.ts)_
+
+## `terrain contract:schema CONTRACT`
+
+Generate contract schema.
+
+```
+USAGE
+  $ terrain contract:schema [CONTRACT]
+
+DESCRIPTION
+  Generate contract schema.
+```
+
+_See code: [src/commands/contract/schema.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/schema.ts)_
 
 ## `terrain contract:store CONTRACT`
 
