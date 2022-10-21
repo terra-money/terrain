@@ -77,7 +77,7 @@ class TerrainCLI {
   }
 
   // TerrainCLI.success(successMsg) styling.
-  success(successMsg = '', title = '', emoji = '✅') {
+  success(successMsg = '', title = '', emoji = '✨') {
     cli.log(this.messageBox(successMsg, this.successStyle, title, emoji));
   }
 

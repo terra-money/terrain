@@ -5,6 +5,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { execSync } from 'child_process';
 import { pascal } from 'case';
+import dedent from 'dedent';
+import TerrainCLI from '../TerrainCLI';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
@@ -56,8 +58,8 @@ export default class New extends Command {
       ' "now" | date: "%Y" ': `${new Date().getFullYear()}`,
     };
 
-    cli.log(`generating app ${args.name}:`);
-    cli.action.start('- workspace');
+    cli.log(`🚀 Generating app ${args.name}:`);
+    cli.action.start('  🛠  Workspace');
     await TemplateScaffolding.from({
       remoteUrl: 'https://codeload.github.com/terra-money/terrain-core-template/zip/refs/heads/main',
       subFolder: 'terrain-core-template-main',
@@ -70,7 +72,7 @@ export default class New extends Command {
     });
     cli.action.stop();
 
-    cli.action.start('- contract');
+    cli.action.start('  📝 Contract');
     await TemplateScaffolding.from({
       remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/heads/${flags.version}`,
       subFolder: `cw-template-${flags.version}`,
@@ -83,7 +85,7 @@ export default class New extends Command {
     });
     cli.action.stop();
 
-    cli.action.start('- frontend');
+    cli.action.start('  💻 Frontend');
     if (flags.framework === 'react') {
       await TemplateScaffolding.from({
         remoteUrl: 'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main',
@@ -108,14 +110,25 @@ export default class New extends Command {
 
     // Install app dependencies.
     process.chdir(appDir);
-    cli.action.start('- installing app dependencies');
+    cli.action.start('  🏗  Installing app dependencies');
     await execSync('npm i --silent', { stdio: 'inherit' });
     cli.action.stop();
 
     // Install frontend dependencies.
-    cli.action.start('- installing frontend dependencies');
+    cli.action.start('  🔧 Installing frontend dependencies');
     process.chdir(frontendDir);
     await execSync('npm i --silent', { stdio: 'inherit' });
     cli.action.stop();
+
+    TerrainCLI.success(dedent`
+      Application "${args.name}" was successfully created.\n
+      Now, you can change into the contract directory:
+
+      "cd ${args.name}"
+
+      And try to deploy it to your preferred Terra network:
+      
+      "terrain deploy ${args.name} --signer <signer-wallet>" "--network <desired-network>"
+    `, 'Application Generated');
   }
 }
