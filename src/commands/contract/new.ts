@@ -20,8 +20,8 @@ export default class CodeNew extends Command {
       description: 'path to keep the contracts',
       default: 'contracts',
     }),
-    version: flags.string({
-      default: '1.0-beta6',
+    commitHash: flags.string({
+      default: '9fa5b9b38fca4f99239ac28be48a6e1f0a4d30c8',
     }),
     authors: flags.string({
       default: 'Terra Money <core@terra.money>',
@@ -42,8 +42,8 @@ export default class CodeNew extends Command {
       cli.action.start('- contract');
 
       await TemplateScaffolding.from({
-        remoteUrl: `https://codeload.github.com/InterWasm/cw-template/zip/refs/tags/${flags.version}`,
-        subFolder: `cw-template-${flags.version}`,
+        remoteUrl: `https://www.github.com/CosmWasm/cw-template/archive/${flags.commitHash}.zip`,
+        subFolder: `cw-template-${flags.commitHash}`,
         localOptions: {
           folderUrl: join(process.cwd(), flags.path, args.name),
         },
