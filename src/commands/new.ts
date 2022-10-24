@@ -111,13 +111,13 @@ export default class New extends Command {
     // Install app dependencies.
     process.chdir(appDir);
     cli.action.start('  🏗  Installing app dependencies');
-    await execSync('npm i --silent', { stdio: 'inherit' });
+    await execSync('npm i --loglevel error', { stdio: ['ignore', 'ignore', 'inherit'] });
     cli.action.stop();
 
     // Install frontend dependencies.
-    cli.action.start('  🔧 Installing frontend dependencies');
     process.chdir(frontendDir);
-    await execSync('npm i --silent', { stdio: 'inherit' });
+    cli.action.start('  🔧 Installing frontend dependencies');
+    await execSync('npm i --loglevel error', { stdio: ['ignore', 'ignore', 'inherit'] });
     cli.action.stop();
 
     TerrainCLI.success(dedent`
