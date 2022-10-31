@@ -621,12 +621,12 @@ Generate new contract.
 
 ```
 USAGE
-  $ terrain contract:new [NAME] [--path <value>] [--version <value>] [--authors <value>]
+  $ terrain contract:new [NAME] [--path <value>] [--commitHash <value>] [--authors <value>]
 
 FLAGS
-  --authors=<value>  [default: Terra Money <core@terra.money>]
-  --path=<value>     [default: contracts] path to keep the contracts
-  --version=<value>  [default: 1.0-beta6]
+  --authors=<value>     [default: Terra Money <core@terra.money>]
+  --commitHash=<value>  [default: 9fa5b9b38fca4f99239ac28be48a6e1f0a4d30c8]
+  --path=<value>        [default: contracts] path to keep the contracts
 
 DESCRIPTION
   Generate new contract.
