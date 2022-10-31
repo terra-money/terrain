@@ -101,7 +101,6 @@ export default class Deploy extends Command {
 
       await this.config.runCommand('contract:generateClient', [
         args.contract,
-        '--build-schema',
       ]);
 
       if (!flags['no-sync']) {
