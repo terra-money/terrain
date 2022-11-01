@@ -55,6 +55,7 @@
     "cli-ux": "^5.6.3",
     "dedent": "^0.7.0",
     "fs-extra": "^8.1.0",
+    "hyperlinker": "^1.0.0",
     "ramda": "^0.26.1",
     "semver": "^7.3.7",
     "superagent": "^6.1.0",

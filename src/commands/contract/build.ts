@@ -33,12 +33,12 @@ export default class Build extends Command {
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-      The WASM bytecode for contract "${args.contract}" was successfully generated.\n
-      The next step is to optimize the WASM bytecode:\n
+      The Wasm bytecode for contract "${args.contract}" was successfully generated.\n
+      The next step is to optimize the Wasm bytecode:\n
       "terrain contract:optimize ${args.contract}"\n
-      "NOTE:" Make sure that "Docker" is installed and running in the background before attempting to optimize the WASM bytecode.
+      "NOTE:" Make sure that "Docker" is installed and running in the background before attempting to optimize the Wasm bytecode.
     `,
-        'WASM Bytecode Generated',
+        'Wasm Bytecode Generated',
       );
     };
 

@@ -75,13 +75,13 @@ export default class CodeStore extends Command {
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        The WASM bytecode for contract "${args.contract}" was successfully stored on "${terraNetwork}".\n
+        The Wasm bytecode for contract "${args.contract}" was successfully stored on "${terraNetwork}".\n
         The next step is to instantiate the contract:\n
         "terrain contract:instantiate ${args.contract} --signer <signer-wallet>" "--network <desired-network>"\n
         "NOTE:" To instantiate your contract on the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
         "terrain contract:instantiate ${args.contract}"
       `,
-        'WASM Bytecode Stored',
+        'Wasm Bytecode Stored',
       );
     };
 
