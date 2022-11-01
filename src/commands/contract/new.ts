@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command';
+import dedent from 'dedent';
 import { cli } from 'cli-ux';
 import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import { join } from 'path';
@@ -62,15 +63,29 @@ export default class CodeNew extends Command {
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = () => {
       if (existsSync(join(flags.path, args.name))) {
-        TerrainCLI.error(`Project '${args.name}' already exists under path '${flags.path}'.\nTip: Use another path or contract name`);
+        TerrainCLI.error(
+          dedent`Contract "${args.name}" is available in the "${flags.path}" directory.\n
+          "TIP:" Use another contract name or specify a different path.`,
+          'Contract Already Exists',
+        );
       }
     };
 
+    // Message to be displayed upon successful command execution.
+    const successMessage = () => {
+      TerrainCLI.success(
+        dedent`
+        Contract "${args.name}" was successfully generated.\n
+        Now, you can try to deploy it to your preferred Terra network:\n
+        "terrain deploy ${args.name} --signer <signer-wallet> --network" "<desired-network>"\n
+        "NOTE:" To deploy your contract to the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
+        "terrain deploy ${args.name}"
+      `,
+        'Contract Generated',
+      );
+    };
+
     // Attempt to execute command while backtracking through file tree.
-    await runCommand(
-      execPath,
-      command,
-      errorCheck,
-    );
+    await runCommand(execPath, command, errorCheck, successMessage);
   }
 }

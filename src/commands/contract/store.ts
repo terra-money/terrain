@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command';
+import dedent from 'dedent';
 import { LCDClient } from '@terra-money/terra.js';
 import { existsSync } from 'fs';
 import { join } from 'path';
@@ -56,19 +57,35 @@ export default class CodeStore extends Command {
 
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = () => {
-      if (existsSync('contracts') && !existsSync(join('contracts', args.contract))) {
+      if (
+        existsSync('contracts')
+        && !existsSync(join('contracts', args.contract))
+      ) {
         TerrainCLI.error(
-          `Contract "${args.contract}" not available in "contracts/" directory.`,
+          `Contract "${args.contract}" not available in "contracts" directory.`,
           'Contract Unavailable',
         );
       }
     };
 
+    // Message to be displayed upon successful command execution.
+    const terraNetwork = flags.network === 'localterra'
+      ? 'LocalTerra'
+      : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
+    const successMessage = () => {
+      TerrainCLI.success(
+        dedent`
+        The WASM bytecode for contract "${args.contract}" was successfully stored on "${terraNetwork}".\n
+        The next step is to instantiate the contract:\n
+        "terrain contract:instantiate ${args.contract} --signer <signer-wallet>" "--network <desired-network>"\n
+        "NOTE:" To instantiate your contract on the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
+        "terrain contract:instantiate ${args.contract}"
+      `,
+        'WASM Bytecode Stored',
+      );
+    };
+
     // Attempt to execute command while backtracking through file tree.
-    await runCommand(
-      execPath,
-      command,
-      errorCheck,
-    );
+    await runCommand(execPath, command, errorCheck, successMessage);
   }
 }

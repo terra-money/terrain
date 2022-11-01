@@ -1,9 +1,11 @@
 import { Command } from '@oclif/command';
 import { join } from 'path';
+import dedent from 'dedent';
 import { build } from '../../lib/deployment';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
+import TerrainCLI from '../../TerrainCLI';
 
 export default class Build extends Command {
   static description = 'Build wasm bytecode.';
@@ -27,11 +29,25 @@ export default class Build extends Command {
       });
     };
 
+    // Message to be displayed upon successful command execution.
+    const successMessage = () => {
+      TerrainCLI.success(
+        dedent`
+      The WASM bytecode for contract "${args.contract}" was successfully generated.\n
+      The next step is to optimize the WASM bytecode:\n
+      "terrain contract:optimize ${args.contract}"\n
+      "NOTE:" Make sure that "Docker" is installed and running in the background before attempting to optimize the WASM bytecode.
+    `,
+        'WASM Bytecode Generated',
+      );
+    };
+
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
       defaultErrorCheck(args.contract),
+      successMessage,
     );
   }
 }
