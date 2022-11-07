@@ -12,6 +12,7 @@ import {
   CreateTxOptions,
 } from '@terra-money/terra.js';
 import { parse } from 'toml';
+import hyperlinker from 'hyperlinker';
 import { execSync } from 'child_process';
 import * as fs from 'fs-extra';
 import { cli } from 'cli-ux';
@@ -51,13 +52,26 @@ export const build = async ({ contract }: BuildParams) => {
 const execDockerOptimization = (image: string, cache: string) => {
   const dir = Os.platform() === 'win32' ? '%cd%' : '$(pwd)';
 
-  execSync(
-    `docker run --rm -v "${dir}":/code \
-      --mount type=volume,source="${cache}_cache",target=/code/target \
-      --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-      ${image}`,
-    { stdio: 'inherit' },
-  );
+  try {
+    execSync(
+      `docker run --rm -v "${dir}":/code \
+        --mount type=volume,source="${cache}_cache",target=/code/target \
+        --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+        ${image}`,
+      { stdio: 'inherit' },
+    );
+  } catch (err) {
+    TerrainCLI.error(
+      dedent`
+      Please ensure that "Docker" is installed and running in the background before executing this command:\n
+      "${hyperlinker(
+    'https://docs.docker.com/get-docker/',
+    'https://docs.docker.com/get-docker/',
+  )}"
+    `,
+      'Docker Unavailable',
+    );
+  }
 };
 
 type OptimizeContractParams = {
@@ -90,8 +104,8 @@ const optimizeWorkspace = async ({
 
 type OptimizeParams = {
   contract: string;
-  useCargoWorkspace?: boolean,
-  network?: string,
+  useCargoWorkspace?: boolean;
+  network?: string;
 };
 
 export const optimize = async ({
@@ -116,7 +130,7 @@ type StoreCodeParams = {
   noRebuild?: boolean;
   signer: Wallet;
   codeId?: number;
-  useCargoWorkspace?: boolean,
+  useCargoWorkspace?: boolean;
 };
 
 export const storeCode = async ({
@@ -146,19 +160,22 @@ export const storeCode = async ({
   wasmByteCodeFilename += '.wasm';
 
   // Create boolean to check if user is attempting to store ARM64 wasm binary on mainnet.
-  const wasmFiles = fs.readdirSync(path.join('contracts', contract, 'artifacts'));
-  const storingARM64Mainnet = (
-    !wasmFiles.includes(wasmByteCodeFilename)
-    && process.arch === 'arm64'
-    && network === 'mainnet'
+  const wasmFiles = fs.readdirSync(
+    path.join('contracts', contract, 'artifacts'),
   );
+  const storingARM64Mainnet = !wasmFiles.includes(wasmByteCodeFilename)
+    && process.arch === 'arm64'
+    && network === 'mainnet';
 
   // Check if user is attempting to store ARM64 wasm binary on mainnet.
   // If so, reoptimize to default wasm binary to store on mainnet.
   if (storingARM64Mainnet) {
-    TerrainCLI.error(dedent`
-ARM64 wasm files should not be stored on mainnet. Rebuilding contract to deploy default wasm binary.
-    `, 'ARM64 Wasm Detected');
+    TerrainCLI.error(
+      dedent`
+      ARM64 wasm files should not be stored on "Mainnet". Rebuilding contract to deploy default wasm binary.
+    `,
+      'ARM64 Wasm Detected',
+    );
 
     await optimize({ contract, useCargoWorkspace, network });
   }
@@ -181,6 +198,8 @@ ARM64 wasm files should not be stored on mainnet. Rebuilding contract to deploy 
 
   const res = await lcd.tx.broadcast(storeCodeTx);
 
+  cli.action.stop();
+
   try {
     const savedCodeId = JSON.parse((res && res.raw_log) || '')[0]
       .events.find((msg: { type: string }) => msg.type === 'store_code')
@@ -202,8 +221,6 @@ ARM64 wasm files should not be stored on mainnet. Rebuilding contract to deploy 
       cli.error(`Unexpected Error: ${error}`);
     }
   }
-
-  return undefined;
 };
 
 type InstantiateParams = {
@@ -236,9 +253,12 @@ export const instantiate = async ({
   // Ensure contract refs are available in refs.terrain.json.
   const refs = loadRefs(refsPath);
   if (!(network in refs) || !(contract in refs[network])) {
+    const terraNetwork = network === 'localterra'
+      ? 'LocalTerra'
+      : `${network[0].toUpperCase()}${network.substring(1)}`;
     TerrainCLI.error(
-      `Contract "${contract}" has not been deployed on the "${network}" network.`,
-      'Contract Not Yet Deployed',
+      `Contract "${contract}" has not yet been stored on the "${terraNetwork}" network.`,
+      'Contract Not Stored',
     );
   }
 
@@ -312,10 +332,7 @@ export const instantiate = async ({
 
   const event = log[0].events.find(
     (e: { type: string }) => e.type === 'instantiate_contract',
-  )
-    ?? log[0].events.find(
-      (e: { type: string }) => e.type === 'instantiate',
-    );
+  ) ?? log[0].events.find((e: { type: string }) => e.type === 'instantiate');
 
   const contractAddress: string = event.attributes.find(
     (attr: { key: string }) => attr.key === '_contract_address',

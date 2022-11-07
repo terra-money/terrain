@@ -43,12 +43,15 @@ class TerrainCLI {
     msgStyle: Chalk,
     title: string,
     emoji: string,
-    msgBoxWidth = 46,
+    msgBoxWidth = 60,
     variableStyle = this.variableStyle,
   ) {
     // Regex replace for text wrapping.
     const textWrapMsg = msg.replace(
-      new RegExp(`(?![^\\n]{1,${msgBoxWidth}}$)([^\\n]{1,${msgBoxWidth}})\\s`, 'g'),
+      new RegExp(
+        `(?![^\\n]{1,${msgBoxWidth}}$)([^\\n]{1,${msgBoxWidth}})\\s`,
+        'g',
+      ),
       '$1\n',
     );
 
@@ -60,15 +63,14 @@ class TerrainCLI {
     );
 
     // Return stylized string inside of 'boxen' object for display in terminal.
-    return msgStyle(boxen(
-      varHighlightMsg,
-      {
+    return msgStyle(
+      boxen(varHighlightMsg, {
         title: chalk`{bold ${emoji} ${title}}`,
         titleAlignment: 'left',
         padding: 1,
         margin: 1,
-      },
-    ));
+      }),
+    );
   }
 
   // await TerrainCLI.anykey(anykeyMsg) styling.
@@ -83,7 +85,9 @@ class TerrainCLI {
 
   // TerrainCLI.error(errorMsg) styling.
   error(errorMsg = '', title = '', emoji = '🚨') {
-    cli.log(this.messageBox(errorMsg, this.errorStyle, title, emoji, 46, chalk.green));
+    cli.log(
+      this.messageBox(errorMsg, this.errorStyle, title, emoji, 46, chalk.green),
+    );
     process.exit();
   }
 
@@ -126,18 +130,14 @@ class TerrainCLI {
   // Run supplied cargo command with custom output.
   async runCargoCommand(command: string) {
     // stdio params: ['stdin', 'stdout', 'stderr'].
-    const source = spawn(
-      'cargo',
-      [command, '--color', 'always'],
-      {
-        env: {
-          ...process.env,
-          CARGO_TERM_PROGRESS_WHEN: 'always',
-          CARGO_TERM_PROGRESS_WIDTH: process.stdout.columns?.toString(),
-        },
-        stdio: ['ignore', 'ignore', 'pipe'],
+    const source = spawn('cargo', [command, '--color', 'always'], {
+      env: {
+        ...process.env,
+        CARGO_TERM_PROGRESS_WHEN: 'always',
+        CARGO_TERM_PROGRESS_WIDTH: process.stdout.columns?.toString(),
       },
-    );
+      stdio: ['ignore', 'ignore', 'pipe'],
+    });
 
     // Only print progress bar and exclude all verbose output from Cargo.
     await this.parseAndDisplayProgressBar(source.stderr);

@@ -12,7 +12,10 @@ export default class GenerateClient extends Command {
   static description = 'Generate a Wallet Provider or Terra.js compatible TypeScript client.';
 
   static flags = {
-    'lib-path': flags.string({ default: 'lib', description: 'location to place the generated client' }),
+    'lib-path': flags.string({
+      default: 'lib',
+      description: 'location to place the generated client',
+    }),
     dest: flags.string({ default: join('frontend', 'src', 'contract') }),
   };
 
@@ -26,9 +29,7 @@ export default class GenerateClient extends Command {
 
     // Command to be performed.
     const command = async () => {
-      cli.action.start(
-        `Generating ${pascal(args.contract)}Client.ts`,
-      );
+      cli.action.start(`Generating ${pascal(args.contract)}Client.ts`);
 
       await generateClient(
         pascal(args.contract),
@@ -38,12 +39,13 @@ export default class GenerateClient extends Command {
 
       cli.action.stop();
 
-      cli.action.start(
-        'Syncing clients to frontend',
-      );
+      cli.action.start('Syncing clients to frontend');
 
       if (!pathExistsSync('frontend')) {
-        TerrainCLI.error('The "frontend" directory was not found.', 'Failed to Sync Refs');
+        TerrainCLI.error(
+          'The "frontend" directory was not found.',
+          'Failed to Sync Refs',
+        );
         cli.action.stop();
         return;
       }
@@ -54,10 +56,6 @@ export default class GenerateClient extends Command {
     };
 
     // Attempt to execute command while backtracking through file tree.
-    await runCommand(
-      execPath,
-      command,
-      defaultErrorCheck(args.contract),
-    );
+    await runCommand(execPath, command, defaultErrorCheck(args.contract));
   }
 }

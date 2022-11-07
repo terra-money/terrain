@@ -1,5 +1,7 @@
 import { LCDClient, LocalTerra, Wallet } from '@terra-money/terra.js';
+import hyperlinker from 'hyperlinker';
 import { cli } from 'cli-ux';
+import dedent from 'dedent';
 import * as path from 'path';
 import { loadKeys } from '../config';
 import TerrainCLI from '../TerrainCLI';
@@ -26,11 +28,20 @@ export const getSigner = async ({
     try {
       const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
       await signer.sequence();
-      cli.log(`Using pre-baked '${signerId}' wallet on LocalTerra as signer...`);
+      cli.log(
+        `Using pre-baked '${signerId}' wallet on LocalTerra as signer...`,
+      );
       return signer;
     } catch {
       TerrainCLI.error(
-        'LocalTerra is currently not running.',
+        dedent`
+        "LocalTerra" is currently not running.\n
+        If you would like to use this local testing environment, make sure to install it and keep it running in the background when executing "Terrain" commands:\n
+        "${hyperlinker(
+    'https://github.com/terra-money/localterra',
+    'https://github.com/terra-money/localterra#readme',
+  )}"
+        `,
         'Network Unavailable',
       );
     }

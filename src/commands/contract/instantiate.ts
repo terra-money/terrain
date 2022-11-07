@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command';
+import dedent from 'dedent';
 import { LCDClient } from '@terra-money/terra.js';
 import { loadConfig, loadConnections } from '../../config';
 import { instantiate } from '../../lib/deployment';
@@ -6,6 +7,7 @@ import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
+import TerrainCLI from '../../TerrainCLI';
 
 export default class ContractInstantiate extends Command {
   static description = 'Instantiate the contract.';
@@ -15,8 +17,7 @@ export default class ContractInstantiate extends Command {
     network: flag.network,
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
-      description:
-        'specific codeId to instantiate',
+      description: 'specific codeId to instantiate',
     }),
     ...flag.terrainPaths,
   };
@@ -25,6 +26,10 @@ export default class ContractInstantiate extends Command {
 
   async run() {
     const { args, flags } = this.parse(ContractInstantiate);
+
+    // Initialize variables.
+    let contractAddress: string;
+    let admin: string;
 
     // Command execution path.
     const execPath = flags['config-path'];
@@ -43,9 +48,9 @@ export default class ContractInstantiate extends Command {
         lcd,
       });
 
-      const admin = signer.key.accAddress;
+      admin = signer.key.accAddress;
 
-      await instantiate({
+      contractAddress = await instantiate({
         conf,
         signer,
         admin,
@@ -58,11 +63,27 @@ export default class ContractInstantiate extends Command {
       });
     };
 
+    // Message to be displayed upon successful command execution.
+    const terraNetwork = flags.network === 'localterra'
+      ? 'LocalTerra'
+      : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
+    const successMessage = () => {
+      TerrainCLI.success(
+        dedent`
+        Contract "${args.contract}" was successfully instantiated on "${terraNetwork}".\n
+        Contract Address: "${contractAddress}"\n
+        Administrator: "${admin}"
+      `,
+        'Contract Instantiated',
+      );
+    };
+
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
       defaultErrorCheck(args.contract),
+      successMessage,
     );
   }
 }

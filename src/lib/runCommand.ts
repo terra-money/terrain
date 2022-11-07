@@ -6,6 +6,7 @@ async function runCommand(
   execPath: string,
   command: () => void,
   errorCheck: () => void,
+  successMessage?: () => void,
 ) {
   // Initialize terrainAppRootPath directory to current working directory.
   let terrainAppRootPath = process.cwd();
@@ -18,7 +19,9 @@ async function runCommand(
 
     // If execPath available, execute command.
     if (existsSync(execPath)) {
-      return command();
+      // eslint-disable-next-line no-await-in-loop
+      await command();
+      return successMessage?.();
     }
 
     // If execPath does not exist in current directory, step back one directory.
