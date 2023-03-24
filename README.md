@@ -25,7 +25,7 @@ Terrain allows you to:
 
 Terrain is **not**:
 
-- A fully-featured Terra command-line interface (CLI). If you need a fully-featured client, use <a href="https://docs.terra.money/docs/develop/how-to/terrad/using-terrad.html" target="_blank">terrad</a>.
+- A fully-featured Terra command-line interface (CLI). If you need a fully-featured client, use <a href="https://docs.terra.money/develop/terrad/using-terrad" target="_blank">terrad</a>.
 - A Light Client Daemon (LCD). You will still need an RPC endpoint to deploy your contract. <a href="https://github.com/terra-money/LocalTerra#readme" target="_blank">LocalTerra</a> is the recommended option for this.
 
 ---
@@ -391,7 +391,7 @@ Now instead of running `terrain task:run deploy_counter` you can run `terrain de
 
 On Terra, it is possible to initialize a contract as migratable. This functionality allows the administrator to upload a new version of the contract and then send a migrate message to move to the new code. Contracts that have been deployed before implementing the following changes will not be able to be migrated and implemented changes will only be realized when redeploying the contract.
 
-The <a href="https://docs.terra.money/docs/develop/dapp/quick-start/contract-migration.html" target="_blank">contract migration tutorial</a> builds on top of the Terrain Quick Start Guide and walks you through a contract migration.
+The <a href="https://docs.terra.money/develop/terrain/contract-migration" target="_blank">contract migration tutorial</a> builds on top of the Terrain Quick Start Guide and walks you through a contract migration.
 
 ## Adding MigrateMsg to the Contract
 
