@@ -4,7 +4,7 @@ import { cli } from 'cli-ux';
 import dedent from 'dedent';
 import * as path from 'path';
 import { loadKeys } from '../config';
-import TerrainCLI from '../TerrainCLI';
+import tesseractCLI from '../tesseractCLI';
 
 export const getSigner = async ({
   network,
@@ -33,10 +33,10 @@ export const getSigner = async ({
       );
       return signer;
     } catch {
-      TerrainCLI.error(
+      tesseractCLI.error(
         dedent`
         "LocalTerra" is currently not running.\n
-        If you would like to use this local testing environment, make sure to install it and keep it running in the background when executing "Terrain" commands:\n
+        If you would like to use this local testing environment, make sure to install it and keep it running in the background when executing "tesseract" commands:\n
         "${hyperlinker(
     'https://github.com/terra-money/localterra',
     'https://github.com/terra-money/localterra#readme',
@@ -50,7 +50,7 @@ export const getSigner = async ({
   // is available in keysPath. If so, return signer Wallet.
   const keys = loadKeys(path.join(process.cwd(), keysPath));
   if (!keys[signerId]) {
-    TerrainCLI.error(
+    tesseractCLI.error(
       `The key corresponding to "${signerId}" does not exist in "${keysPath}".`,
       'Signer Not Found',
     );

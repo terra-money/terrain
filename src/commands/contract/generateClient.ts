@@ -3,7 +3,7 @@ import { cli } from 'cli-ux';
 import { join } from 'path';
 import { pathExistsSync, copySync } from 'fs-extra';
 import { pascal } from 'case';
-import TerrainCLI from '../../TerrainCLI';
+import tesseractCLI from '../../tesseractCLI';
 import runCommand from '../../lib/runCommand';
 import generateClient from '../../lib/generateClient';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
@@ -42,7 +42,7 @@ export default class GenerateClient extends Command {
       cli.action.start('Syncing clients to frontend');
 
       if (!pathExistsSync('frontend')) {
-        TerrainCLI.error(
+        tesseractCLI.error(
           'The "frontend" directory was not found.',
           'Failed to Sync Refs',
         );

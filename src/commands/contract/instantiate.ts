@@ -7,7 +7,7 @@ import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
-import TerrainCLI from '../../TerrainCLI';
+import tesseractCLI from '../../tesseractCLI';
 
 export default class ContractInstantiate extends Command {
   static description = 'Instantiate the contract.';
@@ -19,7 +19,7 @@ export default class ContractInstantiate extends Command {
     'code-id': flags.integer({
       description: 'specific codeId to instantiate',
     }),
-    ...flag.terrainPaths,
+    ...flag.tesseractPaths,
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -68,7 +68,7 @@ export default class ContractInstantiate extends Command {
       ? 'LocalTerra'
       : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
     const successMessage = () => {
-      TerrainCLI.success(
+      tesseractCLI.success(
         dedent`
         Contract "${args.contract}" was successfully instantiated on "${terraNetwork}".\n
         Contract Address: "${contractAddress}"\n

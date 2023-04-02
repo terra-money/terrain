@@ -7,7 +7,7 @@ import { getSigner } from '../lib/signer';
 import * as flag from '../lib/flag';
 import runCommand from '../lib/runCommand';
 import defaultErrorCheck from '../lib/defaultErrorCheck';
-import TerrainCLI from '../TerrainCLI';
+import tesseractCLI from '../tesseractCLI';
 
 export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
@@ -24,7 +24,7 @@ export default class Deploy extends Command {
     'no-sync': flags.string({
       description: "don't attempt to sync contract refs to frontend.",
     }),
-    ...flag.terrainPaths,
+    ...flag.tesseractPaths,
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -37,7 +37,7 @@ export default class Deploy extends Command {
     let admin: string;
 
     // Command execution path.
-    const execPath = 'config.terrain.json';
+    const execPath = 'config.tesseract.json';
 
     // Command to be performed.
     const command = async () => {
@@ -122,7 +122,7 @@ export default class Deploy extends Command {
       ? 'LocalTerra'
       : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
     const successMessage = () => {
-      TerrainCLI.success(
+      tesseractCLI.success(
         dedent`
         Contract "${args.contract}" has been successfully deployed on "${terraNetwork}".\n
         Contract Address: "${contractAddress}"\n

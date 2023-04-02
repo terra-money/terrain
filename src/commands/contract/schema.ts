@@ -2,7 +2,7 @@ import { Command } from '@oclif/command';
 import path from 'path';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
-import TerrainCLI from '../../TerrainCLI';
+import tesseractCLI from '../../tesseractCLI';
 
 export default class ContractSchema extends Command {
   static description = 'Generate contract schema.';
@@ -18,7 +18,7 @@ export default class ContractSchema extends Command {
     // Command to be performed.
     const command = async () => {
       process.chdir(execPath);
-      TerrainCLI.runCargoCommand('schema');
+      tesseractCLI.runCargoCommand('schema');
     };
 
     // Attempt to execute command while backtracking through file tree.

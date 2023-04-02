@@ -7,7 +7,7 @@ import { loadConfig, loadConnections } from '../../config';
 import { storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
-import TerrainCLI from '../../TerrainCLI';
+import tesseractCLI from '../../tesseractCLI';
 import runCommand from '../../lib/runCommand';
 
 export default class CodeStore extends Command {
@@ -18,7 +18,7 @@ export default class CodeStore extends Command {
     network: flag.network,
     'no-rebuild': flag.noRebuild,
     'code-id': flags.integer({}),
-    ...flag.terrainPaths,
+    ...flag.tesseractPaths,
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -61,7 +61,7 @@ export default class CodeStore extends Command {
         existsSync('contracts')
         && !existsSync(join('contracts', args.contract))
       ) {
-        TerrainCLI.error(
+        tesseractCLI.error(
           `Contract "${args.contract}" not available in "contracts" directory.`,
           'Contract Unavailable',
         );
@@ -73,13 +73,13 @@ export default class CodeStore extends Command {
       ? 'LocalTerra'
       : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
     const successMessage = () => {
-      TerrainCLI.success(
+      tesseractCLI.success(
         dedent`
         The Wasm bytecode for contract "${args.contract}" was successfully stored on "${terraNetwork}".\n
         The next step is to instantiate the contract:\n
-        "terrain contract:instantiate ${args.contract} --signer <signer-wallet>" "--network <desired-network>"\n
+        "tesseract contract:instantiate ${args.contract} --signer <signer-wallet>" "--network <desired-network>"\n
         "NOTE:" To instantiate your contract on the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
-        "terrain contract:instantiate ${args.contract}"
+        "tesseract contract:instantiate ${args.contract}"
       `,
         'Wasm Bytecode Stored',
       );

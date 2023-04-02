@@ -14,9 +14,9 @@ export default class ContractMigrate extends Command {
     signer: flag.signer,
     'no-rebuild': flag.noRebuild,
     network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
+    'config-path': flags.string({ default: 'config.tesseract.json' }),
+    'refs-path': flags.string({ default: 'refs.tesseract.json' }),
+    'keys-path': flags.string({ default: 'keys.tesseract.js' }),
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
       description:

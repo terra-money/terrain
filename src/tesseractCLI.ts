@@ -7,8 +7,8 @@ import { spawn } from 'child_process';
 import terminalOverwrite from 'terminal-overwrite';
 import { chunksToLinesAsync, chomp } from '@rauschma/stringio';
 
-/** TerrainCLI offers default log styling for terrain commands. */
-class TerrainCLI {
+/** tesseractCLI offers default log styling for tesseract commands. */
+class tesseractCLI {
   prefix: string;
 
   anykeyStyle: Chalk;
@@ -73,17 +73,17 @@ class TerrainCLI {
     );
   }
 
-  // await TerrainCLI.anykey(anykeyMsg) styling.
+  // await tesseractCLI.anykey(anykeyMsg) styling.
   async anykey(anykeyMsg = '') {
     await cli.anykey(`\n${this.prefix} ${this.anykeyStyle(`${anykeyMsg}`)}`);
   }
 
-  // TerrainCLI.success(successMsg) styling.
+  // tesseractCLI.success(successMsg) styling.
   success(successMsg = '', title = '', emoji = '✨') {
     cli.log(this.messageBox(successMsg, this.successStyle, title, emoji));
   }
 
-  // TerrainCLI.error(errorMsg) styling.
+  // tesseractCLI.error(errorMsg) styling.
   error(errorMsg = '', title = '', emoji = '🚨') {
     cli.log(
       this.messageBox(errorMsg, this.errorStyle, title, emoji, 46, chalk.green),
@@ -91,18 +91,18 @@ class TerrainCLI {
     process.exit();
   }
 
-  // TerrainCLI.alert(alertMsg, title, maxWidth) styling
+  // tesseractCLI.alert(alertMsg, title, maxWidth) styling
   alert(alertMsg = '', title = '', emoji = '👋') {
     cli.log(this.messageBox(alertMsg, this.alertStyle, title, emoji));
   }
 
-  // TerrainCLI.nodeVersionCheck() styling.
+  // tesseractCLI.nodeVersionCheck() styling.
   nodeVersionCheck() {
     if (!semver.satisfies(process.version, '^16')) {
       this.error(
         dedent`
-          Terrain requires "Node version 16"!\n
-          Please switch your version of Node before running Terrain commands.\n
+          Tesseract requires "Node version 16"!\n
+          Please switch your version of Node before running Tesseract commands.\n
           If you are utilizing nvm, simply utilize the following command:\n
           "nvm use 16"
         `,
@@ -144,7 +144,7 @@ class TerrainCLI {
   }
 }
 
-export default new TerrainCLI(
+export default new tesseractCLI(
   '👉',
   chalk.cyan,
   chalk.green,

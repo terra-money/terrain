@@ -26,7 +26,7 @@ import {
   setCodeId,
   setContractAddress,
 } from '../config';
-import TerrainCLI from '../TerrainCLI';
+import tesseractCLI from '../tesseractCLI';
 import useARM64 from './useARM64';
 
 type BuildParams = {
@@ -43,8 +43,8 @@ export const build = async ({ contract }: BuildParams) => {
     cli.error(`Change the package name in Cargo.toml to ${contract} to build`);
   }
 
-  await TerrainCLI.runCargoCommand('wasm');
-  await TerrainCLI.runCargoCommand('schema');
+  await tesseractCLI.runCargoCommand('wasm');
+  await tesseractCLI.runCargoCommand('schema');
 
   process.chdir(startingDirectory);
 };
@@ -61,7 +61,7 @@ const execDockerOptimization = (image: string, cache: string) => {
       { stdio: 'inherit' },
     );
   } catch (err) {
-    TerrainCLI.error(
+    tesseractCLI.error(
       dedent`
       Please ensure that "Docker" is installed and running in the background before executing this command:\n
       "${hyperlinker(
@@ -170,7 +170,7 @@ export const storeCode = async ({
   // Check if user is attempting to store ARM64 wasm binary on mainnet.
   // If so, reoptimize to default wasm binary to store on mainnet.
   if (storingARM64Mainnet) {
-    TerrainCLI.error(
+    tesseractCLI.error(
       dedent`
       ARM64 wasm files should not be stored on "Mainnet". Rebuilding contract to deploy default wasm binary.
     `,
@@ -250,13 +250,13 @@ export const instantiate = async ({
 }: InstantiateParams) => {
   const { instantiation } = conf;
 
-  // Ensure contract refs are available in refs.terrain.json.
+  // Ensure contract refs are available in refs.tesseract.json.
   const refs = loadRefs(refsPath);
   if (!(network in refs) || !(contract in refs[network])) {
     const terraNetwork = network === 'localterra'
       ? 'LocalTerra'
       : `${network[0].toUpperCase()}${network.substring(1)}`;
-    TerrainCLI.error(
+    tesseractCLI.error(
       `Contract "${contract}" has not yet been stored on the "${terraNetwork}" network.`,
       'Contract Not Stored',
     );
@@ -304,7 +304,7 @@ export const instantiate = async ({
   if (network === 'mainnet') {
     const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
     const gasFee = Number(feeEstimate.amount.get(txOptions.feeDenoms[0])!.amount) / 1000000;
-    await TerrainCLI.anykey(
+    await tesseractCLI.anykey(
       `The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`,
     );
   }

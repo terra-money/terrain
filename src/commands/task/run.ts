@@ -6,7 +6,7 @@ import { Env, getEnv } from '../../lib/env';
 import * as flag from '../../lib/flag';
 import runScript from '../../lib/runScript';
 import runCommand from '../../lib/runCommand';
-import TerrainCLI from '../../TerrainCLI';
+import tesseractCLI from '../../tesseractCLI';
 
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
@@ -37,9 +37,9 @@ export default class Run extends Command {
   static flags = {
     signer: flag.signer,
     network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
+    'config-path': flags.string({ default: 'config.tesseract.json' }),
+    'refs-path': flags.string({ default: 'refs.tesseract.json' }),
+    'keys-path': flags.string({ default: 'keys.tesseract.js' }),
   };
 
   static args = [{ name: 'task' }];
@@ -90,7 +90,7 @@ export default class Run extends Command {
             );
           });
         }
-        TerrainCLI.error(
+        tesseractCLI.error(
           `Task "${args.task}" not available in "tasks" directory.`,
           'Task Not Found',
         );

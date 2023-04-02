@@ -5,7 +5,7 @@ import { build } from '../../lib/deployment';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
-import TerrainCLI from '../../TerrainCLI';
+import tesseractCLI from '../../tesseractCLI';
 
 export default class Build extends Command {
   static description = 'Build wasm bytecode.';
@@ -31,11 +31,11 @@ export default class Build extends Command {
 
     // Message to be displayed upon successful command execution.
     const successMessage = () => {
-      TerrainCLI.success(
+      tesseractCLI.success(
         dedent`
       The Wasm bytecode for contract "${args.contract}" was successfully generated.\n
       The next step is to optimize the Wasm bytecode:\n
-      "terrain contract:optimize ${args.contract}"\n
+      "tesseract contract:optimize ${args.contract}"\n
       "NOTE:" Make sure that "Docker" is installed and running in the background before attempting to optimize the Wasm bytecode.
     `,
         'Wasm Bytecode Generated',

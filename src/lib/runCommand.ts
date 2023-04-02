@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import * as path from 'path';
-import TerrainCLI from '../TerrainCLI';
+import tesseractCLI from '../tesseractCLI';
 
 async function runCommand(
   execPath: string,
@@ -8,8 +8,8 @@ async function runCommand(
   errorCheck: () => void,
   successMessage?: () => void,
 ) {
-  // Initialize terrainAppRootPath directory to current working directory.
-  let terrainAppRootPath = process.cwd();
+  // Initialize tesseractAppRootPath directory to current working directory.
+  let tesseractAppRootPath = process.cwd();
 
   // Backtrack, up to 4 times, through file tree to find execPath.
   for (let stepBack = 0; stepBack < 5; stepBack += 1) {
@@ -25,14 +25,14 @@ async function runCommand(
     }
 
     // If execPath does not exist in current directory, step back one directory.
-    terrainAppRootPath = path.join(terrainAppRootPath, '..');
-    process.chdir(terrainAppRootPath);
+    tesseractAppRootPath = path.join(tesseractAppRootPath, '..');
+    process.chdir(tesseractAppRootPath);
   }
 
-  // If terrainAppRootPath not found after stepping back 4 directories,
-  // tell user to run command in a terrain project directory.
-  return TerrainCLI.error(
-    `Command execution path "${execPath}" not found. Please ensure that you are in a terrain project directory.`,
+  // If tesseractAppRootPath not found after stepping back 4 directories,
+  // tell user to run command in a tesseract project directory.
+  return tesseractCLI.error(
+    `Command execution path "${execPath}" not found. Please ensure that you are in a tesseract project directory.`,
     'Execution Path Not Found',
   );
 }

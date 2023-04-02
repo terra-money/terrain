@@ -7,8 +7,8 @@ import defaultErrorCheck from '../lib/defaultErrorCheck';
 /**
  * Runs unit tests for a contract directory.
  * Examples:
- * $ terrain test counter
- * $ terrain test counter --no-fail-fast
+ * $ tesseract test counter
+ * $ tesseract test counter --no-fail-fast
  */
 export default class Test extends Command {
   // Specify description to be displayed upon help command execution.
@@ -16,8 +16,8 @@ export default class Test extends Command {
 
   // Specify examples included upon help test command execution.
   static examples = [
-    '$ terrain test counter',
-    '$ terrain test counter --no-fail-fast',
+    '$ tesseract test counter',
+    '$ tesseract test counter --no-fail-fast',
   ];
 
   // Initialize args to be given after test command.

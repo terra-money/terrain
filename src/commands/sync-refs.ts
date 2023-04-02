@@ -4,7 +4,7 @@ import { cli } from 'cli-ux';
 import { existsSync } from 'fs';
 import * as fs from 'fs-extra';
 import { refsPath, frontendRefsPath } from '../lib/flag';
-import TerrainCLI from '../TerrainCLI';
+import tesseractCLI from '../tesseractCLI';
 import runCommand from '../lib/runCommand';
 
 export default class SyncRefs extends Command {
@@ -23,11 +23,11 @@ export default class SyncRefs extends Command {
 
     // Command to be performed.
     const command = async () => {
-      // Append "refs.terrain.json" to flags.dest path if file unavailable.
+      // Append "refs.tesseract.json" to flags.dest path if file unavailable.
       // The fs.copyFileSync command requires the full file path.
-      const destFullPath = flags.dest.endsWith('refs.terrain.json')
+      const destFullPath = flags.dest.endsWith('refs.tesseract.json')
         ? flags.dest
-        : path.join(flags.dest, 'refs.terrain.json');
+        : path.join(flags.dest, 'refs.tesseract.json');
 
       cli.action.start(
         `Syncing refs from '${flags['refs-path']}' to '${destFullPath}'`,
@@ -40,9 +40,9 @@ export default class SyncRefs extends Command {
 
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = () => {
-      if (existsSync(execPath) && !existsSync('refs.terrain.json')) {
-        TerrainCLI.error(
-          'The "refs.terrain.json" file was not found in the project root directory.',
+      if (existsSync(execPath) && !existsSync('refs.tesseract.json')) {
+        tesseractCLI.error(
+          'The "refs.tesseract.json" file was not found in the project root directory.',
           'Failed to Sync Refs',
         );
       }

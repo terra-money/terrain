@@ -2,7 +2,7 @@ import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
 import { MnemonicKey } from '@terra-money/terra.js';
 import * as fs from 'fs';
-import TerrainCLI from '../../TerrainCLI';
+import tesseractCLI from '../../tesseractCLI';
 
 export default class WalletNew extends Command {
   static description = 'Generate a new wallet to use for signing contracts';
@@ -34,7 +34,7 @@ export default class WalletNew extends Command {
       fs.writeFileSync(flags.outfile, mk.mnemonic);
     }
 
-    TerrainCLI.success(
+    tesseractCLI.success(
       dedent`
       Your wallet has been successfully generated. You may find your mnemonic, or seed phrase, in the "${flags.outfile}" file.\n
       Wallet Address: "${mk.accAddress}"\n

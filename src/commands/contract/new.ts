@@ -4,16 +4,16 @@ import { cli } from 'cli-ux';
 import { TemplateScaffolding } from '@terra-money/template-scaffolding';
 import { join } from 'path';
 import { existsSync } from 'fs';
-import TerrainCLI from '../../TerrainCLI';
+import tesseractCLI from '../../tesseractCLI';
 import runCommand from '../../lib/runCommand';
 
 export default class CodeNew extends Command {
   static description = 'Generate new contract.';
 
   static examples = [
-    '$ terrain code:new awesome_contract',
-    '$ terrain code:new awesome_contract --path path/to/dapp',
-    '$ terrain code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
+    '$ tesseract code:new awesome_contract',
+    '$ tesseract code:new awesome_contract --path path/to/dapp',
+    '$ tesseract code:new awesome_contract --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
   ];
 
   static flags = {
@@ -63,7 +63,7 @@ export default class CodeNew extends Command {
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = () => {
       if (existsSync(join(flags.path, args.name))) {
-        TerrainCLI.error(
+        tesseractCLI.error(
           dedent`Contract "${args.name}" is available in the "${flags.path}" directory.\n
           "TIP:" Use another contract name or specify a different path.`,
           'Contract Already Exists',
@@ -73,13 +73,13 @@ export default class CodeNew extends Command {
 
     // Message to be displayed upon successful command execution.
     const successMessage = () => {
-      TerrainCLI.success(
+      tesseractCLI.success(
         dedent`
         Contract "${args.name}" was successfully generated.\n
         Now, you can try to deploy it to your preferred Terra network:\n
-        "terrain deploy ${args.name} --signer <signer-wallet> --network" "<desired-network>"\n
+        "tesseract deploy ${args.name} --signer <signer-wallet> --network" "<desired-network>"\n
         "NOTE:" To deploy your contract to the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
-        "terrain deploy ${args.name}"
+        "tesseract deploy ${args.name}"
       `,
         'Contract Generated',
       );

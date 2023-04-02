@@ -1,11 +1,11 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
-import TerrainCLI from '../TerrainCLI';
+import tesseractCLI from '../tesseractCLI';
 
 function defaultErrorCheck(contractName: string) {
   return function errorCheck() {
     if (existsSync('contracts') && !existsSync(join('contracts', contractName))) {
-      TerrainCLI.error(
+      tesseractCLI.error(
         `Contract "${contractName}" not available in "contracts" directory.`,
         'Contract Not Found',
       );

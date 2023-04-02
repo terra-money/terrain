@@ -6,16 +6,16 @@ import * as fs from 'fs';
 import { execSync } from 'child_process';
 import { pascal } from 'case';
 import dedent from 'dedent';
-import TerrainCLI from '../TerrainCLI';
+import tesseractCLI from '../tesseractCLI';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
 
   static examples = [
-    '$ terrain new awesome-dapp',
-    '$ terrain new awesome-dapp --path path/to/dapp',
-    '$ terrain new awesome-dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
-    '$ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"',
+    '$ tesseract new awesome-dapp',
+    '$ tesseract new awesome-dapp --path path/to/dapp',
+    '$ tesseract new awesome-dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
+    '$ tesseract new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"',
   ];
 
   static flags = {
@@ -65,8 +65,8 @@ export default class New extends Command {
     cli.action.start('  🛠  Workspace');
     await TemplateScaffolding.from({
       remoteUrl:
-        'https://codeload.github.com/terra-money/terrain-core-template/zip/refs/heads/main',
-      subFolder: 'terrain-core-template-main',
+        'https://codeload.github.com/terra-money/tesseract-core-template/zip/refs/heads/main',
+      subFolder: 'tesseract-core-template-main',
       localOptions: {
         folderUrl: appDir,
       },
@@ -93,8 +93,8 @@ export default class New extends Command {
     if (flags.framework === 'react') {
       await TemplateScaffolding.from({
         remoteUrl:
-          'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main',
-        subFolder: 'terrain-frontend-template-main',
+          'https://codeload.github.com/terra-money/tesseract-frontend-template/zip/refs/heads/main',
+        subFolder: 'tesseract-frontend-template-main',
         localOptions: {
           folderUrl: frontendDir,
         },
@@ -130,15 +130,15 @@ export default class New extends Command {
     });
     cli.action.stop();
 
-    TerrainCLI.success(
+    tesseractCLI.success(
       dedent`
       Application "${args.name}" was successfully generated.\n
       Now, you can change into the contract directory:\n
       "cd ${args.name}"\n
       And try to deploy it to your preferred Terra network:\n
-      "terrain deploy ${args.name} --signer <signer-wallet> --network" "<desired-network>"\n
+      "tesseract deploy ${args.name} --signer <signer-wallet> --network" "<desired-network>"\n
       "NOTE:" To deploy your contract to the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
-      "terrain deploy ${args.name}"
+      "tesseract deploy ${args.name}"
     `,
       'Application Generated',
     );
