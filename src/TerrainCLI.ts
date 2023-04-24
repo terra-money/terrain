@@ -103,7 +103,7 @@ class TerrainCLI {
         dedent`
           Terrain requires "Node version 16"!\n
           Please switch your version of Node before running Terrain commands.\n
-          If you are utilizing nvm, simply utilize the following command:\n
+          If you are utilizing nvm, simply use the following command:\n
           "nvm use 16"
         `,
         'Incompatible Node Version',

@@ -2,7 +2,7 @@ import { Command, flags } from '@oclif/command';
 import * as YAML from 'yaml';
 import { LCDClient, MsgUpdateContractAdmin } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
-import { loadConnections, loadRefs } from '../../config';
+import { loadChainID, loadConnections, loadRefs } from '../../config';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
@@ -36,6 +36,7 @@ export default class ContractUpdateAdmin extends Command {
       const connections = loadConnections(flags['config-path']);
       const refs = loadRefs(flags['refs-path']);
       const { network } = flags;
+      const chainID = loadChainID(network);
       const lcd = new LCDClient(connections(flags.network));
       const signer = await getSigner({
         network: flags.network,
@@ -51,16 +52,17 @@ export default class ContractUpdateAdmin extends Command {
       );
 
       const updateAdminTx = await signer.createAndSignTx({
+        chainID,
         msgs: [
           new MsgUpdateContractAdmin(
-            signer.key.accAddress,
+            signer.key.accAddress(chainID),
             args.admin,
             contractAddress,
           ),
         ],
       });
 
-      const res = await lcd.tx.broadcast(updateAdminTx);
+      const res = await lcd.tx.broadcast(updateAdminTx, chainID);
 
       cli.action.stop();
 

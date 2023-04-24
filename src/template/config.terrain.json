@@ -11,7 +11,7 @@
   "mainnet": {
     "phoenix-1": {
       "_connection": {
-        "chainID": "columbus-5",
+        "chainID": "phoenix-1",
         "URL": "https://lcd.terra.dev"
       }
     }

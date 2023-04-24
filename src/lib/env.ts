@@ -68,7 +68,7 @@ export const getEnv = (
   const keys = loadKeys(keysPath);
   const refs = loadRefs(refsPath)[network];
 
-  const lcd = new LCDClientExtra({ [network]: connections(network) }, network, refs);
+  const lcd = new LCDClientExtra(connections(network), network, refs);
 
   const userDefinedWallets = R.map<
     { [k: string]: RawKey },

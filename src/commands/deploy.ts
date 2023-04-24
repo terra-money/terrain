@@ -1,7 +1,9 @@
 import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
 import { LCDClient } from '@terra-money/feather.js';
-import { loadConfig, loadConnections, loadGlobalConfig } from '../config';
+import {
+  loadChainID, loadConfig, loadConnections, loadGlobalConfig,
+} from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
 import * as flag from '../lib/flag';
@@ -43,6 +45,7 @@ export default class Deploy extends Command {
     const command = async () => {
       const connections = loadConnections(flags['config-path']);
       const config = loadConfig(flags['config-path']);
+      const chainID = loadChainID(flags.network);
       const globalConfig = loadGlobalConfig(flags['config-path']);
       const conf = config(flags.network, args.contract);
 
@@ -70,7 +73,7 @@ export default class Deploy extends Command {
         ]);
       } else {
         // Store sequence to manually increment after code is stored.
-        const sequence = await signer.sequence();
+        const sequence = await signer.sequence(chainID);
 
         const codeId = await storeCode({
           lcd,
@@ -89,7 +92,7 @@ export default class Deploy extends Command {
 
         admin = flags['admin-address']
           ? flags['admin-address']
-          : signer.key.accAddress;
+          : signer.key.accAddress(chainID);
 
         contractAddress = await instantiate({
           conf,

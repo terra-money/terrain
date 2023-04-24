@@ -137,7 +137,7 @@ export default class New extends Command {
       "cd ${args.name}"\n
       And try to deploy it to your preferred Terra network:\n
       "terrain deploy ${args.name} --signer <signer-wallet> --network" "<desired-network>"\n
-      "NOTE:" To deploy your contract to the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
+      "NOTE:" To deploy your contract to the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, use the following command:\n
       "terrain deploy ${args.name}"
     `,
       'Application Generated',

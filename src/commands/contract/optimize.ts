@@ -39,7 +39,7 @@ export default class Optimize extends Command {
         The Wasm bytecode for contract "${args.contract}" was successfully optimized.\n
         The next step is to store the Wasm bytecode on a Terra network:\n
         "terrain contract:store ${args.contract} --signer <signer-wallet>" "--network <desired-network>"\n
-        "NOTE:" To store your contract on the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
+        "NOTE:" To store your contract on the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, use the following command:\n
         "terrain contract:store ${args.contract}"
       `,
         'Wasm Bytecode Optimized',

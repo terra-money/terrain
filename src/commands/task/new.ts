@@ -7,7 +7,7 @@ import runCommand from '../../lib/runCommand';
 import TerrainCLI from '../../TerrainCLI';
 
 export default class TaskNew extends Command {
-  static description = 'create new task';
+  static description = 'Create a new task.';
 
   static args = [{ name: 'task' }];
 

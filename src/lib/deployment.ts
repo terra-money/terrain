@@ -25,6 +25,7 @@ import {
   saveRefs,
   setCodeId,
   setContractAddress,
+  loadChainID,
 } from '../config';
 import TerrainCLI from '../TerrainCLI';
 import useARM64 from './useARM64';
@@ -131,6 +132,7 @@ type StoreCodeParams = {
   signer: Wallet;
   codeId?: number;
   useCargoWorkspace?: boolean;
+  memo?: string;
 };
 
 export const storeCode = async ({
@@ -142,8 +144,10 @@ export const storeCode = async ({
   codeId,
   noRebuild,
   useCargoWorkspace,
+  memo,
 }: StoreCodeParams) => {
   const arm64 = useARM64(network);
+  const chainID = loadChainID(network);
 
   if (!noRebuild) {
     await build({ contract });
@@ -189,14 +193,16 @@ export const storeCode = async ({
   cli.action.start('storing wasm bytecode on chain');
 
   const storeCodeTx = await signer.createAndSignTx({
+    chainID,
+    memo: memo ?? 'terrain',
     msgs: [
       typeof codeId !== 'undefined'
-        ? new MsgMigrateCode(signer.key.accAddress, codeId, wasmByteCode)
-        : new MsgStoreCode(signer.key.accAddress, wasmByteCode),
+        ? new MsgMigrateCode(signer.key.accAddress(chainID), codeId, wasmByteCode)
+        : new MsgStoreCode(signer.key.accAddress(chainID), wasmByteCode),
     ],
   });
 
-  const res = await lcd.tx.broadcast(storeCodeTx);
+  const res = await lcd.tx.broadcast(storeCodeTx, chainID);
 
   cli.action.stop();
 
@@ -249,6 +255,7 @@ export const instantiate = async ({
   sequence,
 }: InstantiateParams) => {
   const { instantiation } = conf;
+  const chainID = loadChainID(network);
 
   // Ensure contract refs are available in refs.terrain.json.
   const refs = loadRefs(refsPath);
@@ -271,10 +278,10 @@ export const instantiate = async ({
   );
 
   // Allow manual account sequences.
-  const manualSequence = sequence || (await signer.sequence());
+  const manualSequence = sequence || (await signer.sequence(chainID));
 
   // Create signerData and txOptions for fee estimation.
-  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress);
+  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress(chainID));
   const signerData: [SignerData] = [
     {
       sequenceNumber: manualSequence,
@@ -282,9 +289,10 @@ export const instantiate = async ({
     },
   ];
   const txOptions: CreateTxOptions = {
+    chainID,
     msgs: [
       new MsgInstantiateContract(
-        signer.key.accAddress,
+        signer.key.accAddress(chainID),
         admin, // can migrate
         actualCodeId,
         instantiation.instantiateMsg,
@@ -314,7 +322,7 @@ export const instantiate = async ({
     ...txOptions,
   });
 
-  const res = await lcd.tx.broadcast(instantiateTx);
+  const res = await lcd.tx.broadcast(instantiateTx, chainID);
 
   let log = [];
   try {
@@ -375,6 +383,8 @@ export const migrate = async ({
   const { instantiation } = conf;
   const refs = loadRefs(refsPath);
 
+  const chainID = loadChainID(network);
+
   const contractAddress = refs[network][contract].contractAddresses[instanceId];
 
   cli.action.start(
@@ -382,9 +392,10 @@ export const migrate = async ({
   );
 
   const migrateTx = await signer.createAndSignTx({
+    chainID,
     msgs: [
       new MsgMigrateContract(
-        signer.key.accAddress,
+        signer.key.accAddress(chainID),
         contractAddress,
         codeId,
         instantiation.instantiateMsg,
@@ -392,7 +403,7 @@ export const migrate = async ({
     ],
   });
 
-  const resInstant = await lcd.tx.broadcast(migrateTx);
+  const resInstant = await lcd.tx.broadcast(migrateTx, chainID);
 
   let log = [];
   try {

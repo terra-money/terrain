@@ -51,8 +51,8 @@ export type Refs = {
 
 export const connection = (
   networks: {
-    [network: string ]: {
-      [chainID: string ] :{
+    [network: string]: {
+      [chainID: string] :{
         _connection: LCDClientConfig,
       }
     }
@@ -63,6 +63,8 @@ export const connection = (
 export const loadConnections = (
   path = `${__dirname}/template/config.terrain.json`,
 ) => connection(fs.readJSONSync(path));
+
+export const loadChainID = (network = 'localterra') => Object.keys(loadConnections(network))[0];
 
 export const config = (
   allConfig: {

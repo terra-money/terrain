@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import TerrainCLI from '../../TerrainCLI';
 
 export default class WalletNew extends Command {
-  static description = 'Generate a new wallet to use for signing contracts';
+  static description = 'Generate a new wallet to use for signing contracts.';
 
   static flags = {
     outfile: flags.string({
