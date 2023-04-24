@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import * as YAML from 'yaml';
-import { LCDClient, MsgUpdateContractAdmin } from '@terra-money/terra.js';
+import { LCDClient, MsgUpdateContractAdmin } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
 import { loadConnections, loadRefs } from '../../config';
 import { getSigner } from '../../lib/signer';

@@ -35,7 +35,7 @@ export default async (name: string, contract: ContractInfo, outPath: string) => 
         "TxInfo",
         "WaitTxBroadcastResult",
       ],
-      "@terra-money/terra.js"
+      "@terra-money/feather.js"
     ),
     w.importStmt(["ConnectedWallet"], "@terra-money/wallet-provider")
   );

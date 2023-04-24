@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
-import { MnemonicKey } from '@terra-money/terra.js';
+import { MnemonicKey } from '@terra-money/feather.js';
 import * as fs from 'fs';
 import TerrainCLI from '../../TerrainCLI';
 

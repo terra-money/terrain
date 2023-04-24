@@ -1,4 +1,4 @@
-import { MnemonicKey, RawKey } from '@terra-money/terra.js';
+import { MnemonicKey, RawKey } from '@terra-money/feather.js';
 import * as R from 'ramda';
 import { config, loadConfig, loadKeys } from './config';
 

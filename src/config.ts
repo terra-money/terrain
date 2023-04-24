@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import * as fs from 'fs-extra';
-import { LCDClientConfig, MnemonicKey, RawKey } from '@terra-money/terra.js';
+import { LCDClientConfig, MnemonicKey, RawKey } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
 
 type Fee = {
@@ -51,8 +51,10 @@ export type Refs = {
 
 export const connection = (
   networks: {
-    [network: string]: {
-      _connection: LCDClientConfig,
+    [network: string ]: {
+      [chainID: string ] :{
+        _connection: LCDClientConfig,
+      }
     }
   },
 ) => (network: string) => networks[network]._connection

@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
-import { LCDClient } from '@terra-money/terra.js';
+import { LCDClient } from '@terra-money/feather.js';
 import { loadConfig, loadConnections, loadGlobalConfig } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';

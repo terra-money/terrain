@@ -2,7 +2,7 @@ import { Command } from '@oclif/command';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { start } from 'repl';
-import * as terrajs from '@terra-money/terra.js';
+import * as terrajs from '@terra-money/feather.js';
 import { getEnv } from '../lib/env';
 import { signer, network, terrainPaths } from '../lib/flag';
 import TerrainCLI from '../TerrainCLI';

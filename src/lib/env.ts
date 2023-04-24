@@ -2,7 +2,7 @@ import {
   LocalTerra,
   RawKey,
   Wallet,
-} from '@terra-money/terra.js';
+} from '@terra-money/feather.js';
 import * as R from 'ramda';
 import {
   ContractConfig,
@@ -68,7 +68,7 @@ export const getEnv = (
   const keys = loadKeys(keysPath);
   const refs = loadRefs(refsPath)[network];
 
-  const lcd = new LCDClientExtra(connections(network), refs);
+  const lcd = new LCDClientExtra({ [network]: connections(network) }, network, refs);
 
   const userDefinedWallets = R.map<
     { [k: string]: RawKey },

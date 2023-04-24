@@ -1,4 +1,4 @@
-import { LCDClient, LocalTerra, Wallet } from '@terra-money/terra.js';
+import { LCDClient, LocalTerra, Wallet } from '@terra-money/feather.js';
 import hyperlinker from 'hyperlinker';
 import { cli } from 'cli-ux';
 import dedent from 'dedent';

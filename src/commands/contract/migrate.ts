@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command';
-import { LCDClient } from '@terra-money/terra.js';
+import { LCDClient } from '@terra-money/feather.js';
 import { loadConfig, loadConnections } from '../../config';
 import { migrate, storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';

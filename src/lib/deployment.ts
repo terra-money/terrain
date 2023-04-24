@@ -10,7 +10,7 @@ import {
   Wallet,
   SignerData,
   CreateTxOptions,
-} from '@terra-money/terra.js';
+} from '@terra-money/feather.js';
 import { parse } from 'toml';
 import hyperlinker from 'hyperlinker';
 import { execSync } from 'child_process';
