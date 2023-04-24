@@ -49,7 +49,7 @@ export default class ContractInstantiate extends Command {
         lcd,
       });
 
-      admin = signer.key.accAddress(chainID);
+      admin = signer.key.accAddress('terra');
 
       contractAddress = await instantiate({
         conf,

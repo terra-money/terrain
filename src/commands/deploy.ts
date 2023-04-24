@@ -92,7 +92,7 @@ export default class Deploy extends Command {
 
         admin = flags['admin-address']
           ? flags['admin-address']
-          : signer.key.accAddress(chainID);
+          : signer.key.accAddress('terra');
 
         contractAddress = await instantiate({
           conf,

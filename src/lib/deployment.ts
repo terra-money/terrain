@@ -197,8 +197,8 @@ export const storeCode = async ({
     memo: memo ?? 'terrain',
     msgs: [
       typeof codeId !== 'undefined'
-        ? new MsgMigrateCode(signer.key.accAddress(chainID), codeId, wasmByteCode)
-        : new MsgStoreCode(signer.key.accAddress(chainID), wasmByteCode),
+        ? new MsgMigrateCode(signer.key.accAddress('terra'), codeId, wasmByteCode)
+        : new MsgStoreCode(signer.key.accAddress('terra'), wasmByteCode),
     ],
   });
 
@@ -281,7 +281,7 @@ export const instantiate = async ({
   const manualSequence = sequence || (await signer.sequence(chainID));
 
   // Create signerData and txOptions for fee estimation.
-  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress(chainID));
+  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress('terra'));
   const signerData: [SignerData] = [
     {
       sequenceNumber: manualSequence,
@@ -292,7 +292,7 @@ export const instantiate = async ({
     chainID,
     msgs: [
       new MsgInstantiateContract(
-        signer.key.accAddress(chainID),
+        signer.key.accAddress('terra'),
         admin, // can migrate
         actualCodeId,
         instantiation.instantiateMsg,
@@ -395,7 +395,7 @@ export const migrate = async ({
     chainID,
     msgs: [
       new MsgMigrateContract(
-        signer.key.accAddress(chainID),
+        signer.key.accAddress('terra'),
         contractAddress,
         codeId,
         instantiation.instantiateMsg,

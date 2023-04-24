@@ -55,7 +55,7 @@ export default class ContractUpdateAdmin extends Command {
         chainID,
         msgs: [
           new MsgUpdateContractAdmin(
-            signer.key.accAddress(chainID),
+            signer.key.accAddress('terra'),
             args.admin,
             contractAddress,
           ),
