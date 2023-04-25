@@ -1,7 +1,7 @@
 import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
 import { LCDClient } from '@terra-money/feather.js';
-import { loadChainID, loadConfig, loadConnections } from '../../config';
+import { loadConfig, loadConnections } from '../../config';
 import { instantiate } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -39,8 +39,9 @@ export default class ContractInstantiate extends Command {
       const connections = loadConnections(flags['config-path']);
       const config = loadConfig(flags['config-path']);
       const conf = config(flags.network, args.contract);
+      const connection = connections(flags.network);
 
-      const lcd = new LCDClient(connections(flags.network));
+      const lcd = new LCDClient({ [connection.chainID]: connection });
       const signer = await getSigner({
         network: flags.network,
         signerId: flags.signer,

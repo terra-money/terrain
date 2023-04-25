@@ -10,29 +10,27 @@
   },
   "mainnet": {
     "phoenix-1": {
-      "_connection": {
-        "chainID": "phoenix-1",
-        "prefix": "terra",
-        "URL": "https://lcd.terra.dev"
-      }
+      "chainID": "phoenix-1",
+      "lcd": "https://phoenix-lcd.terra.dev",
+      "gasAdjustment": 1.75,
+      "gasPrices": { "uluna" : 0.015 },
+      "prefix": "terra"
     }
   },
   "testnet": {
     "pisco-1": {
-      "_connection": {
-        "chainID": "pisco-1",
-        "prefix": "terra",
-        "URL": "https://pisco-lcd.terra.dev"
-      }
+      "chainID": "pisco-1",
+      "lcd": "https://pisco-lcd.terra.dev",
+      "gasAdjustment": 3.5,
+      "gasPrices": { "uluna": 0.015 },
+      "prefix": "terra"
     }
   },
   "localterra": {
     "localterra": {
-      "_connection": {
         "chainID": "localterra",
         "prefix": "terra",
         "URL": "http://localhost:3060"
       }
-    }
   }
 }

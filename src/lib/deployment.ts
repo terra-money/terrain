@@ -25,7 +25,8 @@ import {
   saveRefs,
   setCodeId,
   setContractAddress,
-  loadChainID,
+  loadConnections,
+  DEFAULT_CONFIG_PATH,
 } from '../config';
 import TerrainCLI from '../TerrainCLI';
 import useARM64 from './useARM64';
@@ -133,6 +134,7 @@ type StoreCodeParams = {
   codeId?: number;
   useCargoWorkspace?: boolean;
   memo?: string;
+  configPath?: string;
 };
 
 export const storeCode = async ({
@@ -143,11 +145,13 @@ export const storeCode = async ({
   lcd,
   codeId,
   noRebuild,
+  configPath = DEFAULT_CONFIG_PATH,
   useCargoWorkspace,
   memo,
 }: StoreCodeParams) => {
   const arm64 = useARM64(network);
-  const chainID = loadChainID(network);
+  const connections = loadConnections(configPath);
+  const { chainID } = connections(network);
 
   if (!noRebuild) {
     await build({ contract });
@@ -240,6 +244,7 @@ type InstantiateParams = {
   codeId?: number;
   instanceId?: string;
   sequence?: number;
+  configPath?: string;
 };
 
 export const instantiate = async ({
@@ -253,9 +258,11 @@ export const instantiate = async ({
   codeId,
   instanceId,
   sequence,
+  configPath = DEFAULT_CONFIG_PATH,
 }: InstantiateParams) => {
   const { instantiation } = conf;
-  const chainID = loadChainID(network);
+  const connections = loadConnections(configPath);
+  const { chainID } = connections(network);
 
   // Ensure contract refs are available in refs.terrain.json.
   const refs = loadRefs(refsPath);
@@ -368,6 +375,7 @@ type MigrateParams = {
   instanceId: string;
   refsPath: string;
   lcd: LCDClient;
+  configPath?: string;
 };
 
 export const migrate = async ({
@@ -379,11 +387,13 @@ export const migrate = async ({
   codeId,
   network,
   instanceId,
+  configPath,
 }: MigrateParams) => {
   const { instantiation } = conf;
   const refs = loadRefs(refsPath);
 
-  const chainID = loadChainID(network);
+  const connections = loadConnections(configPath);
+  const { chainID } = connections(network);
 
   const contractAddress = refs[network][contract].contractAddresses[instanceId];
 

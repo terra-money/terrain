@@ -34,8 +34,9 @@ export default class CodeStore extends Command {
       const connections = loadConnections(flags['config-path']);
       const config = loadConfig(flags['config-path']);
       const conf = config(flags.network, args.contract);
+      const connection = connections(flags.network);
 
-      const lcd = new LCDClient(connections(flags.network));
+      const lcd = new LCDClient({ [connection.chainID]: connection });
       const signer = await getSigner({
         network: flags.network,
         signerId: flags.signer,

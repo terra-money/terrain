@@ -13,12 +13,10 @@ export type ContractRefs = { [contractName: string]: ContractRef };
 export class LCDClientExtra extends LCDClient {
   refs: ContractRefs;
 
-  network: string;
-
-  constructor(config: Record<string, LCDClientConfig>, network: string, refs: ContractRefs) {
+  constructor(config: Record<string, LCDClientConfig>, refs: ContractRefs) {
     super(config);
     this.refs = refs;
-    this.network = network;
+    this.config = config;
   }
 
   query(contract: string, msg: Object, instanceId = 'default') {
@@ -36,9 +34,10 @@ export class LCDClientExtra extends LCDClient {
     options?: CreateTxOptions,
     instanceId = 'default',
   ): Promise<WaitTxBroadcastResult> {
+    const { chainID, prefix } = Object.values(this.config)[0];
     const msgs = [
       new MsgExecuteContract(
-        wallet.key.accAddress(this.network),
+        wallet.key.accAddress(prefix),
         // Enable supplying a contract address instead of the contract name.
         contract.startsWith('terra1') ? contract : this.refs[contract].contractAddresses[instanceId],
         msg,
@@ -46,7 +45,7 @@ export class LCDClientExtra extends LCDClient {
       ),
     ];
     const mergedOptions = options ? { ...options, msgs } : { msgs };
-    const tx = await wallet.createAndSignTx({ ...mergedOptions, chainID: this.network });
-    return this.tx.broadcast(tx, this.network);
+    const tx = await wallet.createAndSignTx({ ...mergedOptions, chainID });
+    return this.tx.broadcast(tx, chainID);
   }
 }

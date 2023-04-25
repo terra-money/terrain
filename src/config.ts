@@ -51,19 +51,20 @@ export type Refs = {
 
 export type Network = {
   [network: string]: {
-    [chainID: string] :{
-      _connection: LCDClientConfig,
-    }
+    [chainID: string] : LCDClientConfig
   }
 }
 
+export const DEFAULT_CONFIG_PATH = `${__dirname}/template/config.terrain.json`;
+
 export const connection = (
   networks: Network,
-) => (network: string) => networks[network]._connection
-    || cli.error(`network '${network}' not found in config`);
+  prefix = 'terra',
+) => (network: string) => Object.values(networks[network]).find((c) => c.prefix === prefix)
+    || cli.error(`network '${network}' with prefix '${prefix}' not found in config`);
 
 export const loadConnections = (
-  path = `${__dirname}/template/config.terrain.json`,
+  path = DEFAULT_CONFIG_PATH,
 ) => connection(fs.readJSONSync(path));
 
 export const loadChain = (connection: LCDClientConfig) => connection.chainID;

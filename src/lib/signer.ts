@@ -3,7 +3,7 @@ import hyperlinker from 'hyperlinker';
 import { cli } from 'cli-ux';
 import dedent from 'dedent';
 import * as path from 'path';
-import { loadKeys, loadChainID } from '../config';
+import { loadKeys, loadConnections } from '../config';
 import TerrainCLI from '../TerrainCLI';
 
 export const getSigner = async ({
@@ -27,7 +27,9 @@ export const getSigner = async ({
     // Alert user if LocalTerra request fails.
     try {
       const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
-      const chainID = loadChainID(network);
+      const connections = loadConnections();
+      const { chainID } = connections(network);
+
       await signer.sequence(chainID);
       cli.log(
         `Using pre-baked '${signerId}' wallet on LocalTerra as signer...`,
