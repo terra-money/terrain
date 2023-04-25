@@ -38,7 +38,6 @@ export default class ContractInstantiate extends Command {
     const command = async () => {
       const connections = loadConnections(flags['config-path']);
       const config = loadConfig(flags['config-path']);
-      const chainID = loadChainID(flags.network);
       const conf = config(flags.network, args.contract);
 
       const lcd = new LCDClient(connections(flags.network));

@@ -12,6 +12,7 @@
     "phoenix-1": {
       "_connection": {
         "chainID": "phoenix-1",
+        "prefix": "terra",
         "URL": "https://lcd.terra.dev"
       }
     }
@@ -20,6 +21,7 @@
     "pisco-1": {
       "_connection": {
         "chainID": "pisco-1",
+        "prefix": "terra",
         "URL": "https://pisco-lcd.terra.dev"
       }
     }
@@ -28,6 +30,7 @@
     "localterra": {
       "_connection": {
         "chainID": "localterra",
+        "prefix": "terra",
         "URL": "http://localhost:3060"
       }
     }

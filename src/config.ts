@@ -49,14 +49,16 @@ export type Refs = {
   };
 };
 
-export const connection = (
-  networks: {
-    [network: string]: {
-      [chainID: string] :{
-        _connection: LCDClientConfig,
-      }
+export type Network = {
+  [network: string]: {
+    [chainID: string] :{
+      _connection: LCDClientConfig,
     }
-  },
+  }
+}
+
+export const connection = (
+  networks: Network,
 ) => (network: string) => networks[network]._connection
     || cli.error(`network '${network}' not found in config`);
 
@@ -64,7 +66,7 @@ export const loadConnections = (
   path = `${__dirname}/template/config.terrain.json`,
 ) => connection(fs.readJSONSync(path));
 
-export const loadChainID = (network = 'localterra') => Object.keys(loadConnections(network))[0];
+export const loadChain = (connection: LCDClientConfig) => connection.chainID;
 
 export const config = (
   allConfig: {
