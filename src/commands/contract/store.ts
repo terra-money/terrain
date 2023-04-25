@@ -16,6 +16,7 @@ export default class CodeStore extends Command {
   static flags = {
     signer: flag.signer,
     network: flag.network,
+    prefix: flag.prefix,
     'no-rebuild': flag.noRebuild,
     'code-id': flags.integer({}),
     ...flag.terrainPaths,
@@ -31,7 +32,7 @@ export default class CodeStore extends Command {
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
+      const connections = loadConnections(flags['config-path'], flags.prefix);
       const config = loadConfig(flags['config-path']);
       const conf = config(flags.network, args.contract);
       const connection = connections(flags.network);
@@ -42,6 +43,7 @@ export default class CodeStore extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        configPath: flags['config-path'],
       });
 
       await storeCode({

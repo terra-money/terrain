@@ -59,15 +59,21 @@ export const DEFAULT_CONFIG_PATH = `${__dirname}/template/config.terrain.json`;
 
 export const connection = (
   networks: Network,
-  prefix = 'terra',
-) => (network: string) => Object.values(networks[network]).find((c) => c.prefix === prefix)
-    || cli.error(`network '${network}' with prefix '${prefix}' not found in config`);
+  prefix: string,
+) => (network: string) => {
+  const chainID = Object.keys(networks[network])
+    .find((id) => networks[network][id].prefix === prefix);
+  if (!chainID) cli.error(`no chain with network '${network}' with prefix '${prefix}' not found in config`);
+  return networks[network][chainID];
+};
 
 export const loadConnections = (
   path = DEFAULT_CONFIG_PATH,
-) => connection(fs.readJSONSync(path));
-
-export const loadChain = (connection: LCDClientConfig) => connection.chainID;
+  prefix = 'terra',
+) => {
+  console.log('path', path);
+  return connection(fs.readJSONSync(path), prefix);
+};
 
 export const config = (
   allConfig: {

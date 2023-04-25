@@ -3,7 +3,7 @@ import hyperlinker from 'hyperlinker';
 import { cli } from 'cli-ux';
 import dedent from 'dedent';
 import * as path from 'path';
-import { loadKeys, loadConnections } from '../config';
+import { loadKeys, loadConnections, DEFAULT_CONFIG_PATH } from '../config';
 import TerrainCLI from '../TerrainCLI';
 
 export const getSigner = async ({
@@ -11,11 +11,13 @@ export const getSigner = async ({
   signerId,
   keysPath,
   lcd,
+  configPath,
 }: {
   network: string;
   signerId: string;
   keysPath: string;
   lcd: LCDClient;
+  configPath: string;
 }): Promise<Wallet> => {
   // If transaction is being attempted on LocalTerra...
   const localterra = new LocalTerra();
@@ -27,7 +29,7 @@ export const getSigner = async ({
     // Alert user if LocalTerra request fails.
     try {
       const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
-      const connections = loadConnections();
+      const connections = loadConnections(configPath);
       const { chainID } = connections(network);
 
       await signer.sequence(chainID);

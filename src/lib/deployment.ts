@@ -26,7 +26,6 @@ import {
   setCodeId,
   setContractAddress,
   loadConnections,
-  DEFAULT_CONFIG_PATH,
 } from '../config';
 import TerrainCLI from '../TerrainCLI';
 import useARM64 from './useARM64';
@@ -135,6 +134,7 @@ type StoreCodeParams = {
   useCargoWorkspace?: boolean;
   memo?: string;
   configPath?: string;
+  prefix?: string;
 };
 
 export const storeCode = async ({
@@ -145,12 +145,13 @@ export const storeCode = async ({
   lcd,
   codeId,
   noRebuild,
-  configPath = DEFAULT_CONFIG_PATH,
+  configPath,
   useCargoWorkspace,
   memo,
+  prefix,
 }: StoreCodeParams) => {
   const arm64 = useARM64(network);
-  const connections = loadConnections(configPath);
+  const connections = loadConnections(configPath, prefix);
   const { chainID } = connections(network);
 
   if (!noRebuild) {
@@ -245,6 +246,7 @@ type InstantiateParams = {
   instanceId?: string;
   sequence?: number;
   configPath?: string;
+  prefix?: string;
 };
 
 export const instantiate = async ({
@@ -258,10 +260,11 @@ export const instantiate = async ({
   codeId,
   instanceId,
   sequence,
-  configPath = DEFAULT_CONFIG_PATH,
+  configPath,
+  prefix,
 }: InstantiateParams) => {
   const { instantiation } = conf;
-  const connections = loadConnections(configPath);
+  const connections = loadConnections(configPath, prefix);
   const { chainID } = connections(network);
 
   // Ensure contract refs are available in refs.terrain.json.

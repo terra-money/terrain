@@ -13,6 +13,7 @@ export default class ContractMigrate extends Command {
   static flags = {
     signer: flag.signer,
     'no-rebuild': flag.noRebuild,
+    prefix: flag.prefix,
     network: flags.string({ default: 'localterra' }),
     'config-path': flags.string({ default: 'config.terrain.json' }),
     'refs-path': flags.string({ default: 'refs.terrain.json' }),
@@ -34,7 +35,7 @@ export default class ContractMigrate extends Command {
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
+      const connections = loadConnections(flags['config-path'], flags.prefix);
       const config = loadConfig(flags['config-path']);
       const conf = config(flags.network, args.contract);
       const connection = connections(flags.network);
@@ -45,6 +46,7 @@ export default class ContractMigrate extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        configPath: flags['config-path'],
       });
 
       const codeId = await storeCode({

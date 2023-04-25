@@ -14,6 +14,7 @@ export default class ContractUpdateAdmin extends Command {
   static flags = {
     signer: flag.signer,
     network: flag.network,
+    prefix: flag.prefix,
     'config-path': flags.string({ default: 'config.terrain.json' }),
     'refs-path': flags.string({ default: 'refs.terrain.json' }),
     'keys-path': flags.string({ default: 'keys.terrain.js' }),
@@ -33,7 +34,7 @@ export default class ContractUpdateAdmin extends Command {
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
+      const connections = loadConnections(flags['config-path'], flags.prefix);
       const refs = loadRefs(flags['refs-path']);
       const { network } = flags;
       const connection = connections(network);
@@ -46,6 +47,8 @@ export default class ContractUpdateAdmin extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        configPath: flags['config-path'],
+
       });
 
       const contractAddress = refs[network][args.contract].contractAddresses[flags['instance-id']];

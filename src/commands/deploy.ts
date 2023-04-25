@@ -17,6 +17,7 @@ export default class Deploy extends Command {
   static flags = {
     signer: flag.signer,
     network: flag.network,
+    prefix: flag.prefix,
     'no-rebuild': flag.noRebuild,
     'instance-id': flag.instanceId,
     'frontend-refs-path': flag.frontendRefsPath,
@@ -43,7 +44,8 @@ export default class Deploy extends Command {
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
+      console.log('HERE 1', flags['config-path']);
+      const connections = loadConnections(flags['config-path'], flags.prefix);
       const config = loadConfig(flags['config-path']);
       const globalConfig = loadGlobalConfig(flags['config-path']);
       const conf = config(flags.network, args.contract);
@@ -55,6 +57,7 @@ export default class Deploy extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        configPath: flags['config-path'],
       });
 
       if (conf.deployTask) {

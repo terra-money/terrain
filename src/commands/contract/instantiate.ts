@@ -15,6 +15,7 @@ export default class ContractInstantiate extends Command {
   static flags = {
     signer: flag.signer,
     network: flag.network,
+    prefix: flag.prefix,
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
       description: 'specific codeId to instantiate',
@@ -36,7 +37,7 @@ export default class ContractInstantiate extends Command {
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
+      const connections = loadConnections(flags['config-path'], flags.prefix);
       const config = loadConfig(flags['config-path']);
       const conf = config(flags.network, args.contract);
       const connection = connections(flags.network);
@@ -47,6 +48,7 @@ export default class ContractInstantiate extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        configPath: flags['config-path'],
       });
 
       admin = signer.key.accAddress('terra');

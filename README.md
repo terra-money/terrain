@@ -569,8 +569,8 @@ Instantiate the contract.
 
 ```
 USAGE
-  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--network <value>] [--instance-id <value>] [--code-id
-    <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--network <value>] [--prefix <value>] [--instance-id
+    <value>] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --code-id=<value>      specific codeId to instantiate
@@ -578,6 +578,7 @@ FLAGS
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
+  --prefix=<value>       [default: terra] address prefix of chain you want to interact with
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -593,8 +594,8 @@ Migrate the contract.
 
 ```
 USAGE
-  $ terrain contract:migrate [CONTRACT] [--signer <value>] [--no-rebuild] [--network <value>] [--config-path <value>]
-    [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>]
+  $ terrain contract:migrate [CONTRACT] [--signer <value>] [--no-rebuild] [--prefix <value>] [--network <value>]
+    [--config-path <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>]
 
 FLAGS
   --code-id=<value>      target code id for migration
@@ -603,6 +604,7 @@ FLAGS
   --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra]
   --no-rebuild           deploy the wasm bytecode as is.
+  --prefix=<value>       [default: terra] address prefix of chain you want to interact with
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -675,8 +677,8 @@ Store code on chain.
 
 ```
 USAGE
-  $ terrain contract:store [CONTRACT] [--signer <value>] [--network <value>] [--no-rebuild] [--code-id <value>]
-    [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain contract:store [CONTRACT] [--signer <value>] [--network <value>] [--prefix <value>] [--no-rebuild]
+    [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --code-id=<value>
@@ -684,6 +686,7 @@ FLAGS
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
   --no-rebuild           deploy the wasm bytecode as is.
+  --prefix=<value>       [default: terra] address prefix of chain you want to interact with
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -699,14 +702,15 @@ Update the admin of a contract.
 
 ```
 USAGE
-  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] [--signer <value>] [--network <value>] [--config-path <value>]
-    [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
+  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] [--signer <value>] [--network <value>] [--prefix <value>]
+    [--config-path <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
 
 FLAGS
   --config-path=<value>  [default: config.terrain.json]
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
+  --prefix=<value>       [default: terra] address prefix of chain you want to interact with
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -722,9 +726,9 @@ Build wasm bytecode, store code on chain and instantiate.
 
 ```
 USAGE
-  $ terrain deploy [CONTRACT] [--signer <value>] [--network <value>] [--no-rebuild] [--instance-id <value>]
-    [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync <value>] [--config-path <value>] [--refs-path
-    <value>] [--keys-path <value>]
+  $ terrain deploy [CONTRACT] [--signer <value>] [--network <value>] [--prefix <value>] [--no-rebuild]
+    [--instance-id <value>] [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync <value>] [--config-path
+    <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
@@ -735,6 +739,7 @@ FLAGS
   --network=<value>             [default: localterra] network to deploy to from config.terrain.json
   --no-rebuild                  deploy the wasm bytecode as is.
   --no-sync=<value>             don't attempt to sync contract refs to frontend.
+  --prefix=<value>              [default: terra] address prefix of chain you want to interact with
   --refs-path=<value>           [default: ./refs.terrain.json]
   --signer=<value>              [default: test1]
 
