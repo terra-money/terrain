@@ -48,7 +48,6 @@ export default class ContractUpdateAdmin extends Command {
         keysPath: flags['keys-path'],
         lcd,
         configPath: flags['config-path'],
-
       });
 
       const contractAddress = refs[network][args.contract].contractAddresses[flags['instance-id']];
@@ -61,7 +60,7 @@ export default class ContractUpdateAdmin extends Command {
         chainID,
         msgs: [
           new MsgUpdateContractAdmin(
-            signer.key.accAddress('terra'),
+            signer.key.accAddress(flags.prefix),
             args.admin,
             contractAddress,
           ),

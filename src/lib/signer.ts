@@ -3,7 +3,7 @@ import hyperlinker from 'hyperlinker';
 import { cli } from 'cli-ux';
 import dedent from 'dedent';
 import * as path from 'path';
-import { loadKeys, loadConnections, DEFAULT_CONFIG_PATH } from '../config';
+import { loadKeys, loadConnections } from '../config';
 import TerrainCLI from '../TerrainCLI';
 
 export const getSigner = async ({

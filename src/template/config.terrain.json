@@ -30,8 +30,7 @@
       "lcd": "https://pisco-lcd.terra.dev",
       "gasAdjustment": 3.5,
       "gasPrices": { "uluna": 0.015 },
-      "prefix": "terra",
-      "name": "terra"
+      "prefix": "terra"
     }
   },
   "localterra": {

@@ -11,7 +11,7 @@ export const instanceId = flags.string({ default: 'default', description: 'enabl
 
 export const network = flags.string({ default: 'localterra', description: 'network to deploy to from config.terrain.json' });
 
-export const prefix = flags.string({ default: 'terra', description: 'address prefix of chain you want to interact with' });
+export const prefix = flags.string({ default: 'terra', description: 'address prefix of target chain' });
 
 export const configPath = flags.string({ default: './config.terrain.json' });
 

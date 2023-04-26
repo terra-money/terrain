@@ -60,6 +60,7 @@ export const getEnv = (
   keysPath: string,
   refsPath: string,
   network: string,
+  prefix: string,
   defaultWallet: string,
 ): Env => {
   const connections = loadConnections(configPath);
@@ -109,6 +110,7 @@ export const getEnv = (
         conf: config(network, contract),
         noRebuild: typeof options?.noRebuild === 'undefined' ? false : options.noRebuild,
         useCargoWorkspace: globalConfig.useCargoWorkspace,
+        prefix,
       }),
       instantiate: (
         contract: string,
@@ -123,6 +125,7 @@ export const getEnv = (
         refsPath,
         configPath,
         lcd,
+        prefix,
         admin: options?.admin,
         // Use the instantiation message passed instead of default.
         conf: options?.init

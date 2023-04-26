@@ -4,7 +4,9 @@ import { existsSync } from 'fs';
 import { start } from 'repl';
 import * as terrajs from '@terra-money/feather.js';
 import { getEnv } from '../lib/env';
-import { signer, network, terrainPaths } from '../lib/flag';
+import {
+  signer, network, terrainPaths, prefix,
+} from '../lib/flag';
 import TerrainCLI from '../TerrainCLI';
 import runCommand from '../lib/runCommand';
 
@@ -22,6 +24,7 @@ export default class Console extends Command {
   static flags = {
     signer,
     network,
+    prefix,
     ...terrainPaths,
   };
 
@@ -40,6 +43,7 @@ export default class Console extends Command {
         join(process.cwd(), flags['keys-path']),
         join(process.cwd(), flags['refs-path']),
         flags.network,
+        flags.prefix,
         flags.signer,
       );
 

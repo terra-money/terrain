@@ -130,11 +130,11 @@ type StoreCodeParams = {
   contract: string;
   noRebuild?: boolean;
   signer: Wallet;
+  prefix: string;
   codeId?: number;
   useCargoWorkspace?: boolean;
   memo?: string;
   configPath?: string;
-  prefix?: string;
 };
 
 export const storeCode = async ({
@@ -202,8 +202,8 @@ export const storeCode = async ({
     memo: memo ?? 'terrain',
     msgs: [
       typeof codeId !== 'undefined'
-        ? new MsgMigrateCode(signer.key.accAddress('terra'), codeId, wasmByteCode)
-        : new MsgStoreCode(signer.key.accAddress('terra'), wasmByteCode),
+        ? new MsgMigrateCode(signer.key.accAddress(prefix), codeId, wasmByteCode)
+        : new MsgStoreCode(signer.key.accAddress(prefix), wasmByteCode),
     ],
   });
 
@@ -240,13 +240,13 @@ type InstantiateParams = {
   network: string;
   refsPath: string;
   lcd: LCDClient;
-  admin?: AccAddress;
+  prefix: string;
   contract: string;
+  admin?: AccAddress;
   codeId?: number;
   instanceId?: string;
   sequence?: number;
   configPath?: string;
-  prefix?: string;
 };
 
 export const instantiate = async ({
@@ -291,7 +291,7 @@ export const instantiate = async ({
   const manualSequence = sequence || (await signer.sequence(chainID));
 
   // Create signerData and txOptions for fee estimation.
-  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress('terra'));
+  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress(prefix));
   const signerData: [SignerData] = [
     {
       sequenceNumber: manualSequence,
@@ -302,7 +302,7 @@ export const instantiate = async ({
     chainID,
     msgs: [
       new MsgInstantiateContract(
-        signer.key.accAddress('terra'),
+        signer.key.accAddress(prefix),
         admin, // can migrate
         actualCodeId,
         instantiation.instantiateMsg,
@@ -379,6 +379,7 @@ type MigrateParams = {
   refsPath: string;
   lcd: LCDClient;
   configPath?: string;
+  prefix: string;
 };
 
 export const migrate = async ({
@@ -391,6 +392,7 @@ export const migrate = async ({
   network,
   instanceId,
   configPath,
+  prefix,
 }: MigrateParams) => {
   const { instantiation } = conf;
   const refs = loadRefs(refsPath);
@@ -408,7 +410,7 @@ export const migrate = async ({
     chainID,
     msgs: [
       new MsgMigrateContract(
-        signer.key.accAddress('terra'),
+        signer.key.accAddress(prefix),
         contractAddress,
         codeId,
         instantiation.instantiateMsg,

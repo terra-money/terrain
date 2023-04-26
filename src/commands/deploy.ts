@@ -75,8 +75,9 @@ export default class Deploy extends Command {
         ]);
       } else {
         // Store sequence to manually increment after code is stored.
+        console.log('pre sequence', connection.chainID);
         const sequence = await signer.sequence(connection.chainID);
-
+        console.log('sequence', sequence);
         const codeId = await storeCode({
           lcd,
           conf,
@@ -87,6 +88,7 @@ export default class Deploy extends Command {
           refsPath: flags['refs-path'],
           useCargoWorkspace: globalConfig.useCargoWorkspace,
           configPath: flags['config-path'],
+          prefix: flags.prefix,
         });
 
         // pause for account sequence to update.
@@ -95,7 +97,7 @@ export default class Deploy extends Command {
 
         admin = flags['admin-address']
           ? flags['admin-address']
-          : signer.key.accAddress('terra');
+          : signer.key.accAddress(flags.prefix);
 
         contractAddress = await instantiate({
           conf,
@@ -109,6 +111,7 @@ export default class Deploy extends Command {
           refsPath: flags['refs-path'],
           configPath: flags['config-path'],
           lcd,
+          prefix: flags.prefix,
         });
       }
 

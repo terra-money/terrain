@@ -16,6 +16,7 @@ export const task = async (fn: (env: Env) => Promise<void>) => {
         process.env.keysPath || '',
         process.env.refsPath || '',
         process.env.network || '',
+        process.env.prefix || '',
         process.env.signer || '',
       ),
     );
@@ -37,6 +38,7 @@ export default class Run extends Command {
   static flags = {
     signer: flag.signer,
     network: flags.string({ default: 'localterra' }),
+    prefix: flag.prefix,
     'config-path': flags.string({ default: 'config.terrain.json' }),
     'refs-path': flags.string({ default: 'refs.terrain.json' }),
     'keys-path': flags.string({ default: 'keys.terrain.js' }),
@@ -59,6 +61,7 @@ export default class Run extends Command {
           keysPath: join(process.cwd(), flags['keys-path']),
           refsPath: join(process.cwd(), flags['refs-path']),
           network: flags.network,
+          prefix: flags.prefix,
           signer: flags.signer,
         },
         (err) => {
@@ -81,6 +84,7 @@ export default class Run extends Command {
                 keysPath: join(process.cwd(), flags['keys-path']),
                 refsPath: join(process.cwd(), flags['refs-path']),
                 network: flags.network,
+                prefix: flags.prefix,
                 signer: flags.signer,
               },
               (err) => {

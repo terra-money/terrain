@@ -511,13 +511,14 @@ Start a repl console that provides context and convenient utilities to interact 
 
 ```
 USAGE
-  $ terrain console [--signer <value>] [--network <value>] [--config-path <value>] [--refs-path <value>]
-    [--keys-path <value>]
+  $ terrain console [--signer <value>] [--network <value>] [--prefix <value>] [--config-path <value>]
+    [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --config-path=<value>  [default: ./config.terrain.json]
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
+  --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -578,7 +579,7 @@ FLAGS
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
-  --prefix=<value>       [default: terra] address prefix of chain you want to interact with
+  --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -604,7 +605,7 @@ FLAGS
   --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra]
   --no-rebuild           deploy the wasm bytecode as is.
-  --prefix=<value>       [default: terra] address prefix of chain you want to interact with
+  --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -686,7 +687,7 @@ FLAGS
   --keys-path=<value>    [default: ./keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
   --no-rebuild           deploy the wasm bytecode as is.
-  --prefix=<value>       [default: terra] address prefix of chain you want to interact with
+  --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -710,7 +711,7 @@ FLAGS
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra] network to deploy to from config.terrain.json
-  --prefix=<value>       [default: terra] address prefix of chain you want to interact with
+  --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -739,7 +740,7 @@ FLAGS
   --network=<value>             [default: localterra] network to deploy to from config.terrain.json
   --no-rebuild                  deploy the wasm bytecode as is.
   --no-sync=<value>             don't attempt to sync contract refs to frontend.
-  --prefix=<value>              [default: terra] address prefix of chain you want to interact with
+  --prefix=<value>              [default: terra] address prefix of target chain
   --refs-path=<value>           [default: ./refs.terrain.json]
   --signer=<value>              [default: test1]
 
@@ -839,13 +840,14 @@ run predefined task
 
 ```
 USAGE
-  $ terrain task:run [TASK] [--signer <value>] [--network <value>] [--config-path <value>] [--refs-path
-    <value>] [--keys-path <value>]
+  $ terrain task:run [TASK] [--signer <value>] [--network <value>] [--prefix <value>] [--config-path <value>]
+    [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --config-path=<value>  [default: config.terrain.json]
   --keys-path=<value>    [default: keys.terrain.js]
   --network=<value>      [default: localterra]
+  --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
 

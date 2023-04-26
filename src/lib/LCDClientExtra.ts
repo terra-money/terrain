@@ -6,6 +6,7 @@ import {
   MsgExecuteContract,
   WaitTxBroadcastResult,
   Wallet,
+  AccAddress,
 } from '@terra-money/feather.js';
 import { ContractRef } from '../config';
 
@@ -34,12 +35,14 @@ export class LCDClientExtra extends LCDClient {
     options?: CreateTxOptions,
     instanceId = 'default',
   ): Promise<WaitTxBroadcastResult> {
+    // TODO: Support multiple chains.
     const { chainID, prefix } = Object.values(this.config)[0];
     const msgs = [
       new MsgExecuteContract(
         wallet.key.accAddress(prefix),
         // Enable supplying a contract address instead of the contract name.
-        contract.startsWith('terra1') ? contract : this.refs[contract].contractAddresses[instanceId],
+        AccAddress.validate(contract) ? contract
+          : this.refs[contract].contractAddresses[instanceId],
         msg,
         coins,
       ),

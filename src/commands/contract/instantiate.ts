@@ -51,7 +51,7 @@ export default class ContractInstantiate extends Command {
         configPath: flags['config-path'],
       });
 
-      admin = signer.key.accAddress('terra');
+      admin = signer.key.accAddress(flags.prefix);
 
       contractAddress = await instantiate({
         conf,
@@ -64,6 +64,7 @@ export default class ContractInstantiate extends Command {
         refsPath: flags['refs-path'],
         configPath: flags['config-path'],
         lcd,
+        prefix: flags.prefix,
       });
     };
 

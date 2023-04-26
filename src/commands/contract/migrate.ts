@@ -57,6 +57,7 @@ export default class ContractMigrate extends Command {
         network: flags.network,
         refsPath: flags['refs-path'],
         lcd,
+        prefix: flags.prefix,
       });
 
       migrate({
@@ -68,6 +69,7 @@ export default class ContractMigrate extends Command {
         instanceId: flags['instance-id'],
         refsPath: flags['refs-path'],
         lcd,
+        prefix: flags.prefix,
       });
     };
 

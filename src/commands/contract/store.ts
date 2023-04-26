@@ -55,6 +55,7 @@ export default class CodeStore extends Command {
         refsPath: flags['refs-path'],
         lcd,
         codeId: flags['code-id'],
+        prefix: flags.prefix,
       });
     };
 
