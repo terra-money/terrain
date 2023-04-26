@@ -9,7 +9,7 @@ export const noRebuild = flags.boolean({
 
 export const instanceId = flags.string({ default: 'default', description: 'enable management of multiple instances of the same contract' });
 
-export const network = flags.string({ default: 'localterra', description: 'network to deploy to from config.terrain.json' });
+export const network = flags.string({ default: 'local', description: 'network to deploy to from config.terrain.json' });
 
 export const prefix = flags.string({ default: 'terra', description: 'address prefix of target chain' });
 

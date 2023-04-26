@@ -517,7 +517,7 @@ USAGE
 FLAGS
   --config-path=<value>  [default: ./config.terrain.json]
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: localterra] network to deploy to from config.terrain.json
+  --network=<value>      [default: local] network to deploy to from config.terrain.json
   --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
@@ -578,7 +578,7 @@ FLAGS
   --config-path=<value>  [default: ./config.terrain.json]
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: localterra] network to deploy to from config.terrain.json
+  --network=<value>      [default: local] network to deploy to from config.terrain.json
   --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
@@ -603,7 +603,7 @@ FLAGS
   --config-path=<value>  [default: config.terrain.json]
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: keys.terrain.js]
-  --network=<value>      [default: localterra]
+  --network=<value>      [default: local]
   --no-rebuild           deploy the wasm bytecode as is.
   --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: refs.terrain.json]
@@ -685,7 +685,7 @@ FLAGS
   --code-id=<value>
   --config-path=<value>  [default: ./config.terrain.json]
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: localterra] network to deploy to from config.terrain.json
+  --network=<value>      [default: local] network to deploy to from config.terrain.json
   --no-rebuild           deploy the wasm bytecode as is.
   --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: ./refs.terrain.json]
@@ -710,7 +710,7 @@ FLAGS
   --config-path=<value>  [default: config.terrain.json]
   --instance-id=<value>  [default: default]
   --keys-path=<value>    [default: keys.terrain.js]
-  --network=<value>      [default: localterra] network to deploy to from config.terrain.json
+  --network=<value>      [default: local] network to deploy to from config.terrain.json
   --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]
@@ -737,7 +737,7 @@ FLAGS
   --frontend-refs-path=<value>  [default: ./frontend/src/]
   --instance-id=<value>         [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>           [default: ./keys.terrain.js]
-  --network=<value>             [default: localterra] network to deploy to from config.terrain.json
+  --network=<value>             [default: local] network to deploy to from config.terrain.json
   --no-rebuild                  deploy the wasm bytecode as is.
   --no-sync=<value>             don't attempt to sync contract refs to frontend.
   --prefix=<value>              [default: terra] address prefix of target chain
@@ -846,7 +846,7 @@ USAGE
 FLAGS
   --config-path=<value>  [default: config.terrain.json]
   --keys-path=<value>    [default: keys.terrain.js]
-  --network=<value>      [default: localterra]
+  --network=<value>      [default: local]
   --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]

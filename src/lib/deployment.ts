@@ -270,8 +270,8 @@ export const instantiate = async ({
   // Ensure contract refs are available in refs.terrain.json.
   const refs = loadRefs(refsPath);
   if (!(network in refs) || !(contract in refs[network])) {
-    const terraNetwork = network === 'localterra'
-      ? 'LocalTerra'
+    const terraNetwork = network === 'local'
+      ? 'local network'
       : `${network[0].toUpperCase()}${network.substring(1)}`;
     TerrainCLI.error(
       `Contract "${contract}" has not yet been stored on the "${terraNetwork}" network.`,

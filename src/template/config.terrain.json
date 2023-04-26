@@ -16,13 +16,13 @@
       "gasPrices": { "uluna" : 0.015 },
       "prefix": "terra"
     },
-    "osmosis-1": {
-      "chainID": "osmosis-1",
-      "lcd": "https://osmosis-1.terra.dev",
+    "juno-1": {
+      "chainID": "juno-1",
+      "lcd": "https://lcd-juno.mib.tech",
       "gasAdjustment": 1.75,
-      "gasPrices": { "uosmo": 0.025 },
-      "prefix": "osmo"
-    }
+      "gasPrices": { "ujuno": 0.0025 },
+      "prefix": "juno"
+      }
   },
   "testnet": {
     "pisco-1": {
@@ -31,13 +31,19 @@
       "gasAdjustment": 3.5,
       "gasPrices": { "uluna": 0.015 },
       "prefix": "terra"
-    }
+    },
+    "uni-5": {
+      "chainID": "uni-5",
+      "lcd": "https://juno-testnet-api.polkachu.com",
+      "gasAdjustment": 2,
+      "gasPrices": { "ujunox": 0.015 },
+      "prefix": "juno"
+      }
   },
-  "localterra": {
+  "local": {
     "localterra": {
         "chainID": "localterra",
         "prefix": "terra",
-        "name": "terra",
         "URL": "http://localhost:3060"
       }
   }

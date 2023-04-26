@@ -14,7 +14,7 @@ export default class ContractMigrate extends Command {
     signer: flag.signer,
     'no-rebuild': flag.noRebuild,
     prefix: flag.prefix,
-    network: flags.string({ default: 'localterra' }),
+    network: flags.string({ default: 'local' }),
     'config-path': flags.string({ default: 'config.terrain.json' }),
     'refs-path': flags.string({ default: 'refs.terrain.json' }),
     'keys-path': flags.string({ default: 'keys.terrain.js' }),

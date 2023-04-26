@@ -69,8 +69,8 @@ export default class ContractInstantiate extends Command {
     };
 
     // Message to be displayed upon successful command execution.
-    const terraNetwork = flags.network === 'localterra'
-      ? 'LocalTerra'
+    const terraNetwork = flags.network === 'local'
+      ? 'local network'
       : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
     const successMessage = () => {
       TerrainCLI.success(

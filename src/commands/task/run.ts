@@ -37,7 +37,7 @@ export default class Run extends Command {
 
   static flags = {
     signer: flag.signer,
-    network: flags.string({ default: 'localterra' }),
+    network: flags.string({ default: 'local' }),
     prefix: flag.prefix,
     'config-path': flags.string({ default: 'config.terrain.json' }),
     'refs-path': flags.string({ default: 'refs.terrain.json' }),

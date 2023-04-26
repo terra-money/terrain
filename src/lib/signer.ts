@@ -22,7 +22,7 @@ export const getSigner = async ({
   // If transaction is being attempted on LocalTerra...
   const localterra = new LocalTerra();
   if (
-    network === 'localterra'
+    network === 'local'
     && Object.prototype.hasOwnProperty.call(localterra.wallets, signerId)
   ) {
     // Attempt to request sequence from LocalTerra.
