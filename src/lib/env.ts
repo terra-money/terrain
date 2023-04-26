@@ -121,6 +121,7 @@ export const getEnv = (
         contract,
         network,
         refsPath,
+        configPath,
         lcd,
         admin: options?.admin,
         // Use the instantiation message passed instead of default.

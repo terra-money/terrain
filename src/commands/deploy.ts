@@ -44,7 +44,6 @@ export default class Deploy extends Command {
 
     // Command to be performed.
     const command = async () => {
-      console.log('HERE 1', flags['config-path']);
       const connections = loadConnections(flags['config-path'], flags.prefix);
       const config = loadConfig(flags['config-path']);
       const globalConfig = loadGlobalConfig(flags['config-path']);
@@ -87,6 +86,7 @@ export default class Deploy extends Command {
           network: flags.network,
           refsPath: flags['refs-path'],
           useCargoWorkspace: globalConfig.useCargoWorkspace,
+          configPath: flags['config-path'],
         });
 
         // pause for account sequence to update.
@@ -107,6 +107,7 @@ export default class Deploy extends Command {
           network: flags.network,
           instanceId: flags['instance-id'],
           refsPath: flags['refs-path'],
+          configPath: flags['config-path'],
           lcd,
         });
       }

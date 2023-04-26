@@ -62,6 +62,7 @@ export default class ContractInstantiate extends Command {
         network: flags.network,
         instanceId: flags['instance-id'],
         refsPath: flags['refs-path'],
+        configPath: flags['config-path'],
         lcd,
       });
     };

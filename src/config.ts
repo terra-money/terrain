@@ -56,13 +56,14 @@ export type Network = {
 }
 
 export const DEFAULT_CONFIG_PATH = `${__dirname}/template/config.terrain.json`;
+export const DEFAULT_REFS_PATH = `${__dirname}/template/refs.terrain.json`;
 
 export const connection = (
   networks: Network,
   prefix: string,
 ) => (network: string) => {
   const chainID = Object.keys(networks[network])
-    .find((id) => networks[network][id].prefix === prefix);
+    .find((chainID) => networks[network][chainID].prefix === prefix);
   if (!chainID) cli.error(`no chain with network '${network}' with prefix '${prefix}' not found in config`);
   return networks[network][chainID];
 };
@@ -70,10 +71,7 @@ export const connection = (
 export const loadConnections = (
   path = DEFAULT_CONFIG_PATH,
   prefix = 'terra',
-) => {
-  console.log('path', path);
-  return connection(fs.readJSONSync(path), prefix);
-};
+) => connection(fs.readJSONSync(path), prefix);
 
 export const config = (
   allConfig: {
@@ -115,11 +113,11 @@ export const saveConfig = (
 };
 
 export const loadConfig = (
-  path = `${__dirname}/template/config.terrain.json`,
+  path = DEFAULT_CONFIG_PATH,
 ) => config(fs.readJSONSync(path));
 
 export const loadGlobalConfig = (
-  path = `${__dirname}/template/config.terrain.json`,
+  path = DEFAULT_CONFIG_PATH,
   // Extract useCargoWorkspace from global config.
 ) => (({ _global: { useCargoWorkspace } }) => ({ useCargoWorkspace }))(fs.readJSONSync(path));
 
@@ -159,7 +157,7 @@ export const setContractAddress = (
 );
 
 export const loadRefs = (
-  path = `${__dirname}/template/refs.terrain.json`,
+  path = DEFAULT_REFS_PATH,
 ): Refs => fs.readJSONSync(path);
 
 export const saveRefs = (refs: Refs, path: string) => {
