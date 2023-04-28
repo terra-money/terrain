@@ -200,7 +200,7 @@ export const storeCode = async ({
 
   const storeCodeTx = await signer.createAndSignTx({
     chainID,
-    memo: memo ?? 'terrain',
+    memo,
     msgs: [
       typeof codeId !== 'undefined'
         ? new MsgMigrateCode(signer.key.accAddress(prefix), codeId, wasmByteCode)
@@ -303,7 +303,7 @@ export const instantiate = async ({
 
   const txOptions: CreateTxOptions = {
     chainID,
-    memo: memo ?? 'terrain',
+    memo,
     msgs: [
       new MsgInstantiateContract(
         signer.key.accAddress(prefix),

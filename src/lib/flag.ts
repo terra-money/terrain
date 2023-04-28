@@ -13,6 +13,8 @@ export const network = flags.string({ default: 'local', description: 'network to
 
 export const prefix = flags.string({ default: 'terra', description: 'address prefix of target chain' });
 
+export const memo = flags.string({ default: 'terrain' });
+
 export const configPath = flags.string({ default: './config.terrain.json' });
 
 export const refsPath = flags.string({ default: './refs.terrain.json' });

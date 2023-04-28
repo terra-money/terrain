@@ -38,8 +38,7 @@ export const getSigner = async ({
         `Using pre-baked '${signerId}' wallet on LocalTerra as signer...`,
       );
       return signer;
-    } catch (err) {
-      console.log('err', err);
+    } catch (error) {
       TerrainCLI.error(
         dedent`
         "LocalTerra" is currently not running.\n

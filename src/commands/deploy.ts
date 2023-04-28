@@ -18,6 +18,7 @@ export default class Deploy extends Command {
     signer: flag.signer,
     network: flag.network,
     prefix: flag.prefix,
+    memo: flag.memo,
     'no-rebuild': flag.noRebuild,
     'instance-id': flag.instanceId,
     'frontend-refs-path': flag.frontendRefsPath,
@@ -75,7 +76,6 @@ export default class Deploy extends Command {
         ]);
       } else {
         // Store sequence to manually increment after code is stored.
-        console.log('pre sequence', connection.chainID);
         const sequence = await signer.sequence(connection.chainID);
         const codeId = await storeCode({
           lcd,
@@ -88,6 +88,7 @@ export default class Deploy extends Command {
           useCargoWorkspace: globalConfig.useCargoWorkspace,
           configPath: flags['config-path'],
           prefix: flags.prefix,
+          memo: flags.memo,
         });
 
         // pause for account sequence to update.
@@ -111,6 +112,7 @@ export default class Deploy extends Command {
           configPath: flags['config-path'],
           lcd,
           prefix: flags.prefix,
+          memo: flags.memo,
         });
       }
 

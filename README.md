@@ -727,9 +727,9 @@ Build wasm bytecode, store code on chain and instantiate.
 
 ```
 USAGE
-  $ terrain deploy [CONTRACT] [--signer <value>] [--network <value>] [--prefix <value>] [--no-rebuild]
-    [--instance-id <value>] [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync <value>] [--config-path
-    <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain deploy [CONTRACT] [--signer <value>] [--network <value>] [--prefix <value>] [--memo <value>]
+    [--no-rebuild] [--instance-id <value>] [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync <value>]
+    [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
@@ -737,6 +737,7 @@ FLAGS
   --frontend-refs-path=<value>  [default: ./frontend/src/]
   --instance-id=<value>         [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>           [default: ./keys.terrain.js]
+  --memo=<value>                [default: terrain]
   --network=<value>             [default: local] network to deploy to from config.terrain.json
   --no-rebuild                  deploy the wasm bytecode as is.
   --no-sync=<value>             don't attempt to sync contract refs to frontend.
