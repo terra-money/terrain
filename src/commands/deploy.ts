@@ -77,7 +77,6 @@ export default class Deploy extends Command {
         // Store sequence to manually increment after code is stored.
         console.log('pre sequence', connection.chainID);
         const sequence = await signer.sequence(connection.chainID);
-        console.log('sequence', sequence);
         const codeId = await storeCode({
           lcd,
           conf,

@@ -73,6 +73,11 @@ export const loadConnections = (
   prefix = 'terra',
 ) => connection(fs.readJSONSync(path), prefix);
 
+export const getFeeDenom = (network: string, prefix: string, path?: string) => {
+  const connections = loadConnections(path, prefix);
+  return Object.keys(connections(network).gasPrices)[0];
+};
+
 export const config = (
   allConfig: {
     _global: GlobalConfig;

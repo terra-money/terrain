@@ -846,7 +846,7 @@ USAGE
 FLAGS
   --config-path=<value>  [default: config.terrain.json]
   --keys-path=<value>    [default: keys.terrain.js]
-  --network=<value>      [default: local]
+  --network=<value>      [default: local] network to deploy to from config.terrain.json
   --prefix=<value>       [default: terra] address prefix of target chain
   --refs-path=<value>    [default: refs.terrain.json]
   --signer=<value>       [default: test1]

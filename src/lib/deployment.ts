@@ -26,6 +26,7 @@ import {
   setCodeId,
   setContractAddress,
   loadConnections,
+  getFeeDenom,
 } from '../config';
 import TerrainCLI from '../TerrainCLI';
 import useARM64 from './useARM64';
@@ -247,6 +248,7 @@ type InstantiateParams = {
   instanceId?: string;
   sequence?: number;
   configPath?: string;
+  memo?: string;
 };
 
 export const instantiate = async ({
@@ -262,6 +264,7 @@ export const instantiate = async ({
   sequence,
   configPath,
   prefix,
+  memo,
 }: InstantiateParams) => {
   const { instantiation } = conf;
   const connections = loadConnections(configPath, prefix);
@@ -270,11 +273,9 @@ export const instantiate = async ({
   // Ensure contract refs are available in refs.terrain.json.
   const refs = loadRefs(refsPath);
   if (!(network in refs) || !(contract in refs[network])) {
-    const terraNetwork = network === 'local'
-      ? 'local network'
-      : `${network[0].toUpperCase()}${network.substring(1)}`;
+    const name = `${network[0].toUpperCase()}${network.substring(1)}`;
     TerrainCLI.error(
-      `Contract "${contract}" has not yet been stored on the "${terraNetwork}" network.`,
+      `Contract "${contract}" has not yet been stored on the "${name}" network.`,
       'Contract Not Stored',
     );
   }
@@ -298,8 +299,11 @@ export const instantiate = async ({
       publicKey: accountInfo.getPublicKey(),
     },
   ];
+  const feeDenom = getFeeDenom(network, prefix, configPath);
+
   const txOptions: CreateTxOptions = {
     chainID,
+    memo: memo ?? 'terrain',
     msgs: [
       new MsgInstantiateContract(
         signer.key.accAddress(prefix),
@@ -312,18 +316,15 @@ export const instantiate = async ({
     ],
   };
 
-  // Set default terraDenom and feeDenoms value if not specified.
   if (!txOptions.feeDenoms) {
-    txOptions.feeDenoms = ['uluna'];
+    txOptions.feeDenoms = [feeDenom];
   }
-  const terraDenom = 'LUNA';
 
-  // Prompt user to accept gas fee for contract initialization if network is mainnet.
   if (network === 'mainnet') {
     const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
     const gasFee = Number(feeEstimate.amount.get(txOptions.feeDenoms[0])!.amount) / 1000000;
     await TerrainCLI.anykey(
-      `The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`,
+      `The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${feeDenom}. Press any key to continue or "ctl+c" to exit`,
     );
   }
 
