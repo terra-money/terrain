@@ -19,7 +19,6 @@ export const getSigner = async ({
   lcd: LCDClient;
   configPath: string;
 }): Promise<Wallet> => {
-  // If transaction is being attempted on LocalTerra...
   const localterra = new LocalTerra();
   if (
     network === 'local'
@@ -39,6 +38,7 @@ export const getSigner = async ({
       );
       return signer;
     } catch (error) {
+      console.log('error', error);
       TerrainCLI.error(
         dedent`
         "LocalTerra" is currently not running.\n
