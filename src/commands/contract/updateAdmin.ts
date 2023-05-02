@@ -28,7 +28,6 @@ export default class ContractUpdateAdmin extends Command {
 
   async run() {
     const { args, flags } = this.parse(ContractUpdateAdmin);
-
     // Command execution path.
     const execPath = flags['config-path'];
 

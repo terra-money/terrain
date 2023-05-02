@@ -207,9 +207,7 @@ export const storeCode = async ({
         : new MsgStoreCode(signer.key.accAddress(prefix), wasmByteCode),
     ],
   });
-
   const res = await lcd.tx.broadcast(storeCodeTx, chainID);
-
   cli.action.stop();
 
   try {
@@ -293,6 +291,7 @@ export const instantiate = async ({
 
   // Create signerData and txOptions for fee estimation.
   const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress(prefix));
+
   const signerData: [SignerData] = [
     {
       sequenceNumber: manualSequence,

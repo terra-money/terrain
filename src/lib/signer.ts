@@ -28,7 +28,6 @@ export const getSigner = async ({
     // Alert user if LocalTerra request fails.
     try {
       const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
-      console.log(signer);
       const connections = loadConnections(configPath);
       const { chainID } = connections(network);
 
@@ -38,7 +37,6 @@ export const getSigner = async ({
       );
       return signer;
     } catch (error) {
-      console.log('error', error);
       TerrainCLI.error(
         dedent`
         "LocalTerra" is currently not running.\n
