@@ -372,7 +372,7 @@ task(async ({ wallets, client, deploy }) => {
 });
 ```
 
-It is possible to tell Terrain to use a custom deploy task instead of the default deploy process. To do this, add the following to the `_global` section in `config.terrain.json`:
+It is possible to tell Terrain to use a custom deploy task instead of the default deploy process. To do this, add the following to the `global` section in `config.terrain.json`:
 
 ```json
 "contracts": {

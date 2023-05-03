@@ -2,7 +2,7 @@ import { MnemonicKey, RawKey } from '@terra-money/feather.js';
 import * as R from 'ramda';
 import { config, loadConfig, loadKeys } from './config';
 
-const _global = {
+const global = {
   contracts: {
     counter: {
       instantiation: {
@@ -10,15 +10,15 @@ const _global = {
       },
     },
   },
-  _base: {
+  base: {
     instantiation: {
       instantiateMsg: {},
     },
   },
 };
 
-const _globalWithOverrides = R.mergeDeepRight(_global, {
-  _base: {
+const globalWithOverrides = R.mergeDeepRight(global, {
+  base: {
     instantiation: {
       instantiateMsg: { count: 0 },
     },
@@ -33,7 +33,7 @@ const _globalWithOverrides = R.mergeDeepRight(_global, {
 }) as any;
 
 const local = {
-  _base: {
+  base: {
     instantiation: {
       instantiateMsg: { count: 99 },
     },
@@ -48,21 +48,21 @@ const local = {
 } as any;
 
 test('config without overrides should return global base for any contract in any network', () => {
-  const conf = config({ _global });
+  const conf = config({ global });
 
-  expect(conf('local', 'contract_a')).toEqual(_global._base);
-  expect(conf('mainnet', 'contract_b')).toEqual(_global._base);
+  expect(conf('local', 'contract_a')).toEqual(global.base);
+  expect(conf('mainnet', 'contract_b')).toEqual(global.base);
 });
 
 test('config without overrides should return specific config for counter contract', () => {
-  const conf = config({ _global });
+  const conf = config({ global });
 
-  expect(conf('local', 'counter')).toEqual(_global.contracts.counter);
-  expect(conf('mainnet', 'counter')).toEqual(_global.contracts.counter);
+  expect(conf('local', 'counter')).toEqual(global.contracts.counter);
+  expect(conf('mainnet', 'counter')).toEqual(global.contracts.counter);
 });
 
 test('config with overrides in global should return overriden value for all networks', () => {
-  const conf = config({ _global: _globalWithOverrides });
+  const conf = config({ global: globalWithOverrides });
 
   const contractAUpdated = {
     instantiation: {
@@ -74,11 +74,11 @@ test('config with overrides in global should return overriden value for all netw
   expect(conf('testnet', 'contract_a')).toEqual(contractAUpdated);
   expect(conf('mainnet', 'contract_a')).toEqual(contractAUpdated);
 
-  expect(conf('local', 'contract_random')).toEqual(_globalWithOverrides._base);
+  expect(conf('local', 'contract_random')).toEqual(globalWithOverrides.base);
 });
 
-test('config with overrides in _base for the network should overrides for all the contract within the network', () => {
-  const conf = config({ _global, local });
+test('config with overrides in base for the network should overrides for all the contract within the network', () => {
+  const conf = config({ global, local });
   const localContractA = {
     instantiation: {
       instantiateMsg: { count: 100 },
@@ -93,7 +93,7 @@ test('config with overrides in _base for the network should overrides for all th
   expect(conf('local', 'contract_a')).toEqual(localContractA);
   expect(conf('local', 'contract_b')).toEqual(localOtherContract);
   expect(conf('local', 'contract_c')).toEqual(localOtherContract);
-  expect(conf('mainnet', 'contract_a')).toEqual(_global._base);
+  expect(conf('mainnet', 'contract_a')).toEqual(global.base);
 });
 
 test('load config', () => {

@@ -26,12 +26,12 @@ export type ContractConfig = {
 };
 
 type Config = {
-  _base: ContractConfig;
+  base: ContractConfig;
   contracts?: { [contract: string]: ContractConfig };
 };
 
 type GlobalConfig = {
-  _base: ContractConfig;
+  base: ContractConfig;
   useCargoWorkspace?: boolean;
   contracts?: { [contract: string]: ContractConfig };
 };
@@ -82,18 +82,18 @@ export const getFeeDenom = (network: string, prefix: string, path: string) => {
 
 export const config = (
   allConfig: {
-    _global: GlobalConfig;
+    global: GlobalConfig;
     [network: string]: Partial<Config>;
   },
 ) => (network: string, contract: string): ContractConfig => {
-  const globalBaseConfig = (allConfig._global && allConfig._global._base) || {};
+  const globalBaseConfig = (allConfig.global && allConfig.global.base) || {};
   const globalContractConfig = (
-    allConfig._global
-    && allConfig._global.contracts
-    && allConfig._global.contracts[contract]
+    allConfig.global
+    && allConfig.global.contracts
+    && allConfig.global.contracts[contract]
   ) || {};
 
-  const baseConfig = (allConfig[network] && allConfig[network]._base) || {};
+  const baseConfig = (allConfig[network] && allConfig[network].base) || {};
   const contractConfig = (
     allConfig[network]
     && allConfig[network].contracts
@@ -101,7 +101,7 @@ export const config = (
   ) || {};
 
   return [
-    allConfig._global._base,
+    allConfig.global.base,
     globalBaseConfig,
     globalContractConfig,
     baseConfig,
@@ -126,7 +126,7 @@ export const loadConfig = (
 export const loadGlobalConfig = (
   path = DEFAULT_CONFIG_PATH,
   // Extract useCargoWorkspace from global config.
-) => (({ _global: { useCargoWorkspace } }) => ({ useCargoWorkspace }))(fs.readJSONSync(path));
+) => (({ global: { useCargoWorkspace } }) => ({ useCargoWorkspace }))(fs.readJSONSync(path));
 
 export const loadKeys = (
   path = `${__dirname}/template/keys.terrain.js`,
