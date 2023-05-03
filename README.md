@@ -685,8 +685,8 @@ Store code on chain.
 
 ```
 USAGE
-  $ terrain contract:store [CONTRACT] [--signer <value>] [--network mainnet|testnet|local] [--prefix juno|terra]
-    [--no-rebuild] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain contract:store [CONTRACT] [--no-rebuild] [--code-id <value>] [--signer <value>] [--network
+    mainnet|testnet|local] [--prefix juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --code-id=<value>      specific codeId to instantiate

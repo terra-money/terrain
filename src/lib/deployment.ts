@@ -23,8 +23,8 @@ import {
   ContractConfig,
   loadRefs,
   saveRefs,
-  setCodeId,
   setContractAddress,
+  setCodeId,
   loadConnections,
   getFeeDenom,
 } from '../config';
@@ -217,9 +217,11 @@ export const storeCode = async ({
 
     const updatedRefs = setCodeId(
       network,
+      chainID,
       contract,
       savedCodeId,
     )(loadRefs(refsPath));
+
     saveRefs(updatedRefs, refsPath);
     cli.log(`code is stored at code id: ${savedCodeId}`);
 
@@ -270,15 +272,15 @@ export const instantiate = async ({
 
   // Ensure contract refs are available in refs.terrain.json.
   const refs = loadRefs(refsPath);
-  if (!(network in refs) || !(contract in refs[network])) {
+  if (!(network in refs) || !(contract in refs[network][chainID])) {
     const name = `${network[0].toUpperCase()}${network.substring(1)}`;
     TerrainCLI.error(
-      `Contract "${contract}" has not yet been stored on the "${name}" network.`,
+      `Contract "${contract}" has not yet been stored on the "${name}" network with prefix "${prefix}.`,
       'Contract Not Stored',
     );
   }
 
-  const actualCodeId = codeId || refs[network][contract].codeId;
+  const actualCodeId = codeId || refs[network][chainID][contract].codeId;
 
   cli.action.start(
     `instantiating contract with msg: ${JSON.stringify(
@@ -358,6 +360,7 @@ export const instantiate = async ({
 
   const updatedRefs = setContractAddress(
     network,
+    chainID,
     contract,
     instanceId || 'default',
     contractAddress,
@@ -400,7 +403,7 @@ export const migrate = async ({
   const connections = loadConnections(configPath, prefix);
   const { chainID } = connections(network);
 
-  const contractAddress = refs[network][contract].contractAddresses[instanceId];
+  const contractAddress = refs[network][chainID][contract].contractAddresses[instanceId];
 
   cli.action.start(
     `migrating contract with address ${contractAddress} to code id: ${codeId}`,
@@ -436,6 +439,7 @@ export const migrate = async ({
 
   const updatedRefs = setContractAddress(
     network,
+    chainID,
     contract,
     instanceId,
     contractAddress,

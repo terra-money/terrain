@@ -37,15 +37,17 @@ type GlobalConfig = {
 };
 
 export type ContractRef = {
-  codeId: number;
-  contractAddresses: {
-    [key: string]: string;
-  };
+  [contractName: string]: {
+    codeId: number;
+    contractAddresses: {
+      [key: string]: string;
+    };
+  }
 };
 
 export type Refs = {
   [network: string]: {
-    [contract: string]: ContractRef;
+    [chainID: string]: ContractRef;
   };
 };
 
@@ -149,20 +151,23 @@ export const loadKeys = (
   );
 };
 
-export const setCodeId = (network: string, contract: string, codeId: number) => R.set(R.lensPath([network, contract, 'codeId']), codeId);
-
+export const setCodeId = (network: string, chainID: string, contract: string, codeId: number) => R.set(R.lensPath([network, chainID, contract, 'codeId']), codeId);
 export const setContractAddress = (
   network: string,
+  chainID: string,
   contract: string,
   instanceId: string,
   contractAddress: string,
-) => R.set(
-  R.lensPath([network, contract, 'contractAddresses', instanceId]),
-  contractAddress,
-);
+) => {
+  console.log('is called!');
+  return R.set(
+    R.lensPath([network, chainID, contract, 'contractAddresses', instanceId]),
+    contractAddress,
+  );
+};
 
 export const loadRefs = (
-  path = DEFAULT_REFS_PATH,
+  path: string,
 ): Refs => fs.readJSONSync(path);
 
 export const saveRefs = (refs: Refs, path: string) => {

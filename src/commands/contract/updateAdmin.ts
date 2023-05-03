@@ -46,7 +46,7 @@ export default class ContractUpdateAdmin extends Command {
         prefix: flags.prefix,
       });
 
-      const contractAddress = refs[network][args.contract].contractAddresses[flags['instance-id']];
+      const contractAddress = refs[network][chainID][args.contract].contractAddresses[flags['instance-id']];
 
       cli.action.start(
         `Updating contract admin to: ${args.admin}`,

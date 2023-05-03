@@ -21,8 +21,9 @@ export class LCDClientExtra extends LCDClient {
   }
 
   query(contract: string, msg: Object, instanceId = 'default') {
+    const { chainID } = Object.values(this.config)[0];
     return this.wasm.contractQuery(
-      this.refs[contract].contractAddresses[instanceId],
+      this.refs[chainID][contract].contractAddresses[instanceId],
       msg,
     );
   }
@@ -42,7 +43,7 @@ export class LCDClientExtra extends LCDClient {
         wallet.key.accAddress(prefix),
         // Enable supplying a contract address instead of the contract name.
         AccAddress.validate(contract) ? contract
-          : this.refs[contract].contractAddresses[instanceId],
+          : this.refs[chainID][contract].contractAddresses[instanceId],
         msg,
         coins,
       ),

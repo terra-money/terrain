@@ -14,9 +14,9 @@ export default class CodeStore extends Command {
   static description = 'Store code on chain.';
 
   static flags = {
-    ...flag.tx,
     'no-rebuild': flag.noRebuild,
     'code-id': flag.codeId,
+    ...flag.tx,
     ...flag.terrainPaths,
   };
 
