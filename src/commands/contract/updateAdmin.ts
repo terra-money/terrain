@@ -12,13 +12,9 @@ export default class ContractUpdateAdmin extends Command {
   static description = 'Update the admin of a contract.';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
-    prefix: flag.prefix,
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
-    'instance-id': flags.string({ default: 'default' }),
+    ...flag.tx,
+    'instance-id': flag.instanceId,
+    ...flag.terrainPaths,
   };
 
   static args = [
@@ -47,6 +43,7 @@ export default class ContractUpdateAdmin extends Command {
         keysPath: flags['keys-path'],
         lcd,
         configPath: flags['config-path'],
+        prefix: flags.prefix,
       });
 
       const contractAddress = refs[network][args.contract].contractAddresses[flags['instance-id']];

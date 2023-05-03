@@ -12,12 +12,14 @@ export const getSigner = async ({
   keysPath,
   lcd,
   configPath,
+  prefix,
 }: {
   network: string;
   signerId: string;
   keysPath: string;
   lcd: LCDClient;
   configPath: string;
+  prefix: string;
 }): Promise<Wallet> => {
   const localterra = new LocalTerra();
   if (
@@ -28,7 +30,7 @@ export const getSigner = async ({
     // Alert user if LocalTerra request fails.
     try {
       const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
-      const connections = loadConnections(configPath);
+      const connections = loadConnections(configPath, prefix);
       const { chainID } = connections(network);
 
       await signer.sequence(chainID);

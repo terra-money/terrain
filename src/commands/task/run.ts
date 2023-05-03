@@ -36,12 +36,8 @@ export default class Run extends Command {
   static description = 'run predefined task';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
-    prefix: flag.prefix,
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
+    ...flag.tx,
+    ...flag.terrainPaths,
   };
 
   static args = [{ name: 'task' }];

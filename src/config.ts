@@ -69,11 +69,11 @@ export const connection = (
 };
 
 export const loadConnections = (
-  path = DEFAULT_CONFIG_PATH,
-  prefix = 'terra',
+  path: string,
+  prefix: string,
 ) => connection(fs.readJSONSync(path), prefix);
 
-export const getFeeDenom = (network: string, prefix: string, path?: string) => {
+export const getFeeDenom = (network: string, prefix: string, path: string) => {
   const connections = loadConnections(path, prefix);
   return Object.keys(connections(network).gasPrices)[0];
 };

@@ -13,13 +13,9 @@ export default class ContractInstantiate extends Command {
   static description = 'Instantiate the contract.';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
-    prefix: flag.prefix,
-    'instance-id': flags.string({ default: 'default' }),
-    'code-id': flags.integer({
-      description: 'specific codeId to instantiate',
-    }),
+    ...flag.tx,
+    'instance-id': flag.instanceId,
+    'code-id': flag.codeId,
     ...flag.terrainPaths,
   };
 
@@ -49,6 +45,7 @@ export default class ContractInstantiate extends Command {
         keysPath: flags['keys-path'],
         lcd,
         configPath: flags['config-path'],
+        prefix: flags.prefix,
       });
 
       admin = signer.key.accAddress(flags.prefix);

@@ -11,18 +11,11 @@ export default class ContractMigrate extends Command {
   static description = 'Migrate the contract.';
 
   static flags = {
-    signer: flag.signer,
     'no-rebuild': flag.noRebuild,
-    prefix: flag.prefix,
-    network: flags.string({ default: 'local' }),
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
-    'instance-id': flags.string({ default: 'default' }),
-    'code-id': flags.integer({
-      description:
-        'target code id for migration',
-    }),
+    ...flag.tx,
+    'instance-id': flag.instanceId,
+    'code-id': flag.codeId,
+    ...flag.terrainPaths,
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -47,6 +40,7 @@ export default class ContractMigrate extends Command {
         keysPath: flags['keys-path'],
         lcd,
         configPath: flags['config-path'],
+        prefix: flags.prefix,
       });
 
       const codeId = await storeCode({
@@ -58,6 +52,7 @@ export default class ContractMigrate extends Command {
         refsPath: flags['refs-path'],
         lcd,
         prefix: flags.prefix,
+        configPath: flags['config-path'],
       });
 
       migrate({
@@ -70,6 +65,7 @@ export default class ContractMigrate extends Command {
         refsPath: flags['refs-path'],
         lcd,
         prefix: flags.prefix,
+        configPath: flags['config-path'],
       });
     };
 

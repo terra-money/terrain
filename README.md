@@ -511,14 +511,16 @@ Start a repl console that provides context and convenient utilities to interact 
 
 ```
 USAGE
-  $ terrain console [--signer <value>] [--network <value>] [--prefix <value>] [--config-path <value>]
-    [--refs-path <value>] [--keys-path <value>]
+  $ terrain console [--signer <value>] [--network mainnet|testnet|local] [--prefix juno|terra] [--config-path
+    <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --config-path=<value>  [default: ./config.terrain.json]
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: local] network to deploy to from config.terrain.json
-  --prefix=<value>       [default: terra] address prefix of target chain
+  --network=<option>     [default: local] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|local>
+  --prefix=<option>      [default: terra] address prefix of target chain
+                         <options: juno|terra>
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -570,16 +572,18 @@ Instantiate the contract.
 
 ```
 USAGE
-  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--network <value>] [--prefix <value>] [--instance-id
-    <value>] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain contract:instantiate [CONTRACT] [--signer <value>] [--network mainnet|testnet|local] [--prefix juno|terra]
+    [--instance-id <value>] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --code-id=<value>      specific codeId to instantiate
   --config-path=<value>  [default: ./config.terrain.json]
-  --instance-id=<value>  [default: default]
+  --instance-id=<value>  [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: local] network to deploy to from config.terrain.json
-  --prefix=<value>       [default: terra] address prefix of target chain
+  --network=<option>     [default: local] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|local>
+  --prefix=<option>      [default: terra] address prefix of target chain
+                         <options: juno|terra>
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -595,18 +599,21 @@ Migrate the contract.
 
 ```
 USAGE
-  $ terrain contract:migrate [CONTRACT] [--signer <value>] [--no-rebuild] [--prefix <value>] [--network <value>]
-    [--config-path <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>] [--code-id <value>]
+  $ terrain contract:migrate [CONTRACT] [--no-rebuild] [--signer <value>] [--network mainnet|testnet|local] [--prefix
+    juno|terra] [--instance-id <value>] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path
+    <value>]
 
 FLAGS
-  --code-id=<value>      target code id for migration
-  --config-path=<value>  [default: config.terrain.json]
-  --instance-id=<value>  [default: default]
-  --keys-path=<value>    [default: keys.terrain.js]
-  --network=<value>      [default: local]
+  --code-id=<value>      specific codeId to instantiate
+  --config-path=<value>  [default: ./config.terrain.json]
+  --instance-id=<value>  [default: default] enable management of multiple instances of the same contract
+  --keys-path=<value>    [default: ./keys.terrain.js]
+  --network=<option>     [default: local] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|local>
   --no-rebuild           deploy the wasm bytecode as is.
-  --prefix=<value>       [default: terra] address prefix of target chain
-  --refs-path=<value>    [default: refs.terrain.json]
+  --prefix=<option>      [default: terra] address prefix of target chain
+                         <options: juno|terra>
+  --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
 DESCRIPTION
@@ -678,16 +685,18 @@ Store code on chain.
 
 ```
 USAGE
-  $ terrain contract:store [CONTRACT] [--signer <value>] [--network <value>] [--prefix <value>] [--no-rebuild]
-    [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain contract:store [CONTRACT] [--signer <value>] [--network mainnet|testnet|local] [--prefix juno|terra]
+    [--no-rebuild] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
-  --code-id=<value>
+  --code-id=<value>      specific codeId to instantiate
   --config-path=<value>  [default: ./config.terrain.json]
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<value>      [default: local] network to deploy to from config.terrain.json
+  --network=<option>     [default: local] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|local>
   --no-rebuild           deploy the wasm bytecode as is.
-  --prefix=<value>       [default: terra] address prefix of target chain
+  --prefix=<option>      [default: terra] address prefix of target chain
+                         <options: juno|terra>
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -703,16 +712,18 @@ Update the admin of a contract.
 
 ```
 USAGE
-  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] [--signer <value>] [--network <value>] [--prefix <value>]
-    [--config-path <value>] [--refs-path <value>] [--keys-path <value>] [--instance-id <value>]
+  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] [--signer <value>] [--network mainnet|testnet|local] [--prefix
+    juno|terra] [--instance-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
-  --config-path=<value>  [default: config.terrain.json]
-  --instance-id=<value>  [default: default]
-  --keys-path=<value>    [default: keys.terrain.js]
-  --network=<value>      [default: local] network to deploy to from config.terrain.json
-  --prefix=<value>       [default: terra] address prefix of target chain
-  --refs-path=<value>    [default: refs.terrain.json]
+  --config-path=<value>  [default: ./config.terrain.json]
+  --instance-id=<value>  [default: default] enable management of multiple instances of the same contract
+  --keys-path=<value>    [default: ./keys.terrain.js]
+  --network=<option>     [default: local] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|local>
+  --prefix=<option>      [default: terra] address prefix of target chain
+                         <options: juno|terra>
+  --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
 DESCRIPTION
@@ -727,9 +738,9 @@ Build wasm bytecode, store code on chain and instantiate.
 
 ```
 USAGE
-  $ terrain deploy [CONTRACT] [--signer <value>] [--network <value>] [--prefix <value>] [--memo <value>]
-    [--no-rebuild] [--instance-id <value>] [--frontend-refs-path <value>] [--admin-address <value>] [--no-sync <value>]
-    [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain deploy [CONTRACT] [--memo <value>] [--no-rebuild] [--instance-id <value>] [--frontend-refs-path
+    <value>] [--admin-address <value>] [--no-sync <value>] [--signer <value>] [--network mainnet|testnet|local]
+    [--prefix juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
@@ -738,10 +749,12 @@ FLAGS
   --instance-id=<value>         [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>           [default: ./keys.terrain.js]
   --memo=<value>                [default: terrain]
-  --network=<value>             [default: local] network to deploy to from config.terrain.json
+  --network=<option>            [default: local] network to deploy to from config.terrain.json
+                                <options: mainnet|testnet|local>
   --no-rebuild                  deploy the wasm bytecode as is.
   --no-sync=<value>             don't attempt to sync contract refs to frontend.
-  --prefix=<value>              [default: terra] address prefix of target chain
+  --prefix=<option>             [default: terra] address prefix of target chain
+                                <options: juno|terra>
   --refs-path=<value>           [default: ./refs.terrain.json]
   --signer=<value>              [default: test1]
 
@@ -841,15 +854,17 @@ run predefined task
 
 ```
 USAGE
-  $ terrain task:run [TASK] [--signer <value>] [--network <value>] [--prefix <value>] [--config-path <value>]
-    [--refs-path <value>] [--keys-path <value>]
+  $ terrain task:run [TASK] [--signer <value>] [--network mainnet|testnet|local] [--prefix juno|terra]
+    [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
-  --config-path=<value>  [default: config.terrain.json]
-  --keys-path=<value>    [default: keys.terrain.js]
-  --network=<value>      [default: local] network to deploy to from config.terrain.json
-  --prefix=<value>       [default: terra] address prefix of target chain
-  --refs-path=<value>    [default: refs.terrain.json]
+  --config-path=<value>  [default: ./config.terrain.json]
+  --keys-path=<value>    [default: ./keys.terrain.js]
+  --network=<option>     [default: local] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|local>
+  --prefix=<option>      [default: terra] address prefix of target chain
+                         <options: juno|terra>
+  --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
 DESCRIPTION

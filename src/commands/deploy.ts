@@ -15,9 +15,6 @@ export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
-    prefix: flag.prefix,
     memo: flag.memo,
     'no-rebuild': flag.noRebuild,
     'instance-id': flag.instanceId,
@@ -28,6 +25,7 @@ export default class Deploy extends Command {
     'no-sync': flags.string({
       description: "don't attempt to sync contract refs to frontend.",
     }),
+    ...flag.tx,
     ...flag.terrainPaths,
   };
 
@@ -58,6 +56,7 @@ export default class Deploy extends Command {
         keysPath: flags['keys-path'],
         lcd,
         configPath: flags['config-path'],
+        prefix: flags.prefix,
       });
 
       if (conf.deployTask) {

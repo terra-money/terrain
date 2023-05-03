@@ -63,7 +63,7 @@ export const getEnv = (
   prefix: string,
   defaultWallet: string,
 ): Env => {
-  const connections = loadConnections(configPath);
+  const connections = loadConnections(configPath, prefix);
   const config = loadConfig(configPath);
   const globalConfig = loadGlobalConfig(configPath);
   const keys = loadKeys(keysPath);
@@ -111,6 +111,7 @@ export const getEnv = (
         noRebuild: typeof options?.noRebuild === 'undefined' ? false : options.noRebuild,
         useCargoWorkspace: globalConfig.useCargoWorkspace,
         prefix,
+        configPath,
       }),
       instantiate: (
         contract: string,

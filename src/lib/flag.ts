@@ -9,11 +9,13 @@ export const noRebuild = flags.boolean({
 
 export const instanceId = flags.string({ default: 'default', description: 'enable management of multiple instances of the same contract' });
 
-export const network = flags.string({ default: 'local', description: 'network to deploy to from config.terrain.json' });
+export const network = flags.string({ default: 'local', description: 'network to deploy to from config.terrain.json', options: ['mainnet', 'testnet', 'local'] });
 
-export const prefix = flags.string({ default: 'terra', description: 'address prefix of target chain' });
+export const prefix = flags.string({ default: 'terra', description: 'address prefix of target chain', options: ['juno', 'terra'] });
 
 export const memo = flags.string({ default: 'terrain' });
+
+export const codeId = flags.integer({ description: 'specific codeId to instantiate', default: 0 });
 
 export const configPath = flags.string({ default: './config.terrain.json' });
 
@@ -30,4 +32,10 @@ export const terrainPaths = {
   'config-path': configPath,
   'refs-path': refsPath,
   'keys-path': keysPath,
+};
+
+export const tx = {
+  signer,
+  network,
+  prefix,
 };

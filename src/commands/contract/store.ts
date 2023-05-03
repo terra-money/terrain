@@ -14,11 +14,9 @@ export default class CodeStore extends Command {
   static description = 'Store code on chain.';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
-    prefix: flag.prefix,
+    ...flag.tx,
     'no-rebuild': flag.noRebuild,
-    'code-id': flags.integer({}),
+    'code-id': flag.codeId,
     ...flag.terrainPaths,
   };
 
@@ -44,6 +42,7 @@ export default class CodeStore extends Command {
         keysPath: flags['keys-path'],
         lcd,
         configPath: flags['config-path'],
+        prefix: flags.prefix,
       });
 
       await storeCode({
@@ -56,6 +55,7 @@ export default class CodeStore extends Command {
         lcd,
         codeId: flags['code-id'],
         prefix: flags.prefix,
+        configPath: flags['config-path'],
       });
     };
 

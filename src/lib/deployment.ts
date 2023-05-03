@@ -132,10 +132,10 @@ type StoreCodeParams = {
   noRebuild?: boolean;
   signer: Wallet;
   prefix: string;
+  configPath: string;
   codeId?: number;
   useCargoWorkspace?: boolean;
   memo?: string;
-  configPath?: string;
 };
 
 export const storeCode = async ({
@@ -245,7 +245,7 @@ type InstantiateParams = {
   codeId?: number;
   instanceId?: string;
   sequence?: number;
-  configPath?: string;
+  configPath: string;
   memo?: string;
 };
 
@@ -378,7 +378,7 @@ type MigrateParams = {
   instanceId: string;
   refsPath: string;
   lcd: LCDClient;
-  configPath?: string;
+  configPath: string;
   prefix: string;
 };
 
@@ -397,7 +397,7 @@ export const migrate = async ({
   const { instantiation } = conf;
   const refs = loadRefs(refsPath);
 
-  const connections = loadConnections(configPath);
+  const connections = loadConnections(configPath, prefix);
   const { chainID } = connections(network);
 
   const contractAddress = refs[network][contract].contractAddresses[instanceId];
