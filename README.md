@@ -498,6 +498,7 @@ npm unlink terrain
 * [`terrain deploy CONTRACT`](#terrain-deploy-contract)
 * [`terrain help [COMMAND]`](#terrain-help-command)
 * [`terrain new NAME`](#terrain-new-name)
+* [`terrain query CONTRACT-ADDRESS QUERY`](#terrain-query-contract-address-query)
 * [`terrain sync-refs`](#terrain-sync-refs)
 * [`terrain task:new [TASK]`](#terrain-tasknew-task)
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
@@ -599,8 +600,8 @@ Migrate the contract.
 
 ```
 USAGE
-  $ terrain contract:migrate [CONTRACT] [--no-rebuild] [--signer <value>] [--network mainnet|testnet|local] [--prefix
-    juno|terra] [--instance-id <value>] [--code-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path
+  $ terrain contract:migrate [CONTRACT] [--no-rebuild] [--instance-id <value>] [--code-id <value>] [--signer <value>]
+    [--network mainnet|testnet|local] [--prefix juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path
     <value>]
 
 FLAGS
@@ -815,6 +816,36 @@ EXAMPLES
 ```
 
 _See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/new.ts)_
+
+## `terrain query CONTRACT-ADDRESS QUERY`
+
+Query contracts on the interchain
+
+```
+USAGE
+  $ terrain query [CONTRACT-ADDRESS] [QUERY] [--signer <value>] [--network mainnet|testnet|local] [--prefix
+    juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+
+FLAGS
+  --config-path=<value>  [default: ./config.terrain.json]
+  --keys-path=<value>    [default: ./keys.terrain.js]
+  --network=<option>     [default: local] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|local>
+  --prefix=<option>      [default: terra] address prefix of target chain
+                         <options: juno|terra>
+  --refs-path=<value>    [default: ./refs.terrain.json]
+  --signer=<value>       [default: test1]
+
+DESCRIPTION
+  Query contracts on the interchain
+
+EXAMPLES
+  $ terrain query terra1..fx9fs '{"get_count": {}}'
+
+  $ terrain query test '{"get_count": {}}' --network testnet --prefix juno
+```
+
+_See code: [src/commands/query.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/query.ts)_
 
 ## `terrain sync-refs`
 

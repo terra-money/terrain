@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import { LCDClient } from '@terra-money/feather.js';
 import { loadConfig, loadConnections } from '../../config';
 import { migrate, storeCode } from '../../lib/deployment';
@@ -12,9 +12,9 @@ export default class ContractMigrate extends Command {
 
   static flags = {
     'no-rebuild': flag.noRebuild,
-    ...flag.tx,
     'instance-id': flag.instanceId,
     'code-id': flag.codeId,
+    ...flag.tx,
     ...flag.terrainPaths,
   };
 
