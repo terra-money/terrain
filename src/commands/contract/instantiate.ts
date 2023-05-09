@@ -13,9 +13,9 @@ export default class ContractInstantiate extends Command {
   static description = 'Instantiate the contract.';
 
   static flags = {
-    ...flag.tx,
     'instance-id': flag.instanceId,
     'code-id': flag.codeId,
+    ...flag.tx,
     ...flag.terrainPaths,
   };
 
@@ -24,14 +24,12 @@ export default class ContractInstantiate extends Command {
   async run() {
     const { args, flags } = this.parse(ContractInstantiate);
 
-    // Initialize variables.
     let contractAddress: string;
     let admin: string;
 
     // Command execution path.
     const execPath = flags['config-path'];
 
-    // Command to be performed.
     const command = async () => {
       const connections = loadConnections(flags['config-path'], flags.prefix);
       const config = loadConfig(flags['config-path']);
