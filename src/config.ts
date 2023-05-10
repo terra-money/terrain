@@ -158,13 +158,10 @@ export const setContractAddress = (
   contract: string,
   instanceId: string,
   contractAddress: string,
-) => {
-  console.log('is called!');
-  return R.set(
-    R.lensPath([network, chainID, contract, 'contractAddresses', instanceId]),
-    contractAddress,
-  );
-};
+) => R.set(
+  R.lensPath([network, chainID, contract, 'contractAddresses', instanceId]),
+  contractAddress,
+);
 
 export const loadRefs = (
   path: string,
@@ -172,4 +169,16 @@ export const loadRefs = (
 
 export const saveRefs = (refs: Refs, path: string) => {
   fs.writeJSONSync(path, refs, { spaces: 2 });
+};
+
+export const GLOBAL_CONFIG = {
+  global: {
+    base: {
+      instantiation: {
+        instantiateMsg: {
+          count: 0,
+        },
+      },
+    },
+  },
 };

@@ -1,5 +1,6 @@
 import { Command } from '@oclif/command';
 import { LCDClient, AccAddress } from '@terra-money/feather.js';
+import { AxiosError } from 'axios';
 import { loadConnections } from '../../config';
 import * as flag from '../../lib/flag';
 import TerrainCLI from '../../TerrainCLI';
@@ -36,11 +37,14 @@ export default class Query extends Command {
       const res = await lcd.wasm.contractQuery(args.contract, JSON.parse(args.msg));
       TerrainCLI.success(`Query Result:\n \n ${JSON.stringify(res)}`);
     } catch (err) {
-      let errMsg = 'There was an error with your query.';
-      if (err instanceof SyntaxError) errMsg += ' Make sure you have single quotes around your query and double quotes around query keys.';
-      // @ts-ignore
-      else if (err?.response?.data.message) errMsg += `\n\n ${err.response.data.message}`;
-      else errMsg += `\n\n ${err}`;
+      const errMsg = 'There was an error with your query. \n\n';
+      if (err instanceof SyntaxError) {
+        errMsg.concat('Make sure you have single quotes around your query and double quotes around query keys.');
+      } else if (err instanceof AxiosError) {
+        errMsg.concat(err?.response?.data.message);
+      } else {
+        errMsg.concat(JSON.stringify(err));
+      }
       TerrainCLI.error(errMsg);
     }
   }

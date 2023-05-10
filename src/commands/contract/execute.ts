@@ -1,5 +1,6 @@
 import { Command } from '@oclif/command';
 import { LCDClient, AccAddress, MsgExecuteContract } from '@terra-money/feather.js';
+import { AxiosError } from 'axios';
 import { loadConnections } from '../../config';
 import * as flag from '../../lib/flag';
 import TerrainCLI from '../../TerrainCLI';
@@ -10,7 +11,7 @@ export default class Query extends Command {
 
   static examples = [
     '$ terrain query terra1..fx9fs \'{"increment": {}}\'',
-    '$ terrain query juno1..af00x \'{"reset": {count: 0}}\' --network testnet --config-path ../config.terrain.json ',
+    '$ terrain query juno1..af00x \'{"reset": {"count": 0}}\' --network testnet --config-path ../config.terrain.json ',
   ];
 
   static flags = {
@@ -52,11 +53,14 @@ export default class Query extends Command {
 
       TerrainCLI.success(`Tx hash:\n \n ${res.txhash}`);
     } catch (err) {
-      let errMsg = 'There was an error with your transaction.';
-      if (err instanceof SyntaxError) errMsg += ' Make sure you have single quotes around your msg and double quotes around keys.';
-      // @ts-ignore
-      else if (err?.response?.data.message) errMsg += `\n\n ${err.response.data.message}`;
-      else errMsg += `\n\n ${err}`;
+      const errMsg = 'There was an error with your transaction. \n\n ';
+      if (err instanceof SyntaxError) {
+        errMsg.concat('Make sure you have single quotes around your msg and double quotes around keys.');
+      } else if (err instanceof AxiosError) {
+        errMsg.concat(err?.response?.data.message);
+      } else {
+        errMsg.concat(JSON.stringify(err));
+      }
       TerrainCLI.error(errMsg);
     }
   }

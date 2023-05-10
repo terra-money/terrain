@@ -6,7 +6,9 @@ import * as fs from 'fs';
 import { execSync } from 'child_process';
 import { pascal } from 'case';
 import dedent from 'dedent';
+import axios from 'axios';
 import TerrainCLI from '../TerrainCLI';
+import { GLOBAL_CONFIG } from '../config';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
@@ -74,6 +76,9 @@ export default class New extends Command {
         entries: templateEntries,
       },
     });
+    const res = await axios.get('https://station-assets.terra.money/chains.json');
+    fs.writeFileSync(path.join(appDir, 'config.terrain.json'), JSON.stringify({ ...GLOBAL_CONFIG, ...res.data }));
+
     cli.action.stop();
 
     cli.action.start('  📝 Contract');

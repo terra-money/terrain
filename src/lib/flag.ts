@@ -11,7 +11,7 @@ export const instanceId = flags.string({ default: 'default', description: 'enabl
 
 export const network = flags.string({ default: 'local', description: 'network to deploy to from config.terrain.json', options: ['mainnet', 'testnet', 'local'] });
 
-export const prefix = flags.string({ default: 'terra', description: 'address prefix of target chain', options: ['juno', 'terra'] });
+export const prefix = flags.string({ default: 'terra', description: 'address prefix of target chain, all chains supported by Station are supported by terrain' });
 
 export const memo = flags.string({ default: 'terrain' });
 

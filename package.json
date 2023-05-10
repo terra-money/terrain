@@ -49,6 +49,7 @@
     "@terra-money/feather.js": "^1.0.4",
     "@terra-money/template-scaffolding": "1.0.1",
     "adm-zip": "^0.5.9",
+    "axios": "^1.4.0",
     "boxen": "^5.1.2",
     "case": "^1.6.3",
     "chalk": "^4.0.0",
