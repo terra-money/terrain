@@ -56,21 +56,21 @@ export type Env = {
 };
 
 export const getEnv = (
-  configPath: string,
   keysPath: string,
   refsPath: string,
   network: string,
   prefix: string,
   defaultWallet: string,
 ): Env => {
-  const connections = loadConnections(configPath, prefix);
-  const config = loadConfig(configPath);
-  const globalConfig = loadGlobalConfig(configPath);
+  const connections = loadConnections(prefix);
+  const config = loadConfig();
+  const globalConfig = loadGlobalConfig();
   const keys = loadKeys(keysPath);
   const refs = loadRefs(refsPath)[network];
   const connection = connections(network);
+  const { chainID } = connection;
 
-  const lcd = new LCDClientExtra({ [connection.chainID]: connection }, refs);
+  const lcd = new LCDClientExtra({ [chainID]: connection }, chainID, prefix, refs);
 
   const userDefinedWallets = R.map<
     { [k: string]: RawKey },
@@ -111,7 +111,6 @@ export const getEnv = (
         noRebuild: typeof options?.noRebuild === 'undefined' ? false : options.noRebuild,
         useCargoWorkspace: globalConfig.useCargoWorkspace,
         prefix,
-        configPath,
       }),
       instantiate: (
         contract: string,
@@ -124,7 +123,6 @@ export const getEnv = (
         contract,
         network,
         refsPath,
-        configPath,
         lcd,
         prefix,
         admin: options?.admin,

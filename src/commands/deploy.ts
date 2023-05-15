@@ -10,6 +10,7 @@ import * as flag from '../lib/flag';
 import runCommand from '../lib/runCommand';
 import defaultErrorCheck from '../lib/defaultErrorCheck';
 import TerrainCLI from '../TerrainCLI';
+import { getNetworkName } from '../util';
 
 export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
@@ -33,19 +34,16 @@ export default class Deploy extends Command {
 
   async run() {
     const { args, flags } = this.parse(Deploy);
+    const globalConfig = loadGlobalConfig();
 
-    // initialize variables.
     let contractAddress: string;
     let admin: string;
 
-    // Command execution path.
     const execPath = 'config.terrain.json';
 
-    // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path'], flags.prefix);
-      const config = loadConfig(flags['config-path']);
-      const globalConfig = loadGlobalConfig(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
+      const config = loadConfig();
       const conf = config(flags.network, args.contract);
       const connection = connections(flags.network);
 
@@ -55,7 +53,6 @@ export default class Deploy extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
-        configPath: flags['config-path'],
         prefix: flags.prefix,
       });
 
@@ -68,8 +65,6 @@ export default class Deploy extends Command {
           flags.network,
           '--refs-path',
           flags['refs-path'],
-          '--config-path',
-          flags['config-path'],
           '--keys-path',
           flags['keys-path'],
         ]);
@@ -85,7 +80,6 @@ export default class Deploy extends Command {
           network: flags.network,
           refsPath: flags['refs-path'],
           useCargoWorkspace: globalConfig.useCargoWorkspace,
-          configPath: flags['config-path'],
           prefix: flags.prefix,
           memo: flags.memo,
         });
@@ -108,7 +102,6 @@ export default class Deploy extends Command {
           network: flags.network,
           instanceId: flags['instance-id'],
           refsPath: flags['refs-path'],
-          configPath: flags['config-path'],
           lcd,
           prefix: flags.prefix,
           memo: flags.memo,
@@ -128,13 +121,11 @@ export default class Deploy extends Command {
     };
 
     // Message to be displayed upon successful command execution.
-    const network = flags.network === 'local'
-      ? 'local network'
-      : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
+    const networkName = getNetworkName(flags.network);
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        Contract "${args.contract}" has been successfully deployed on "${network}".\n
+        Contract "${args.contract}" has been successfully deployed on "${networkName}".\n
         Contract Address: "${contractAddress}"\n
         Administrator: "${admin}"
       `,

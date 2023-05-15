@@ -1,8 +1,7 @@
 import { Command } from '@oclif/command';
 import dedent from 'dedent';
 import { optimize } from '../../lib/deployment';
-import { configPath } from '../../lib/flag';
-import { loadGlobalConfig } from '../../config';
+import { CONFIG_PATH, loadGlobalConfig } from '../../config';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
 import TerrainCLI from '../../TerrainCLI';
@@ -10,21 +9,14 @@ import TerrainCLI from '../../TerrainCLI';
 export default class Optimize extends Command {
   static description = 'Optimize wasm bytecode.';
 
-  static flags = {
-    'config-path': configPath,
-  };
-
   static args = [{ name: 'contract', required: true }];
 
   async run() {
-    const { args, flags } = this.parse(Optimize);
-
-    // Command execution path.
-    const execPath = flags['config-path'];
+    const { args } = this.parse(Optimize);
 
     // Command to be performed.
     const command = async () => {
-      const globalConfig = loadGlobalConfig(flags['config-path']);
+      const globalConfig = loadGlobalConfig();
 
       await optimize({
         contract: args.contract,
@@ -48,7 +40,7 @@ export default class Optimize extends Command {
 
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
-      execPath,
+      CONFIG_PATH,
       command,
       defaultErrorCheck(args.contract),
       successMessage,

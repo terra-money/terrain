@@ -487,24 +487,24 @@ npm unlink terrain
 <!-- commands -->
 * [`terrain console`](#terrain-console)
 * [`terrain contract:build CONTRACT`](#terrain-contractbuild-contract)
-* [`terrain contract:execute CONTRACT MSG`](#terrain-contractexecute-contract-msg)
 * [`terrain contract:generateClient CONTRACT`](#terrain-contractgenerateclient-contract)
 * [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
 * [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
 * [`terrain contract:new NAME`](#terrain-contractnew-name)
 * [`terrain contract:optimize CONTRACT`](#terrain-contractoptimize-contract)
-* [`terrain contract:query CONTRACT MSG`](#terrain-contractquery-contract-msg)
 * [`terrain contract:schema CONTRACT`](#terrain-contractschema-contract)
 * [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
 * [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
 * [`terrain deploy CONTRACT`](#terrain-deploy-contract)
 * [`terrain help [COMMAND]`](#terrain-help-command)
 * [`terrain new NAME`](#terrain-new-name)
+* [`terrain query CONTRACT MSG`](#terrain-query-contract-msg)
 * [`terrain sync-refs`](#terrain-sync-refs)
 * [`terrain task:new [TASK]`](#terrain-tasknew-task)
 * [`terrain task:run [TASK]`](#terrain-taskrun-task)
 * [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
 * [`terrain test:coverage [CONTRACT-NAME]`](#terrain-testcoverage-contract-name)
+* [`terrain tx CONTRACT MSG`](#terrain-tx-contract-msg)
 * [`terrain wallet:new`](#terrain-walletnew)
 
 ## `terrain console`
@@ -513,18 +513,17 @@ Start a repl console that provides context and convenient utilities to interact 
 
 ```
 USAGE
-  $ terrain console [--signer <value>] [--network mainnet|testnet|local] [--prefix juno|terra] [--config-path
-    <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain console [--signer <value>] [--network mainnet|testnet|localterra] [--prefix <value>] [--refs-path
+    <value>] [--keys-path <value>]
 
 FLAGS
-  --config-path=<value>  [default: ./config.terrain.json]
-  --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<option>     [default: local] network to deploy to from config.terrain.json
-                         <options: mainnet|testnet|local>
-  --prefix=<option>      [default: terra] address prefix of target chain
-                         <options: juno|terra>
-  --refs-path=<value>    [default: ./refs.terrain.json]
-  --signer=<value>       [default: test1]
+  --keys-path=<value>  [default: ./keys.terrain.js]
+  --network=<option>   [default: localterra] network to deploy to from config.terrain.json
+                       <options: mainnet|testnet|localterra>
+  --prefix=<value>     [default: terra] address prefix of target chain, all chains supported by Station are supported by
+                       terrain
+  --refs-path=<value>  [default: ./refs.terrain.json]
+  --signer=<value>     [default: test1]
 
 DESCRIPTION
   Start a repl console that provides context and convenient utilities to interact with the blockchain and your
@@ -549,40 +548,6 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/contract/build.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/build.ts)_
-
-## `terrain contract:execute CONTRACT MSG`
-
-Query contracts on the interchain
-
-```
-USAGE
-  $ terrain contract:execute [CONTRACT] [MSG] [--signer <value>] [--network mainnet|testnet|local] [--prefix
-    juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
-
-ARGUMENTS
-  CONTRACT  Contract address
-  MSG       Msg to be executed in JSON format
-
-FLAGS
-  --config-path=<value>  [default: ./config.terrain.json]
-  --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<option>     [default: local] network to deploy to from config.terrain.json
-                         <options: mainnet|testnet|local>
-  --prefix=<option>      [default: terra] address prefix of target chain
-                         <options: juno|terra>
-  --refs-path=<value>    [default: ./refs.terrain.json]
-  --signer=<value>       [default: test1]
-
-DESCRIPTION
-  Query contracts on the interchain
-
-EXAMPLES
-  $ terrain query terra1..fx9fs '{"increment": {}}'
-
-  $ terrain query juno1..af00x '{"reset": {count: 0}}' --network testnet --config-path ../config.terrain.json
-```
-
-_See code: [src/commands/contract/execute.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/execute.ts)_
 
 ## `terrain contract:generateClient CONTRACT`
 
@@ -609,17 +574,16 @@ Instantiate the contract.
 ```
 USAGE
   $ terrain contract:instantiate [CONTRACT] [--instance-id <value>] [--code-id <value>] [--signer <value>] [--network
-    mainnet|testnet|local] [--prefix juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+    mainnet|testnet|localterra] [--prefix <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --code-id=<value>      specific codeId to instantiate
-  --config-path=<value>  [default: ./config.terrain.json]
   --instance-id=<value>  [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<option>     [default: local] network to deploy to from config.terrain.json
-                         <options: mainnet|testnet|local>
-  --prefix=<option>      [default: terra] address prefix of target chain
-                         <options: juno|terra>
+  --network=<option>     [default: localterra] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|localterra>
+  --prefix=<value>       [default: terra] address prefix of target chain, all chains supported by Station are supported
+                         by terrain
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -636,19 +600,17 @@ Migrate the contract.
 ```
 USAGE
   $ terrain contract:migrate [CONTRACT] [--no-rebuild] [--instance-id <value>] [--code-id <value>] [--signer <value>]
-    [--network mainnet|testnet|local] [--prefix juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path
-    <value>]
+    [--network mainnet|testnet|localterra] [--prefix <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --code-id=<value>      specific codeId to instantiate
-  --config-path=<value>  [default: ./config.terrain.json]
   --instance-id=<value>  [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<option>     [default: local] network to deploy to from config.terrain.json
-                         <options: mainnet|testnet|local>
+  --network=<option>     [default: localterra] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|localterra>
   --no-rebuild           deploy the wasm bytecode as is.
-  --prefix=<option>      [default: terra] address prefix of target chain
-                         <options: juno|terra>
+  --prefix=<value>       [default: terra] address prefix of target chain, all chains supported by Station are supported
+                         by terrain
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -690,44 +652,13 @@ Optimize wasm bytecode.
 
 ```
 USAGE
-  $ terrain contract:optimize [CONTRACT] [--config-path <value>]
-
-FLAGS
-  --config-path=<value>  [default: ./config.terrain.json]
+  $ terrain contract:optimize [CONTRACT]
 
 DESCRIPTION
   Optimize wasm bytecode.
 ```
 
 _See code: [src/commands/contract/optimize.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/optimize.ts)_
-
-## `terrain contract:query CONTRACT MSG`
-
-Query contracts on the interchain
-
-```
-USAGE
-  $ terrain contract:query [CONTRACT] [MSG] [--network mainnet|testnet|local] [--config-path <value>]
-
-ARGUMENTS
-  CONTRACT  Contract address
-  MSG       Query msg to be performed in JSON format
-
-FLAGS
-  --config-path=<value>  [default: ./config.terrain.json]
-  --network=<option>     [default: local] network to deploy to from config.terrain.json
-                         <options: mainnet|testnet|local>
-
-DESCRIPTION
-  Query contracts on the interchain
-
-EXAMPLES
-  $ terrain query terra1..fx9fs '{"get_count": {}}'
-
-  $ terrain query juno1..af00x '{"get_count": {}}' --network testnet --config-path ../config.terrain.json
-```
-
-_See code: [src/commands/contract/query.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/contract/query.ts)_
 
 ## `terrain contract:schema CONTRACT`
 
@@ -750,19 +681,18 @@ Store code on chain.
 ```
 USAGE
   $ terrain contract:store [CONTRACT] [--no-rebuild] [--code-id <value>] [--signer <value>] [--network
-    mainnet|testnet|local] [--prefix juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+    mainnet|testnet|localterra] [--prefix <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
-  --code-id=<value>      specific codeId to instantiate
-  --config-path=<value>  [default: ./config.terrain.json]
-  --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<option>     [default: local] network to deploy to from config.terrain.json
-                         <options: mainnet|testnet|local>
-  --no-rebuild           deploy the wasm bytecode as is.
-  --prefix=<option>      [default: terra] address prefix of target chain
-                         <options: juno|terra>
-  --refs-path=<value>    [default: ./refs.terrain.json]
-  --signer=<value>       [default: test1]
+  --code-id=<value>    specific codeId to instantiate
+  --keys-path=<value>  [default: ./keys.terrain.js]
+  --network=<option>   [default: localterra] network to deploy to from config.terrain.json
+                       <options: mainnet|testnet|localterra>
+  --no-rebuild         deploy the wasm bytecode as is.
+  --prefix=<value>     [default: terra] address prefix of target chain, all chains supported by Station are supported by
+                       terrain
+  --refs-path=<value>  [default: ./refs.terrain.json]
+  --signer=<value>     [default: test1]
 
 DESCRIPTION
   Store code on chain.
@@ -776,17 +706,16 @@ Update the admin of a contract.
 
 ```
 USAGE
-  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] [--signer <value>] [--network mainnet|testnet|local] [--prefix
-    juno|terra] [--instance-id <value>] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain contract:updateAdmin [CONTRACT] [ADMIN] [--signer <value>] [--network mainnet|testnet|localterra] [--prefix
+    <value>] [--instance-id <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
-  --config-path=<value>  [default: ./config.terrain.json]
   --instance-id=<value>  [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<option>     [default: local] network to deploy to from config.terrain.json
-                         <options: mainnet|testnet|local>
-  --prefix=<option>      [default: terra] address prefix of target chain
-                         <options: juno|terra>
+  --network=<option>     [default: localterra] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|localterra>
+  --prefix=<value>       [default: terra] address prefix of target chain, all chains supported by Station are supported
+                         by terrain
   --refs-path=<value>    [default: ./refs.terrain.json]
   --signer=<value>       [default: test1]
 
@@ -803,22 +732,21 @@ Build wasm bytecode, store code on chain and instantiate.
 ```
 USAGE
   $ terrain deploy [CONTRACT] [--memo <value>] [--no-rebuild] [--instance-id <value>] [--frontend-refs-path
-    <value>] [--admin-address <value>] [--no-sync <value>] [--signer <value>] [--network mainnet|testnet|local]
-    [--prefix juno|terra] [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+    <value>] [--admin-address <value>] [--no-sync <value>] [--signer <value>] [--network mainnet|testnet|localterra]
+    [--prefix <value>] [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
   --admin-address=<value>       set custom address as contract admin to allow migration.
-  --config-path=<value>         [default: ./config.terrain.json]
   --frontend-refs-path=<value>  [default: ./frontend/src/]
   --instance-id=<value>         [default: default] enable management of multiple instances of the same contract
   --keys-path=<value>           [default: ./keys.terrain.js]
   --memo=<value>                [default: terrain]
-  --network=<option>            [default: local] network to deploy to from config.terrain.json
-                                <options: mainnet|testnet|local>
+  --network=<option>            [default: localterra] network to deploy to from config.terrain.json
+                                <options: mainnet|testnet|localterra>
   --no-rebuild                  deploy the wasm bytecode as is.
   --no-sync=<value>             don't attempt to sync contract refs to frontend.
-  --prefix=<option>             [default: terra] address prefix of target chain
-                                <options: juno|terra>
+  --prefix=<value>              [default: terra] address prefix of target chain, all chains supported by Station are
+                                supported by terrain
   --refs-path=<value>           [default: ./refs.terrain.json]
   --signer=<value>              [default: test1]
 
@@ -880,6 +808,34 @@ EXAMPLES
 
 _See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/new.ts)_
 
+## `terrain query CONTRACT MSG`
+
+Query contracts on the interchain
+
+```
+USAGE
+  $ terrain query [CONTRACT] [MSG] [--network mainnet|testnet|localterra] [--config-path <value>]
+
+ARGUMENTS
+  CONTRACT  Contract address
+  MSG       Query msg to be performed in JSON format
+
+FLAGS
+  --config-path=<value>  [default: ./config.terrain.json]
+  --network=<option>     [default: localterra] network to deploy to from config.terrain.json
+                         <options: mainnet|testnet|localterra>
+
+DESCRIPTION
+  Query contracts on the interchain
+
+EXAMPLES
+  $ terrain query terra1..fx9fs '{"get_count": {}}'
+
+  $ terrain query juno1..af00x '{"get_count": {}}' --network testnet --config-path ../config.terrain.json
+```
+
+_See code: [src/commands/query.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/query.ts)_
+
 ## `terrain sync-refs`
 
 Sync configuration with frontend app.
@@ -918,18 +874,17 @@ run predefined task
 
 ```
 USAGE
-  $ terrain task:run [TASK] [--signer <value>] [--network mainnet|testnet|local] [--prefix juno|terra]
-    [--config-path <value>] [--refs-path <value>] [--keys-path <value>]
+  $ terrain task:run [TASK] [--signer <value>] [--network mainnet|testnet|localterra] [--prefix <value>]
+    [--refs-path <value>] [--keys-path <value>]
 
 FLAGS
-  --config-path=<value>  [default: ./config.terrain.json]
-  --keys-path=<value>    [default: ./keys.terrain.js]
-  --network=<option>     [default: local] network to deploy to from config.terrain.json
-                         <options: mainnet|testnet|local>
-  --prefix=<option>      [default: terra] address prefix of target chain
-                         <options: juno|terra>
-  --refs-path=<value>    [default: ./refs.terrain.json]
-  --signer=<value>       [default: test1]
+  --keys-path=<value>  [default: ./keys.terrain.js]
+  --network=<option>   [default: localterra] network to deploy to from config.terrain.json
+                       <options: mainnet|testnet|localterra>
+  --prefix=<value>     [default: terra] address prefix of target chain, all chains supported by Station are supported by
+                       terrain
+  --refs-path=<value>  [default: ./refs.terrain.json]
+  --signer=<value>     [default: test1]
 
 DESCRIPTION
   run predefined task
@@ -977,6 +932,39 @@ EXAMPLES
 ```
 
 _See code: [src/commands/test/coverage.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/test/coverage.ts)_
+
+## `terrain tx CONTRACT MSG`
+
+Execute tx on the interchain
+
+```
+USAGE
+  $ terrain tx [CONTRACT] [MSG] [--signer <value>] [--network mainnet|testnet|localterra] [--prefix
+    <value>] [--refs-path <value>] [--keys-path <value>]
+
+ARGUMENTS
+  CONTRACT  Contract address
+  MSG       Tx msg to be executed in JSON format
+
+FLAGS
+  --keys-path=<value>  [default: ./keys.terrain.js]
+  --network=<option>   [default: localterra] network to deploy to from config.terrain.json
+                       <options: mainnet|testnet|localterra>
+  --prefix=<value>     [default: terra] address prefix of target chain, all chains supported by Station are supported by
+                       terrain
+  --refs-path=<value>  [default: ./refs.terrain.json]
+  --signer=<value>     [default: test1]
+
+DESCRIPTION
+  Execute tx on the interchain
+
+EXAMPLES
+  $ terrain tx terra1..fx9fs '{"increment": {}}'
+
+  $ terrain tx juno1..af00x '{"reset": {"count": 0}}' --network testnet --config-path ../config.terrain.json
+```
+
+_See code: [src/commands/tx.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/tx.ts)_
 
 ## `terrain wallet:new`
 

@@ -1,6 +1,9 @@
 import { flags } from '@oclif/command';
+import { loadGlobalConfig } from '../config';
 
 export const signer = flags.string({ default: 'test1' });
+
+const globalConfig = loadGlobalConfig();
 
 export const noRebuild = flags.boolean({
   description: 'deploy the wasm bytecode as is.',
@@ -9,9 +12,9 @@ export const noRebuild = flags.boolean({
 
 export const instanceId = flags.string({ default: 'default', description: 'enable management of multiple instances of the same contract' });
 
-export const network = flags.string({ default: 'local', description: 'network to deploy to from config.terrain.json', options: ['mainnet', 'testnet', 'local'] });
+export const network = flags.string({ default: globalConfig.network || 'localterra', description: 'network to deploy to from config.terrain.json', options: ['mainnet', 'testnet', 'localterra'] });
 
-export const prefix = flags.string({ default: 'terra', description: 'address prefix of target chain, all chains supported by Station are supported by terrain' });
+export const prefix = flags.string({ default: globalConfig.prefix || 'terra', description: 'address prefix of target chain, all chains supported by Station are supported by terrain' });
 
 export const memo = flags.string({ default: 'terrain' });
 
@@ -29,7 +32,6 @@ export const frontendRefsPath = flags.string({
 
 // These three are commonly used together.
 export const terrainPaths = {
-  'config-path': configPath,
   'refs-path': refsPath,
   'keys-path': keysPath,
 };

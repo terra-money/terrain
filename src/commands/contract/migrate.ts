@@ -1,6 +1,6 @@
 import { Command } from '@oclif/command';
 import { LCDClient } from '@terra-money/feather.js';
-import { loadConfig, loadConnections } from '../../config';
+import { loadConfig, loadConnections, CONFIG_PATH } from '../../config';
 import { migrate, storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -23,13 +23,10 @@ export default class ContractMigrate extends Command {
   async run() {
     const { args, flags } = this.parse(ContractMigrate);
 
-    // Command execution path.
-    const execPath = flags['config-path'];
-
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path'], flags.prefix);
-      const config = loadConfig(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
+      const config = loadConfig();
       const conf = config(flags.network, args.contract);
       const connection = connections(flags.network);
 
@@ -39,7 +36,6 @@ export default class ContractMigrate extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
-        configPath: flags['config-path'],
         prefix: flags.prefix,
       });
 
@@ -52,7 +48,6 @@ export default class ContractMigrate extends Command {
         refsPath: flags['refs-path'],
         lcd,
         prefix: flags.prefix,
-        configPath: flags['config-path'],
       });
 
       migrate({
@@ -65,13 +60,12 @@ export default class ContractMigrate extends Command {
         refsPath: flags['refs-path'],
         lcd,
         prefix: flags.prefix,
-        configPath: flags['config-path'],
       });
     };
 
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
-      execPath,
+      CONFIG_PATH,
       command,
       defaultErrorCheck(args.contract),
     );

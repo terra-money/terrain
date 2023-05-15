@@ -14,16 +14,26 @@ export type ContractRefs = { [contractName: string]: ContractRef };
 export class LCDClientExtra extends LCDClient {
   refs: ContractRefs;
 
-  constructor(config: Record<string, LCDClientConfig>, refs: ContractRefs) {
+  prefix: string;
+
+  chainID: string;
+
+  constructor(
+    config: Record<string, LCDClientConfig>,
+    chainID: string,
+    prefix: string,
+    refs: ContractRefs,
+  ) {
     super(config);
     this.refs = refs;
     this.config = config;
+    this.chainID = chainID;
+    this.prefix = prefix;
   }
 
   query(contract: string, msg: Object, instanceId = 'default') {
-    const { chainID } = Object.values(this.config)[0];
     return this.wasm.contractQuery(
-      this.refs[chainID][contract].contractAddresses[instanceId],
+      this.refs[this.chainID][contract].contractAddresses[instanceId],
       msg,
     );
   }
@@ -36,20 +46,18 @@ export class LCDClientExtra extends LCDClient {
     options?: CreateTxOptions,
     instanceId = 'default',
   ): Promise<WaitTxBroadcastResult> {
-    // TODO: Support multiple chains.
-    const { chainID, prefix } = Object.values(this.config)[0];
     const msgs = [
       new MsgExecuteContract(
-        wallet.key.accAddress(prefix),
+        wallet.key.accAddress(this.prefix),
         // Enable supplying a contract address instead of the contract name.
         AccAddress.validate(contract) ? contract
-          : this.refs[chainID][contract].contractAddresses[instanceId],
+          : this.refs[this.chainID][contract].contractAddresses[instanceId],
         msg,
         coins,
       ),
     ];
     const mergedOptions = options ? { ...options, msgs } : { msgs };
-    const tx = await wallet.createAndSignTx({ ...mergedOptions, chainID });
-    return this.tx.broadcast(tx, chainID);
+    const tx = await wallet.createAndSignTx({ ...mergedOptions, chainID: this.chainID });
+    return this.tx.broadcast(tx, this.chainID);
   }
 }

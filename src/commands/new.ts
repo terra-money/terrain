@@ -43,7 +43,6 @@ export default class New extends Command {
 
   async run() {
     const { args, flags } = this.parse(New);
-
     const appDir = path.join(process.cwd(), flags.path, args.name);
     const contractDir = path.join(appDir, 'contracts', args.name);
     const frontendDir = path.join(appDir, 'frontend');
@@ -67,8 +66,8 @@ export default class New extends Command {
     cli.action.start('  🛠  Workspace');
     await TemplateScaffolding.from({
       remoteUrl:
-        'https://codeload.github.com/terra-money/terrain-core-template/zip/refs/heads/main',
-      subFolder: 'terrain-core-template-main',
+        'https://codeload.github.com/terra-money/terrain-core-template/zip/refs/heads/feat/interchain',
+      subFolder: 'terrain-core-template-feat-interchain',
       localOptions: {
         folderUrl: appDir,
       },
@@ -77,7 +76,7 @@ export default class New extends Command {
       },
     });
     const res = await axios.get('https://station-assets.terra.money/chains.json');
-    fs.writeFileSync(path.join(appDir, 'config.terrain.json'), JSON.stringify({ ...GLOBAL_CONFIG, ...res.data }));
+    fs.writeFileSync(path.join(appDir, 'config.terrain.json'), JSON.stringify({ ...GLOBAL_CONFIG, ...res.data }, null, 2));
 
     cli.action.stop();
 
@@ -98,8 +97,8 @@ export default class New extends Command {
     if (flags.framework === 'react') {
       await TemplateScaffolding.from({
         remoteUrl:
-          'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main',
-        subFolder: 'terrain-frontend-template-main',
+          'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/feat/interchain',
+        subFolder: 'terrain-frontend-template-feat-interchain',
         localOptions: {
           folderUrl: frontendDir,
         },

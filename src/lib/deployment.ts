@@ -23,11 +23,13 @@ import {
   ContractConfig,
   loadRefs,
   saveRefs,
+  loadConnections,
+} from '../config';
+import {
   setContractAddress,
   setCodeId,
-  loadConnections,
   getFeeDenom,
-} from '../config';
+} from '../util';
 import TerrainCLI from '../TerrainCLI';
 import useARM64 from './useARM64';
 
@@ -132,7 +134,6 @@ type StoreCodeParams = {
   noRebuild?: boolean;
   signer: Wallet;
   prefix: string;
-  configPath: string;
   codeId?: number;
   useCargoWorkspace?: boolean;
   memo?: string;
@@ -146,13 +147,12 @@ export const storeCode = async ({
   lcd,
   codeId,
   noRebuild,
-  configPath,
   useCargoWorkspace,
   memo,
   prefix,
 }: StoreCodeParams) => {
   const arm64 = useARM64(network);
-  const connections = loadConnections(configPath, prefix);
+  const connections = loadConnections(prefix);
   const { chainID } = connections(network);
 
   if (!noRebuild) {
@@ -247,7 +247,6 @@ type InstantiateParams = {
   codeId?: number;
   instanceId?: string;
   sequence?: number;
-  configPath: string;
   memo?: string;
 };
 
@@ -262,12 +261,11 @@ export const instantiate = async ({
   codeId,
   instanceId,
   sequence,
-  configPath,
   prefix,
   memo,
 }: InstantiateParams) => {
   const { instantiation } = conf;
-  const connections = loadConnections(configPath, prefix);
+  const connections = loadConnections(prefix);
   const { chainID } = connections(network);
 
   // Ensure contract refs are available in refs.terrain.json.
@@ -300,7 +298,7 @@ export const instantiate = async ({
       publicKey: accountInfo.getPublicKey(),
     },
   ];
-  const feeDenom = getFeeDenom(network, prefix, configPath);
+  const feeDenom = getFeeDenom(network, prefix);
 
   const txOptions: CreateTxOptions = {
     chainID,
@@ -381,7 +379,6 @@ type MigrateParams = {
   instanceId: string;
   refsPath: string;
   lcd: LCDClient;
-  configPath: string;
   prefix: string;
 };
 
@@ -394,13 +391,12 @@ export const migrate = async ({
   codeId,
   network,
   instanceId,
-  configPath,
   prefix,
 }: MigrateParams) => {
   const { instantiation } = conf;
   const refs = loadRefs(refsPath);
 
-  const connections = loadConnections(configPath, prefix);
+  const connections = loadConnections(prefix);
   const { chainID } = connections(network);
 
   const contractAddress = refs[network][chainID][contract].contractAddresses[instanceId];

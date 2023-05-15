@@ -4,6 +4,7 @@ import { cli } from 'cli-ux';
 import dedent from 'dedent';
 import * as path from 'path';
 import { loadKeys, loadConnections } from '../config';
+import { isLocalNetwork } from '../util';
 import TerrainCLI from '../TerrainCLI';
 
 export const getSigner = async ({
@@ -11,26 +12,24 @@ export const getSigner = async ({
   signerId,
   keysPath,
   lcd,
-  configPath,
   prefix,
 }: {
   network: string;
   signerId: string;
   keysPath: string;
   lcd: LCDClient;
-  configPath: string;
   prefix: string;
 }): Promise<Wallet> => {
   const localterra = new LocalTerra();
   if (
-    network === 'local'
+    isLocalNetwork(network)
     && Object.prototype.hasOwnProperty.call(localterra.wallets, signerId)
   ) {
     // Attempt to request sequence from LocalTerra.
     // Alert user if LocalTerra request fails.
     try {
       const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
-      const connections = loadConnections(configPath, prefix);
+      const connections = loadConnections(prefix);
       const { chainID } = connections(network);
 
       await signer.sequence(chainID);

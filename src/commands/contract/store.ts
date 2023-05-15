@@ -1,14 +1,15 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import dedent from 'dedent';
 import { LCDClient } from '@terra-money/feather.js';
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { loadConfig, loadConnections } from '../../config';
+import { loadConfig, loadConnections, CONFIG_PATH as execPath } from '../../config';
 import { storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import TerrainCLI from '../../TerrainCLI';
 import runCommand from '../../lib/runCommand';
+import { getNetworkName } from '../../util';
 
 export default class CodeStore extends Command {
   static description = 'Store code on chain.';
@@ -26,12 +27,11 @@ export default class CodeStore extends Command {
     const { args, flags } = this.parse(CodeStore);
 
     // Command execution path.
-    const execPath = flags['config-path'];
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path'], flags.prefix);
-      const config = loadConfig(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
+      const config = loadConfig();
       const conf = config(flags.network, args.contract);
       const connection = connections(flags.network);
 
@@ -41,7 +41,6 @@ export default class CodeStore extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
-        configPath: flags['config-path'],
         prefix: flags.prefix,
       });
 
@@ -55,7 +54,6 @@ export default class CodeStore extends Command {
         lcd,
         codeId: flags['code-id'],
         prefix: flags.prefix,
-        configPath: flags['config-path'],
       });
     };
 
@@ -73,9 +71,7 @@ export default class CodeStore extends Command {
     };
 
     // Message to be displayed upon successful command execution.
-    const network = flags.network === 'local'
-      ? 'local network'
-      : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
+    const network = getNetworkName(flags.network);
     const successMessage = () => {
       TerrainCLI.success(
         dedent`

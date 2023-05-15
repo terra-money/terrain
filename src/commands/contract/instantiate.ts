@@ -1,13 +1,14 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import dedent from 'dedent';
 import { LCDClient } from '@terra-money/feather.js';
-import { loadConfig, loadConnections } from '../../config';
+import { loadConfig, loadConnections, CONFIG_PATH as execPath } from '../../config';
 import { instantiate } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
 import TerrainCLI from '../../TerrainCLI';
+import { getNetworkName } from '../../util';
 
 export default class ContractInstantiate extends Command {
   static description = 'Instantiate the contract.';
@@ -28,11 +29,10 @@ export default class ContractInstantiate extends Command {
     let admin: string;
 
     // Command execution path.
-    const execPath = flags['config-path'];
 
     const command = async () => {
-      const connections = loadConnections(flags['config-path'], flags.prefix);
-      const config = loadConfig(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
+      const config = loadConfig();
       const conf = config(flags.network, args.contract);
       const connection = connections(flags.network);
 
@@ -42,7 +42,6 @@ export default class ContractInstantiate extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
-        configPath: flags['config-path'],
         prefix: flags.prefix,
       });
 
@@ -57,20 +56,17 @@ export default class ContractInstantiate extends Command {
         network: flags.network,
         instanceId: flags['instance-id'],
         refsPath: flags['refs-path'],
-        configPath: flags['config-path'],
         lcd,
         prefix: flags.prefix,
       });
     };
 
     // Message to be displayed upon successful command execution.
-    const terraNetwork = flags.network === 'local'
-      ? 'local network'
-      : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
+    const network = getNetworkName(flags.network);
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        Contract "${args.contract}" was successfully instantiated on "${terraNetwork}".\n
+        Contract "${args.contract}" was successfully instantiated on "${network}".\n
         Contract Address: "${contractAddress}"\n
         Administrator: "${admin}"
       `,

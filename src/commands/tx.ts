@@ -1,17 +1,17 @@
 import { Command } from '@oclif/command';
 import { LCDClient, AccAddress, MsgExecuteContract } from '@terra-money/feather.js';
 import { AxiosError } from 'axios';
-import { loadConnections } from '../../config';
-import * as flag from '../../lib/flag';
-import TerrainCLI from '../../TerrainCLI';
-import { getSigner } from '../../lib/signer';
+import { loadConnections } from '../config';
+import * as flag from '../lib/flag';
+import TerrainCLI from '../TerrainCLI';
+import { getSigner } from '../lib/signer';
 
-export default class Query extends Command {
-  static description = 'Query contracts on the interchain';
+export default class Tx extends Command {
+  static description = 'Execute tx on the interchain';
 
   static examples = [
-    '$ terrain query terra1..fx9fs \'{"increment": {}}\'',
-    '$ terrain query juno1..af00x \'{"reset": {"count": 0}}\' --network testnet --config-path ../config.terrain.json ',
+    '$ terrain tx terra1..fx9fs \'{"increment": {}}\'',
+    '$ terrain tx juno1..af00x \'{"reset": {"count": 0}}\' --network testnet --config-path ../config.terrain.json ',
   ];
 
   static flags = {
@@ -23,14 +23,14 @@ export default class Query extends Command {
     name: 'contract', required: true, description: 'Contract address', type: 'string',
   },
   {
-    name: 'msg', required: true, description: 'Msg to be executed in JSON format', type: 'string',
+    name: 'msg', required: true, description: 'Tx msg to be executed in JSON format', type: 'string',
   }];
 
   async run() {
-    const { args, flags } = this.parse(Query);
+    const { args, flags } = this.parse(Tx);
     const prefix = AccAddress.getPrefix(args.contract);
 
-    const connections = loadConnections(flags['config-path'], prefix);
+    const connections = loadConnections(prefix);
     const connection = connections(flags.network);
     const { chainID } = connection;
     const lcd = new LCDClient({ [chainID]: connection });
@@ -40,7 +40,6 @@ export default class Query extends Command {
       signerId: flags.signer,
       keysPath: flags['keys-path'],
       lcd,
-      configPath: flags['config-path'],
       prefix: flags.prefix,
     });
 

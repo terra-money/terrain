@@ -12,7 +12,6 @@ export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
     await fn(
       getEnv(
-        process.env.configPath || '',
         process.env.keysPath || '',
         process.env.refsPath || '',
         process.env.network || '',
@@ -53,7 +52,6 @@ export default class Run extends Command {
       runScript(
         execPath,
         {
-          configPath: join(process.cwd(), flags['config-path']),
           keysPath: join(process.cwd(), flags['keys-path']),
           refsPath: join(process.cwd(), flags['refs-path']),
           network: flags.network,
@@ -76,7 +74,6 @@ export default class Run extends Command {
             runScript(
               jsExecutablePath,
               {
-                configPath: join(process.cwd(), flags['config-path']),
                 keysPath: join(process.cwd(), flags['keys-path']),
                 refsPath: join(process.cwd(), flags['refs-path']),
                 network: flags.network,

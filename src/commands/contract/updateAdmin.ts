@@ -2,7 +2,7 @@ import { Command } from '@oclif/command';
 import * as YAML from 'yaml';
 import { LCDClient, MsgUpdateContractAdmin } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
-import { loadConnections, loadRefs } from '../../config';
+import { loadConnections, loadRefs, CONFIG_PATH as execPath } from '../../config';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
@@ -25,11 +25,10 @@ export default class ContractUpdateAdmin extends Command {
   async run() {
     const { args, flags } = this.parse(ContractUpdateAdmin);
     // Command execution path.
-    const execPath = flags['config-path'];
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path'], flags.prefix);
+      const connections = loadConnections(flags.prefix);
       const refs = loadRefs(flags['refs-path']);
       const { network } = flags;
       const connection = connections(network);
@@ -42,7 +41,6 @@ export default class ContractUpdateAdmin extends Command {
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
-        configPath: flags['config-path'],
         prefix: flags.prefix,
       });
 

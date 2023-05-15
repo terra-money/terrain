@@ -1,9 +1,9 @@
 import { Command } from '@oclif/command';
 import { LCDClient, AccAddress } from '@terra-money/feather.js';
 import { AxiosError } from 'axios';
-import { loadConnections } from '../../config';
-import * as flag from '../../lib/flag';
-import TerrainCLI from '../../TerrainCLI';
+import { loadConnections } from '../config';
+import * as flag from '../lib/flag';
+import TerrainCLI from '../TerrainCLI';
 
 export default class Query extends Command {
   static description = 'Query contracts on the interchain';
@@ -29,7 +29,7 @@ export default class Query extends Command {
     const { args, flags } = this.parse(Query);
     const prefix = AccAddress.getPrefix(args.contract);
 
-    const connections = loadConnections(flags['config-path'], prefix);
+    const connections = loadConnections(prefix);
     const connection = connections(flags.network);
     const lcd = new LCDClient({ [connection.chainID]: connection });
 

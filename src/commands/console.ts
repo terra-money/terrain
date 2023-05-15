@@ -9,6 +9,7 @@ import {
 } from '../lib/flag';
 import TerrainCLI from '../TerrainCLI';
 import runCommand from '../lib/runCommand';
+import { loadGlobalConfig } from '../config';
 
 // Needed for Terrain to be able to require typescript modules.
 require('ts-node').register({
@@ -32,6 +33,7 @@ export default class Console extends Command {
 
   async run() {
     const { flags } = this.parse(Console);
+    const { prefix, network } = loadGlobalConfig();
 
     // Command execution path.
     const execPath = 'lib';
@@ -39,16 +41,15 @@ export default class Console extends Command {
     // Command to be performed.
     const command = async () => {
       const env = getEnv(
-        join(process.cwd(), flags['config-path']),
         join(process.cwd(), flags['keys-path']),
         join(process.cwd(), flags['refs-path']),
-        flags.network,
-        flags.prefix,
+        network || flags.network,
+        prefix || flags.prefix,
         flags.signer,
       );
 
       // eslint-disable-next-line import/no-dynamic-require, global-require
-      let Lib = await import(join(process.cwd(), 'lib'));
+      let Lib = await import(join(process.cwd(), execPath));
 
       let libInstance;
 

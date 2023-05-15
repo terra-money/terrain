@@ -57,8 +57,9 @@ export type Network = {
   }
 }
 
-export const DEFAULT_CONFIG_PATH = `${__dirname}/template/config.terrain.json`;
+export const CONFIG_PATH = './config.terrain.json';
 export const DEFAULT_REFS_PATH = `${__dirname}/template/refs.terrain.json`;
+export const DEFAULT_KEYS_PATH = `${__dirname}/template/keys.terrain.js`;
 
 export const connection = (
   networks: Network,
@@ -66,18 +67,10 @@ export const connection = (
 ) => (network: string) => {
   const chainID = Object.keys(networks[network])
     .find((chainID) => networks[network][chainID].prefix === prefix);
-  if (!chainID) cli.error(`no chain with network '${network}' with prefix '${prefix}' not found in config`);
+  if (!chainID) {
+    cli.error(`no chain with network '${network}' with prefix '${prefix}' not found in config`);
+  }
   return networks[network][chainID];
-};
-
-export const loadConnections = (
-  path: string,
-  prefix: string,
-) => connection(fs.readJSONSync(path), prefix);
-
-export const getFeeDenom = (network: string, prefix: string, path: string) => {
-  const connections = loadConnections(path, prefix);
-  return Object.keys(connections(network).gasPrices)[0];
 };
 
 export const config = (
@@ -119,17 +112,31 @@ export const saveConfig = (
   fs.writeJSONSync(path, updated, { spaces: 2 });
 };
 
-export const loadConfig = (
-  path = DEFAULT_CONFIG_PATH,
-) => config(fs.readJSONSync(path));
+export const readConfig = () => {
+  try {
+    return fs.readJSONSync(CONFIG_PATH);
+  } catch {
+    return cli.error(
+      'Error: Make sure your config.terrain.json file is in the root directory',
+    );
+  }
+};
 
-export const loadGlobalConfig = (
-  path = DEFAULT_CONFIG_PATH,
-  // Extract useCargoWorkspace from global config.
-) => (({ global: { useCargoWorkspace } }) => ({ useCargoWorkspace }))(fs.readJSONSync(path));
+export const loadConnections = (
+  prefix: string,
+) => connection(readConfig(), prefix);
+
+export const loadConfig = () => config(readConfig());
+
+export const loadGlobalConfig = () => (({
+  global: {
+    useCargoWorkspace,
+    prefix, network,
+  },
+}) => ({ useCargoWorkspace, prefix, network }))(readConfig());
 
 export const loadKeys = (
-  path = `${__dirname}/template/keys.terrain.js`,
+  path = DEFAULT_KEYS_PATH,
 ): { [keyName: string]: RawKey } => {
   // eslint-disable-next-line import/no-dynamic-require, global-require
   const keys = require(path);
@@ -151,21 +158,7 @@ export const loadKeys = (
   );
 };
 
-export const setCodeId = (network: string, chainID: string, contract: string, codeId: number) => R.set(R.lensPath([network, chainID, contract, 'codeId']), codeId);
-export const setContractAddress = (
-  network: string,
-  chainID: string,
-  contract: string,
-  instanceId: string,
-  contractAddress: string,
-) => R.set(
-  R.lensPath([network, chainID, contract, 'contractAddresses', instanceId]),
-  contractAddress,
-);
-
-export const loadRefs = (
-  path: string,
-): Refs => fs.readJSONSync(path);
+export const loadRefs = (path: string): Refs => fs.readJSONSync(path);
 
 export const saveRefs = (refs: Refs, path: string) => {
   fs.writeJSONSync(path, refs, { spaces: 2 });
@@ -173,6 +166,9 @@ export const saveRefs = (refs: Refs, path: string) => {
 
 export const GLOBAL_CONFIG = {
   global: {
+    useCargoWorkspace: false,
+    prefix: 'terra',
+    network: 'localterra',
     base: {
       instantiation: {
         instantiateMsg: {
