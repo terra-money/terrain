@@ -58,8 +58,6 @@ export type Network = {
 }
 
 export const CONFIG_PATH = './config.terrain.json';
-export const DEFAULT_REFS_PATH = `${__dirname}/template/refs.terrain.json`;
-export const DEFAULT_KEYS_PATH = `${__dirname}/template/keys.terrain.js`;
 
 export const connection = (
   networks: Network,
@@ -136,7 +134,7 @@ export const loadGlobalConfig = () => (({
 }) => ({ useCargoWorkspace, prefix, network }))(readConfig());
 
 export const loadKeys = (
-  path = DEFAULT_KEYS_PATH,
+  path: string,
 ): { [keyName: string]: RawKey } => {
   // eslint-disable-next-line import/no-dynamic-require, global-require
   const keys = require(path);

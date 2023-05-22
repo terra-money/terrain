@@ -10,7 +10,6 @@ import * as flag from '../lib/flag';
 import runCommand from '../lib/runCommand';
 import defaultErrorCheck from '../lib/defaultErrorCheck';
 import TerrainCLI from '../TerrainCLI';
-import { getNetworkName } from '../util';
 
 export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
@@ -121,11 +120,10 @@ export default class Deploy extends Command {
     };
 
     // Message to be displayed upon successful command execution.
-    const networkName = getNetworkName(flags.network);
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        Contract "${args.contract}" has been successfully deployed on "${networkName}".\n
+        Contract "${args.contract}" has been successfully deployed on "${flags.network}".\n
         Contract Address: "${contractAddress}"\n
         Administrator: "${admin}"
       `,

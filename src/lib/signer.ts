@@ -38,6 +38,7 @@ export const getSigner = async ({
       );
       return signer;
     } catch (error) {
+      console.log('error', error);
       TerrainCLI.error(
         dedent`
         "LocalTerra" is currently not running.\n

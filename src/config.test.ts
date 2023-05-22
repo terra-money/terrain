@@ -107,7 +107,7 @@ test('load config', () => {
 
 // TODO: keys were moved into a separate repo.
 test.skip('load wallets', () => {
-  const wallets = loadKeys();
+  const wallets = loadKeys('./template/keys.terrain.json');
   const ct1 = wallets.custom_tester_1 as MnemonicKey;
   expect(ct1.mnemonic).toBe(
     'shiver position copy catalog upset verify cheap library enjoy extend second peasant basic kit polar business document shrug pass chuckle lottery blind ecology stand',

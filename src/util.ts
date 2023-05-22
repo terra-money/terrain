@@ -20,8 +20,3 @@ export const setContractAddress = (
 );
 
 export const isLocalNetwork = (network: string) => network === 'local' || network === 'localterra';
-
-export const getNetworkName = (network: string) => (
-  isLocalNetwork(network)
-    ? 'local network'
-    : `${network[0].toUpperCase()}${network.substring(1)}`);

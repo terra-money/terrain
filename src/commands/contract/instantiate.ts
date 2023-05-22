@@ -8,7 +8,6 @@ import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
 import TerrainCLI from '../../TerrainCLI';
-import { getNetworkName } from '../../util';
 
 export default class ContractInstantiate extends Command {
   static description = 'Instantiate the contract.';
@@ -62,11 +61,10 @@ export default class ContractInstantiate extends Command {
     };
 
     // Message to be displayed upon successful command execution.
-    const network = getNetworkName(flags.network);
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        Contract "${args.contract}" was successfully instantiated on "${network}".\n
+        Contract "${args.contract}" was successfully instantiated on "${flags.network}".\n
         Contract Address: "${contractAddress}"\n
         Administrator: "${admin}"
       `,

@@ -9,7 +9,6 @@ import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import TerrainCLI from '../../TerrainCLI';
 import runCommand from '../../lib/runCommand';
-import { getNetworkName } from '../../util';
 
 export default class CodeStore extends Command {
   static description = 'Store code on chain.';
@@ -71,11 +70,10 @@ export default class CodeStore extends Command {
     };
 
     // Message to be displayed upon successful command execution.
-    const network = getNetworkName(flags.network);
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        The Wasm bytecode for contract "${args.contract}" was successfully stored on "${network}".\n
+        The Wasm bytecode for contract "${args.contract}" was successfully stored on "${flags.network}".\n
         The next step is to instantiate the contract:\n
         "terrain contract:instantiate ${args.contract} --signer <signer-wallet>" "--network <desired-network>"\n
         "NOTE:" To instantiate your contract on the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, use the following command:\n
