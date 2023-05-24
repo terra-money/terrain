@@ -20,12 +20,12 @@ export default class New extends Command {
 
   static flags = {
     path: flags.string({
-      description: 'Path to create the workspace',
+      description: 'Path to create the workspace.',
       default: '.',
     }),
     framework: flags.string({
       description:
-        'Choose the frontend framework you want to use. Non-react framework options have better wallet-provider support but less streamlined contract integration.',
+        'Choose the frontend framework you want to use. Non-React framework options have better Wallet Provider support, but less streamlined contract integration.',
       options: ['react', 'vue', 'svelte', 'next', 'vite', 'lit'],
       default: 'react',
     }),

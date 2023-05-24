@@ -17,7 +17,7 @@ export default class ContractInstantiate extends Command {
     network: flag.network,
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
-      description: 'specific codeId to instantiate',
+      description: 'Specific codeId to instantiate.',
     }),
     ...flag.terrainPaths,
   };

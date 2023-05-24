@@ -8,7 +8,7 @@ import TerrainCLI from '../../TerrainCLI';
 import runCommand from '../../lib/runCommand';
 
 export default class CodeNew extends Command {
-  static description = 'Generate new contract.';
+  static description = 'Generate a new contract.';
 
   static examples = [
     '$ terrain code:new awesome_contract',
@@ -18,7 +18,7 @@ export default class CodeNew extends Command {
 
   static flags = {
     path: flags.string({
-      description: 'path to keep the contracts',
+      description: 'Path to keep the contracts.',
       default: 'contracts',
     }),
     commitHash: flags.string({

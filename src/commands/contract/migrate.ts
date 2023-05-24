@@ -19,8 +19,7 @@ export default class ContractMigrate extends Command {
     'keys-path': flags.string({ default: 'keys.terrain.js' }),
     'instance-id': flags.string({ default: 'default' }),
     'code-id': flags.integer({
-      description:
-        'target code id for migration',
+      description: 'Target code id for migration.',
     }),
   };
 
@@ -69,10 +68,6 @@ export default class ContractMigrate extends Command {
     };
 
     // Attempt to execute command while backtracking through file tree.
-    await runCommand(
-      execPath,
-      command,
-      defaultErrorCheck(args.contract),
-    );
+    await runCommand(execPath, command, defaultErrorCheck(args.contract));
   }
 }

@@ -7,7 +7,7 @@ import runCommand from '../../lib/runCommand';
 import TerrainCLI from '../../TerrainCLI';
 
 export default class TaskNew extends Command {
-  static description = 'create new task';
+  static description = 'Create a new task.';
 
   static args = [{ name: 'task' }];
 
@@ -48,10 +48,6 @@ export default class TaskNew extends Command {
     };
 
     // Attempt to execute command while backtracking through file tree.
-    await runCommand(
-      execPath,
-      command,
-      errorCheck,
-    );
+    await runCommand(execPath, command, errorCheck);
   }
 }

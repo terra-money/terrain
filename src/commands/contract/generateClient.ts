@@ -14,7 +14,7 @@ export default class GenerateClient extends Command {
   static flags = {
     'lib-path': flags.string({
       default: 'lib',
-      description: 'location to place the generated client',
+      description: 'Location to place the generated client.',
     }),
     dest: flags.string({ default: join('frontend', 'src', 'contract') }),
   };

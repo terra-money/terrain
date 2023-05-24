@@ -33,13 +33,14 @@ Terrain is **not**:
 # Table of contents
 
 <!-- toc -->
-* [Terrain](#terrain)
-* [Table of contents](#table-of-contents)
-* [Setup](#setup)
-* [Getting Started](#getting-started)
-* [Migrating CosmWasm Contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
-* [Use Terrain Main Branch Locally](#use-terrain-main-branch-locally)
-* [Terrain Commands](#terrain-commands)
+
+- [Terrain](#terrain)
+- [Table of contents](#table-of-contents)
+- [Setup](#setup)
+- [Getting Started](#getting-started)
+- [Migrating CosmWasm Contracts on Terra](#migrating-cosmwasm-contracts-on-terra)
+- [Use Terrain Main Branch Locally](#use-terrain-main-branch-locally)
+- [Terrain Commands](#terrain-commands)
 <!-- tocstop -->
 
 # Setup
@@ -73,7 +74,7 @@ docker-compose up
 
 ## Setup Rust
 
-While WASM smart contracts can be written in any programming language, **it is strongly recommended that you utilize Rust**, as it is the only language for which mature libraries and tooling exist for CosmWasm. To complete this tutorial, install the latest version of Rust by following the instructions <a href="https://www.rust-lang.org/tools/install" target="_blank">here</a>. Once Rust is installed on your computer, do the following:
+While Wasm smart contracts can be written in any programming language, **it is strongly recommended that you utilize Rust**, as it is the only language for which mature libraries and tooling exist for CosmWasm. To complete this tutorial, install the latest version of Rust by following the instructions <a href="https://www.rust-lang.org/tools/install" target="_blank">here</a>. Once Rust is installed on your computer, do the following:
 
 1. Set the default release channel used to update Rust to stable.
 
@@ -81,7 +82,7 @@ While WASM smart contracts can be written in any programming language, **it is s
 rustup default stable
 ```
 
-2. Add wasm as the compilation target.
+2. Add Wasm as the compilation target.
 
 ```sh
 rustup target add wasm32-unknown-unknown
@@ -142,7 +143,7 @@ The `terrain new` command generates a project that contains a template smart con
 
 The `terrain deploy` command does the following:
 
-- Builds, optimizes, and stores the wasm code on the blockchain.
+- Builds, optimizes, and stores the Wasm code on the blockchain.
 - Instantiates the contract.
 
 To deploy your new my-terra-dapp smart contract, run the following command in the terminal.
@@ -158,6 +159,7 @@ You can also specify the network on which you would like to deploy your contract
 ### Step-by-step Deployment
 
 You can also execute the build, optimize, store, and instantiate processes separately by executing the following commands in sequential order.
+
 1. [`terrain contract:build CONTRACT`](#terrain-contractbuild-contract)
 2. [`terrain contract:optimize CONTRACT`](#terrain-contractoptimize-contract)
 3. [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
@@ -180,10 +182,10 @@ The predefined accounts in the `keys.terrain.js` file shown below can be utilize
 module.exports = {
   custom_tester_1: {
     mnemonic:
-      "shiver position copy catalog upset verify cheap library enjoy extend second peasant basic kit polar business document shrug pass chuckle lottery blind ecology stand",
+      'shiver position copy catalog upset verify cheap library enjoy extend second peasant basic kit polar business document shrug pass chuckle lottery blind ecology stand',
   },
   custom_tester_2: {
-    privateKey: "fGl1yNoUnnNUqTUXXhxH9vJU0htlz9lWwBt3fQw+ixw=",
+    privateKey: 'fGl1yNoUnnNUqTUXXhxH9vJU0htlz9lWwBt3fQw+ixw=',
   },
 };
 ```
@@ -256,7 +258,7 @@ npm run start
 
 ## Run Contract Functions with Terrain
 
-Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions. 
+Once you have successfully deployed your project, you can interact with the deployed contract and the underlying blockchain by utilizing functions defined in the `lib/index.js` file. You may also create your own abstractions in this file for querying or executing transactions.
 
 You can call the functions defined in `lib/index.js` inside of the `terrain console`. An example using the template counter smart contract is shown below.
 
@@ -282,14 +284,14 @@ You can utilize the functions available inside of the `lib/index.js` file to cre
 ```js
 // tasks/example-with-lib.js
 
-const { task } = require("@terra-money/terrain");
-const lib = require("../lib");
+const { task } = require('@terra-money/terrain');
+const lib = require('../lib');
 
 task(async (env) => {
   const { getCountQuery, increment } = lib(env);
-  console.log("count 1 = ", await getCountQuery());
+  console.log('count 1 = ', await getCountQuery());
   await increment();
-  console.log("count 2 = ", await getCountQuery());
+  console.log('count 2 = ', await getCountQuery());
 });
 ```
 
@@ -310,24 +312,24 @@ If you would like to utilize JavaScript in your functions or tasks, you can impo
 ```js
 // tasks/example-custom-logic.js
 
-const { task, terrajs } = require("@terra-money/terrain");
+const { task, terrajs } = require('@terra-money/terrain');
 
 // terrajs is basically re-exported terra.js (https://terra-money.github.io/terra.js/)
 
 task(async ({ wallets, refs, config, client }) => {
-  console.log("creating new key");
+  console.log('creating new key');
   const key = terrajs.MnemonicKey();
-  console.log("private key", key.privateKey.toString("base64"));
-  console.log("mnemonic", key.mnemonic);
+  console.log('private key', key.privateKey.toString('base64'));
+  console.log('mnemonic', key.mnemonic);
 });
 ```
 
 ## Scripting deployments
 
-As of Terrain 0.4.0 it is possible to deploy and instantiate contracts from tasks. This can be useful for multi-contract, or multi-stage deployments. 
+As of Terrain 0.4.0 it is possible to deploy and instantiate contracts from tasks. This can be useful for multi-contract, or multi-stage deployments.
 
 ```js
-const { task } = require("@terra-money/terrain");
+const { task } = require('@terra-money/terrain');
 
 task(async ({ wallets, client, deploy }) => {
   // First deploy the counter smart contract.
@@ -337,7 +339,7 @@ task(async ({ wallets, client, deploy }) => {
     'counter',
     // Signer
     wallets.test1,
-    { 
+    {
       // Contract admin
       admin: wallets.test1.key.accAddress,
     },
@@ -345,24 +347,20 @@ task(async ({ wallets, client, deploy }) => {
 
   // Now deploy a CW20 with the counter contract set as the minter in instantiation.
   await deploy.storeCode('cw20-base', wallets.test1);
-  const cw20Address = await deploy.instantiate(
-    'cw20-base',
-    wallets.test1,
-    { 
-      admin: wallets.test1.key.accAddress,
-      // Custom instantiation message.
-      // with no message provided the default from config.terrain will be used.
-      init: {
-        name: "counter",
-        symbol: "CTR",
-        decimals: 6,
-        initial_balances: [],
-        mint: {
-          minter: counterAddress,
-        },
-      }
-    }
-  );
+  const cw20Address = await deploy.instantiate('cw20-base', wallets.test1, {
+    admin: wallets.test1.key.accAddress,
+    // Custom instantiation message.
+    // with no message provided the default from config.terrain will be used.
+    init: {
+      name: 'counter',
+      symbol: 'CTR',
+      decimals: 6,
+      initial_balances: [],
+      mint: {
+        minter: counterAddress,
+      },
+    },
+  });
 
   // Update the CW20 address in counter.
   // Note: It's important to use the address returned by deploy.instantiate
@@ -421,7 +419,7 @@ pub fn migrate(_deps: DepsMut, _env: Env, _msg: MigrateMsg) -> StdResult<Respons
 
 ## Migrating the Contract
 
-Adding the MigrateMsg to the smart contract allows the contract's administrator to migrate the contract in the future.  When we deploy our contract, the wallet address of the signer will be automatically designated as the contract administrator.  In the following command, the contract is deployed with the preconfigured LocalTerra `test1` wallet as the signer and administrator of our counter contract. 
+Adding the MigrateMsg to the smart contract allows the contract's administrator to migrate the contract in the future. When we deploy our contract, the wallet address of the signer will be automatically designated as the contract administrator. In the following command, the contract is deployed with the preconfigured LocalTerra `test1` wallet as the signer and administrator of our counter contract.
 
 ```sh
 terrain deploy counter --signer test1
@@ -488,25 +486,26 @@ npm unlink terrain
 # Terrain Commands
 
 <!-- commands -->
-* [`terrain console`](#terrain-console)
-* [`terrain contract:build CONTRACT`](#terrain-contractbuild-contract)
-* [`terrain contract:generateClient CONTRACT`](#terrain-contractgenerateclient-contract)
-* [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
-* [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
-* [`terrain contract:new NAME`](#terrain-contractnew-name)
-* [`terrain contract:optimize CONTRACT`](#terrain-contractoptimize-contract)
-* [`terrain contract:schema CONTRACT`](#terrain-contractschema-contract)
-* [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
-* [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
-* [`terrain deploy CONTRACT`](#terrain-deploy-contract)
-* [`terrain help [COMMAND]`](#terrain-help-command)
-* [`terrain new NAME`](#terrain-new-name)
-* [`terrain sync-refs`](#terrain-sync-refs)
-* [`terrain task:new [TASK]`](#terrain-tasknew-task)
-* [`terrain task:run [TASK]`](#terrain-taskrun-task)
-* [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
-* [`terrain test:coverage [CONTRACT-NAME]`](#terrain-testcoverage-contract-name)
-* [`terrain wallet:new`](#terrain-walletnew)
+
+- [`terrain console`](#terrain-console)
+- [`terrain contract:build CONTRACT`](#terrain-contractbuild-contract)
+- [`terrain contract:generateClient CONTRACT`](#terrain-contractgenerateclient-contract)
+- [`terrain contract:instantiate CONTRACT`](#terrain-contractinstantiate-contract)
+- [`terrain contract:migrate CONTRACT`](#terrain-contractmigrate-contract)
+- [`terrain contract:new NAME`](#terrain-contractnew-name)
+- [`terrain contract:optimize CONTRACT`](#terrain-contractoptimize-contract)
+- [`terrain contract:schema CONTRACT`](#terrain-contractschema-contract)
+- [`terrain contract:store CONTRACT`](#terrain-contractstore-contract)
+- [`terrain contract:updateAdmin CONTRACT ADMIN`](#terrain-contractupdateadmin-contract-admin)
+- [`terrain deploy CONTRACT`](#terrain-deploy-contract)
+- [`terrain help [COMMAND]`](#terrain-help-command)
+- [`terrain new NAME`](#terrain-new-name)
+- [`terrain sync-refs`](#terrain-sync-refs)
+- [`terrain task:new [TASK]`](#terrain-tasknew-task)
+- [`terrain task:run [TASK]`](#terrain-taskrun-task)
+- [`terrain test CONTRACT-NAME`](#terrain-test-contract-name)
+- [`terrain test:coverage [CONTRACT-NAME]`](#terrain-testcoverage-contract-name)
+- [`terrain wallet:new`](#terrain-walletnew)
 
 ## `terrain console`
 
@@ -911,4 +910,5 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/wallet/new.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/wallet/new.ts)_
+
 <!-- commandsstop -->

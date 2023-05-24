@@ -5,15 +5,15 @@ import * as fs from 'fs';
 import TerrainCLI from '../../TerrainCLI';
 
 export default class WalletNew extends Command {
-  static description = 'Generate a new wallet to use for signing contracts';
+  static description = 'Generate a new wallet to use for signing contract transactions.';
 
   static flags = {
     outfile: flags.string({
       description:
-        'absolute path to store the mnemonic key to. If omitted, output to stdout',
+        'The absolute path of where the mnemonic key will be stored. If omitted, output is sent to stdout',
     }),
     index: flags.integer({
-      description: 'key index to use, default value is 0',
+      description: 'Key index to use, default value is 0.',
       default: 0,
     }),
   };

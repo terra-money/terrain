@@ -3,13 +3,19 @@ import { flags } from '@oclif/command';
 export const signer = flags.string({ default: 'test1' });
 
 export const noRebuild = flags.boolean({
-  description: 'deploy the wasm bytecode as is.',
+  description: 'Deploy the Wasm bytecode as is.',
   default: false,
 });
 
-export const instanceId = flags.string({ default: 'default', description: 'enable management of multiple instances of the same contract' });
+export const instanceId = flags.string({
+  default: 'default',
+  description: 'Enable management of multiple instances of the same contract.',
+});
 
-export const network = flags.string({ default: 'localterra', description: 'network to deploy to from config.terrain.json' });
+export const network = flags.string({
+  default: 'localterra',
+  description: 'Network to deploy to from config.terrain.json.',
+});
 
 export const configPath = flags.string({ default: './config.terrain.json' });
 

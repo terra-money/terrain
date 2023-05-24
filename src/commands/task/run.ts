@@ -32,7 +32,7 @@ export const task = async (fn: (env: Env) => Promise<void>) => {
 };
 
 export default class Run extends Command {
-  static description = 'run predefined task';
+  static description = 'Run a predefined task.';
 
   static flags = {
     signer: flag.signer,
@@ -99,10 +99,6 @@ export default class Run extends Command {
     };
 
     // Attempt to execute command while backtracking through file tree.
-    await runCommand(
-      execPath,
-      command,
-      errorCheck,
-    );
+    await runCommand(execPath, command, errorCheck);
   }
 }

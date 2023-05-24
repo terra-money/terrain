@@ -10,7 +10,7 @@ import defaultErrorCheck from '../lib/defaultErrorCheck';
 import TerrainCLI from '../TerrainCLI';
 
 export default class Deploy extends Command {
-  static description = 'Build wasm bytecode, store code on chain and instantiate.';
+  static description = 'Build Wasm bytecode, store code on chain, and instantiate.';
 
   static flags = {
     signer: flag.signer,
@@ -19,10 +19,10 @@ export default class Deploy extends Command {
     'instance-id': flag.instanceId,
     'frontend-refs-path': flag.frontendRefsPath,
     'admin-address': flags.string({
-      description: 'set custom address as contract admin to allow migration.',
+      description: 'Set custom address as contract admin to allow migration.',
     }),
     'no-sync': flags.string({
-      description: "don't attempt to sync contract refs to frontend.",
+      description: "Don't attempt to sync contract refs to frontend.",
     }),
     ...flag.terrainPaths,
   };

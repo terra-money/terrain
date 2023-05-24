@@ -8,7 +8,7 @@ import defaultErrorCheck from '../../lib/defaultErrorCheck';
 import TerrainCLI from '../../TerrainCLI';
 
 export default class Build extends Command {
-  static description = 'Build wasm bytecode.';
+  static description = 'Build Wasm bytecode.';
 
   static flags = {
     'config-path': flag.configPath,
@@ -33,11 +33,11 @@ export default class Build extends Command {
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-      The Wasm bytecode for contract "${args.contract}" was successfully generated.\n
-      The next step is to optimize the Wasm bytecode:\n
-      "terrain contract:optimize ${args.contract}"\n
-      "NOTE:" Make sure that "Docker" is installed and running in the background before attempting to optimize the Wasm bytecode.
-    `,
+        The Wasm bytecode for contract "${args.contract}" was successfully generated.\n
+        The next step is to optimize the Wasm bytecode:\n
+        "terrain contract:optimize ${args.contract}"\n
+        "NOTE:" Make sure that "Docker" is installed and running in the background before attempting to optimize the Wasm bytecode.
+      `,
         'Wasm Bytecode Generated',
       );
     };

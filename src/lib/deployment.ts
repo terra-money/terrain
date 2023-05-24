@@ -159,7 +159,7 @@ export const storeCode = async ({
 
   wasmByteCodeFilename += '.wasm';
 
-  // Create boolean to check if user is attempting to store ARM64 wasm binary on mainnet.
+  // Create boolean to check if user is attempting to store ARM64 Wasm binary on mainnet.
   const wasmFiles = fs.readdirSync(
     path.join('contracts', contract, 'artifacts'),
   );
@@ -167,12 +167,12 @@ export const storeCode = async ({
     && process.arch === 'arm64'
     && network === 'mainnet';
 
-  // Check if user is attempting to store ARM64 wasm binary on mainnet.
-  // If so, reoptimize to default wasm binary to store on mainnet.
+  // Check if user is attempting to store ARM64 Wasm binary on mainnet.
+  // If so, reoptimize to default Wasm binary to store on mainnet.
   if (storingARM64Mainnet) {
     TerrainCLI.error(
       dedent`
-      ARM64 wasm files should not be stored on "Mainnet". Rebuilding contract to deploy default wasm binary.
+      ARM64 Wasm files should not be stored on "Mainnet". Rebuilding contract to deploy default Wasm binary.
     `,
       'ARM64 Wasm Detected',
     );

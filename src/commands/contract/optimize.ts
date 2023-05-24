@@ -8,7 +8,7 @@ import defaultErrorCheck from '../../lib/defaultErrorCheck';
 import TerrainCLI from '../../TerrainCLI';
 
 export default class Optimize extends Command {
-  static description = 'Optimize wasm bytecode.';
+  static description = 'Optimize Wasm bytecode.';
 
   static flags = {
     'config-path': configPath,
