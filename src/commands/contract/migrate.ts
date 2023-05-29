@@ -1,6 +1,6 @@
 import { Command } from '@oclif/command';
 import { LCDClient } from '@terra-money/feather.js';
-import { loadConfig, loadConnections, CONFIG_PATH } from '../../config';
+import { loadConfig, loadConnections, CONFIG_PATH as execPath } from '../../config';
 import { migrate, storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -65,7 +65,7 @@ export default class ContractMigrate extends Command {
 
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
-      CONFIG_PATH,
+      execPath,
       command,
       defaultErrorCheck(args.contract),
     );

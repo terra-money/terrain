@@ -51,14 +51,12 @@ export default class Tx extends Command {
       const res = await lcd.tx.broadcast(execMsg, chainID);
 
       TerrainCLI.success(`Tx hash:\n \n ${res.txhash}`);
-    } catch (err) {
-      const errMsg = 'There was an error with your transaction. \n\n ';
+    } catch (err: any) {
+      let errMsg = 'There was an error with your query. \n\n';
       if (err instanceof SyntaxError) {
-        errMsg.concat('Make sure you have single quotes around your msg and double quotes around keys.');
-      } else if (err instanceof AxiosError) {
-        errMsg.concat(err?.response?.data.message);
+        errMsg += ('Make sure you have single quotes around your query and double quotes around query keys.');
       } else {
-        errMsg.concat(JSON.stringify(err));
+        errMsg += (JSON.stringify(err.response.data.message || err.message || err, null, 2));
       }
       TerrainCLI.error(errMsg);
     }

@@ -36,14 +36,12 @@ export default class Query extends Command {
     try {
       const res = await lcd.wasm.contractQuery(args.contract, JSON.parse(args.msg));
       TerrainCLI.success(`Query Result:\n \n ${JSON.stringify(res)}`);
-    } catch (err) {
-      const errMsg = 'There was an error with your query. \n\n';
+    } catch (err: any) {
+      let errMsg = 'There was an error with your query. \n\n';
       if (err instanceof SyntaxError) {
-        errMsg.concat('Make sure you have single quotes around your query and double quotes around query keys.');
-      } else if (err instanceof AxiosError) {
-        errMsg.concat(err?.response?.data.message);
+        errMsg += ('Make sure you have single quotes around your query and double quotes around query keys.');
       } else {
-        errMsg.concat(JSON.stringify(err));
+        errMsg += (JSON.stringify(err.response.data.message || err.message || err, null, 2));
       }
       TerrainCLI.error(errMsg);
     }

@@ -2,6 +2,7 @@ import * as R from 'ramda';
 import * as fs from 'fs-extra';
 import { LCDClientConfig, MnemonicKey, RawKey } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
+import path from 'path';
 
 type Fee = {
   gasLimit: number;
@@ -57,7 +58,7 @@ export type Network = {
   }
 }
 
-export const CONFIG_PATH = './config.terrain.json';
+export const CONFIG_PATH = 'config.terrain.json';
 
 export const connection = (
   networks: Network,
@@ -111,13 +112,27 @@ export const saveConfig = (
 };
 
 export const readConfig = () => {
-  try {
-    return fs.readJSONSync(CONFIG_PATH);
-  } catch {
-    return cli.error(
-      'Error: Make sure your config.terrain.json file is in the root directory',
-    );
+  let currentPath = process.cwd();
+
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < 5; i++) {
+    const configPath = path.join(currentPath, CONFIG_PATH);
+
+    try {
+      return fs.readJSONSync(configPath);
+    } catch (error: any) {
+      if (error.code !== 'ENOENT') {
+        return cli.error(
+          `Error reading configuration from ${configPath}: ${error.message}`,
+        );
+      }
+    }
+    currentPath = path.resolve(currentPath, '..');
   }
+
+  return cli.error(
+    'Error: Make sure your config.terrain.json file is in a nearby directory',
+  );
 };
 
 export const loadConnections = (

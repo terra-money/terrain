@@ -2,7 +2,7 @@ import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
 import { LCDClient } from '@terra-money/feather.js';
 import {
-  loadConfig, loadConnections, loadGlobalConfig,
+  loadConfig, loadConnections, loadGlobalConfig, CONFIG_PATH as execPath,
 } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
@@ -37,8 +37,6 @@ export default class Deploy extends Command {
 
     let contractAddress: string;
     let admin: string;
-
-    const execPath = 'config.terrain.json';
 
     const command = async () => {
       const connections = loadConnections(flags.prefix);
@@ -131,7 +129,6 @@ export default class Deploy extends Command {
       );
     };
 
-    // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,
