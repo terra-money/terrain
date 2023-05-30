@@ -942,7 +942,7 @@ DESCRIPTION
 EXAMPLES
   $ terrain tx terra1..fx9fs '{"increment": {}}'
 
-  $ terrain tx juno1..af00x '{"reset": {"count": 0}}' --network testnet --config-path ../config.terrain.json
+  $ terrain tx juno1..af00x '{"reset": {"count": 0}}' --network testnet
 ```
 
 _See code: [src/commands/tx.ts](https://github.com/terra-money/terrain/blob/v0.7.0/src/commands/tx.ts)_

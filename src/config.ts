@@ -130,7 +130,7 @@ export const readConfig = () => {
   let currentPath = process.cwd();
 
   // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < 5; i+= 1) {
+  for (let i = 0; i < 5; i += 1) {
     const configPath = path.join(currentPath, CONFIG_FILE_NAME);
 
     try {
