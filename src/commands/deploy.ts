@@ -105,8 +105,6 @@ export default class Deploy extends Command {
         });
       }
 
-      await this.config.runCommand('contract:generateClient', [args.contract]);
-
       if (!flags['no-sync']) {
         await this.config.runCommand('sync-refs', [
           '--refs-path',
