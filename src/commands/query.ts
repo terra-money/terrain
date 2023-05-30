@@ -1,6 +1,5 @@
 import { Command } from '@oclif/command';
 import { LCDClient, AccAddress } from '@terra-money/feather.js';
-import { AxiosError } from 'axios';
 import { loadConnections } from '../config';
 import * as flag from '../lib/flag';
 import TerrainCLI from '../TerrainCLI';
