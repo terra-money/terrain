@@ -10,7 +10,7 @@ export default class Tx extends Command {
 
   static examples = [
     '$ terrain tx terra1..fx9fs \'{"increment": {}}\'',
-    '$ terrain tx juno1..af00x \'{"reset": {"count": 0}}\' --network testnet --config-path ../config.terrain.json ',
+    '$ terrain tx juno1..af00x \'{"reset": {"count": 0}}\' --network testnet',
   ];
 
   static flags = {
