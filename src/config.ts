@@ -58,7 +58,22 @@ export type Network = {
   }
 }
 
-export const CONFIG_PATH = 'config.terrain.json';
+export const CONFIG_FILE_NAME = 'config.terrain.json';
+
+export const GLOBAL_CONFIG = {
+  global: {
+    useCargoWorkspace: false,
+    prefix: 'terra',
+    network: 'localterra',
+    base: {
+      instantiation: {
+        instantiateMsg: {
+          count: 0,
+        },
+      },
+    },
+  },
+};
 
 export const connection = (
   networks: Network,
@@ -116,7 +131,7 @@ export const readConfig = () => {
 
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < 5; i++) {
-    const configPath = path.join(currentPath, CONFIG_PATH);
+    const configPath = path.join(currentPath, CONFIG_FILE_NAME);
 
     try {
       return fs.readJSONSync(configPath);
@@ -129,10 +144,7 @@ export const readConfig = () => {
     }
     currentPath = path.resolve(currentPath, '..');
   }
-
-  return cli.error(
-    'Error: Make sure your config.terrain.json file is in a nearby directory',
-  );
+  return GLOBAL_CONFIG;
 };
 
 export const loadConnections = (
@@ -175,19 +187,4 @@ export const loadRefs = (path: string): Refs => fs.readJSONSync(path);
 
 export const saveRefs = (refs: Refs, path: string) => {
   fs.writeJSONSync(path, refs, { spaces: 2 });
-};
-
-export const GLOBAL_CONFIG = {
-  global: {
-    useCargoWorkspace: false,
-    prefix: 'terra',
-    network: 'localterra',
-    base: {
-      instantiation: {
-        instantiateMsg: {
-          count: 0,
-        },
-      },
-    },
-  },
 };

@@ -2,7 +2,7 @@ import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
 import { LCDClient } from '@terra-money/feather.js';
 import {
-  loadConfig, loadConnections, loadGlobalConfig, CONFIG_PATH as execPath,
+  loadConfig, loadConnections, loadGlobalConfig, CONFIG_FILE_NAME as execPath,
 } from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';

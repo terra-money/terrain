@@ -1,6 +1,6 @@
 import { Command } from '@oclif/command';
 import { LCDClient } from '@terra-money/feather.js';
-import { loadConfig, loadConnections, CONFIG_PATH as execPath } from '../../config';
+import { loadConfig, loadConnections, CONFIG_FILE_NAME as execPath } from '../../config';
 import { migrate, storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';

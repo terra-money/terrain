@@ -1,7 +1,7 @@
 import { Command } from '@oclif/command';
 import dedent from 'dedent';
 import { optimize } from '../../lib/deployment';
-import { CONFIG_PATH, loadGlobalConfig } from '../../config';
+import { CONFIG_FILE_NAME, loadGlobalConfig } from '../../config';
 import runCommand from '../../lib/runCommand';
 import defaultErrorCheck from '../../lib/defaultErrorCheck';
 import TerrainCLI from '../../TerrainCLI';
@@ -40,7 +40,7 @@ export default class Optimize extends Command {
 
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
-      CONFIG_PATH,
+      CONFIG_FILE_NAME,
       command,
       defaultErrorCheck(args.contract),
       successMessage,

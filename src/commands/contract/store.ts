@@ -3,7 +3,7 @@ import dedent from 'dedent';
 import { LCDClient } from '@terra-money/feather.js';
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { loadConfig, loadConnections, CONFIG_PATH as execPath } from '../../config';
+import { loadConfig, loadConnections, CONFIG_FILE_NAME as execPath } from '../../config';
 import { storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';

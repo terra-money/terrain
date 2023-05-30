@@ -2,7 +2,7 @@ import { Command } from '@oclif/command';
 import * as YAML from 'yaml';
 import { LCDClient, MsgUpdateContractAdmin } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
-import { loadConnections, loadRefs, CONFIG_PATH as execPath } from '../../config';
+import { loadConnections, loadRefs, CONFIG_FILE_NAME as execPath } from '../../config';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
