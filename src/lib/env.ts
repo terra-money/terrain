@@ -67,7 +67,7 @@ export const getEnv = (
   const config = loadConfig();
   const globalConfig = loadGlobalConfig();
   const keys = loadKeys(keysPath);
-  const refs = loadRefs(refsPath);
+  const refs = loadRefs(refsPath)[network];
   const connection = connections(network);
   const { chainID } = connection;
 
@@ -76,7 +76,7 @@ export const getEnv = (
     process.exit(1);
   }
 
-  const lcd = new LCDClientExtra({ [chainID]: connection }, chainID, prefix, refs[network]);
+  const lcd = new LCDClientExtra({ [chainID]: connection }, chainID, prefix, refs);
 
   const userDefinedWallets = R.map<
     { [k: string]: RawKey },
