@@ -37,7 +37,7 @@ export default class WalletNew extends Command {
     TerrainCLI.success(
       dedent`
       Your wallet has been successfully generated. 
-      ${flags.outfile ? `You may find your mnemonic, or seed phrase, in the "${flags.outfile}" file.` : `\n Mnemonic: ${mk.mnemonic}`}\n
+      ${flags.outfile ? `You may find your mnemonic, or seed phrase, in the "${flags.outfile}" file.` : `\n Mnemonic: "${mk.mnemonic}"`}\n
       Wallet Address: "${mk.accAddress('terra')}"\n
       "WARNING:" Anyone who gains access to your seed phrase can access the contents of the corresponding wallet. Be cognizant of the fact that there is no recourse for theft of a seed phrase.`,
       'Wallet Successfully Generated',

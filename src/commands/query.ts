@@ -40,7 +40,7 @@ export default class Query extends Command {
       if (err instanceof SyntaxError) {
         errMsg += ('Make sure you have single quotes around your query and double quotes around query keys.');
       } else {
-        errMsg += (JSON.stringify(err.response.data.message || err.message || err, null, 2));
+        errMsg += (JSON.stringify(err.response?.data?.message || err.message || err, null, 2));
       }
       TerrainCLI.error(errMsg);
     }

@@ -21,6 +21,7 @@ import {
   optimize,
 } from './deployment';
 import { LCDClientExtra } from './LCDClientExtra';
+import TerrainCLI from '../TerrainCLI';
 
 export type DeployHelpers = {
   build: (contract: string) => Promise<void>;
@@ -66,11 +67,16 @@ export const getEnv = (
   const config = loadConfig();
   const globalConfig = loadGlobalConfig();
   const keys = loadKeys(keysPath);
-  const refs = loadRefs(refsPath)[network];
+  const refs = loadRefs(refsPath);
   const connection = connections(network);
   const { chainID } = connection;
 
-  const lcd = new LCDClientExtra({ [chainID]: connection }, chainID, prefix, refs);
+  if (!refs) {
+    TerrainCLI.error(`No contracts refs found for network "${network}" and chainID "${chainID}"`);
+    process.exit(1);
+  }
+
+  const lcd = new LCDClientExtra({ [chainID]: connection }, chainID, prefix, refs[network]);
 
   const userDefinedWallets = R.map<
     { [k: string]: RawKey },

@@ -32,6 +32,7 @@ export class LCDClientExtra extends LCDClient {
   }
 
   query(contract: string, msg: Object, instanceId = 'default') {
+    console.log(this.refs[this.chainID]);
     return this.wasm.contractQuery(
       this.refs[this.chainID][contract].contractAddresses[instanceId],
       msg,

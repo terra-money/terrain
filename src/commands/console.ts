@@ -43,8 +43,8 @@ export default class Console extends Command {
       const env = getEnv(
         join(process.cwd(), flags['keys-path']),
         join(process.cwd(), flags['refs-path']),
-        network || flags.network,
-        prefix || flags.prefix,
+        flags.network || network,
+        flags.prefix || prefix,
         flags.signer,
       );
 
