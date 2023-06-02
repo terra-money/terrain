@@ -134,7 +134,8 @@ export const readConfig = () => {
     const configPath = path.join(currentPath, CONFIG_FILE_NAME);
 
     try {
-      return fs.readJSONSync(configPath);
+      const config = fs.readJSONSync(configPath);
+      return config;
     } catch (error: any) {
       if (error.code !== 'ENOENT') {
         return cli.error(

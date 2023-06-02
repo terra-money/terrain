@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import { join } from 'path';
 import { cli } from 'cli-ux';
 import { existsSync } from 'fs';
@@ -68,6 +68,7 @@ export default class Run extends Command {
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = async () => {
       if (existsSync('tasks') && !existsSync(execPath)) {
+        console.log('fisrt if');
         const jsExecutablePath = join('tasks', `${args.task}.js`);
         if (existsSync(jsExecutablePath)) {
           return new Promise<void | Error>((resolve, reject) => {
@@ -87,6 +88,7 @@ export default class Run extends Command {
             );
           });
         }
+
         TerrainCLI.error(
           `Task "${args.task}" not available in "tasks" directory.`,
           'Task Not Found',
@@ -94,7 +96,6 @@ export default class Run extends Command {
       }
       return null;
     };
-
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
