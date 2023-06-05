@@ -32,7 +32,6 @@ export class LCDClientExtra extends LCDClient {
   }
 
   query(contract: string, msg: Object, instanceId = 'default') {
-    console.log(this.refs[this.chainID]);
     return this.wasm.contractQuery(
       this.refs[this.chainID][contract].contractAddresses[instanceId],
       msg,
@@ -58,7 +57,8 @@ export class LCDClientExtra extends LCDClient {
       ),
     ];
     const mergedOptions = options ? { ...options, msgs } : { msgs };
-    const tx = await wallet.createAndSignTx({ ...mergedOptions, chainID: this.chainID });
+    const txOpions = { ...mergedOptions, chainID: this.chainID };
+    const tx = await wallet.createAndSignTx(txOpions);
     return this.tx.broadcast(tx, this.chainID);
   }
 }

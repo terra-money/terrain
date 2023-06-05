@@ -3,6 +3,7 @@ import * as fs from 'fs-extra';
 import { LCDClientConfig, MnemonicKey, RawKey } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
 import path from 'path';
+import TerrainCLI from './TerrainCLI';
 
 type Fee = {
   gasLimit: number;
@@ -82,7 +83,8 @@ export const connection = (
   const chainID = Object.keys(networks[network])
     .find((chainID) => networks[network][chainID].prefix === prefix);
   if (!chainID) {
-    cli.error(`no chain with network '${network}' with prefix '${prefix}' not found in config`);
+    TerrainCLI.error(`no chain with network "${network}" with prefix "${prefix}" not found in config`);
+    process.exit();
   }
   return networks[network][chainID];
 };

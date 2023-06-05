@@ -14,13 +14,10 @@ export default class TaskNew extends Command {
   async run() {
     const { args } = this.parse(TaskNew);
 
-    // Command execution path.
     const execPath = 'tasks';
 
-    // New task file creation path.
     const newTaskPath = join(execPath, `${args.task}.ts`);
 
-    // Command to be performed.
     const command = async () => {
       cli.action.start(`Creating task: ${args.task}`);
       await writeFile(

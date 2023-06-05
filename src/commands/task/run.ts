@@ -7,6 +7,7 @@ import * as flag from '../../lib/flag';
 import runScript from '../../lib/runScript';
 import runCommand from '../../lib/runCommand';
 import TerrainCLI from '../../TerrainCLI';
+import { CONFIG_FILE_NAME } from '../../config';
 
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
@@ -46,12 +47,14 @@ export default class Run extends Command {
 
     // Command execution path.
     const execPath = join('tasks', `${args.task}.ts`);
+    const configPath = join(process.cwd(), CONFIG_FILE_NAME);
 
     // Command to be performed.
     const command = async () => new Promise<void | Error>((resolve, reject) => {
       runScript(
         execPath,
         {
+          configPath,
           keysPath: join(process.cwd(), flags['keys-path']),
           refsPath: join(process.cwd(), flags['refs-path']),
           network: flags.network,
@@ -68,13 +71,13 @@ export default class Run extends Command {
     // Error check to be performed upon each backtrack iteration.
     const errorCheck = async () => {
       if (existsSync('tasks') && !existsSync(execPath)) {
-        console.log('fisrt if');
         const jsExecutablePath = join('tasks', `${args.task}.js`);
         if (existsSync(jsExecutablePath)) {
           return new Promise<void | Error>((resolve, reject) => {
             runScript(
               jsExecutablePath,
               {
+                configPath,
                 keysPath: join(process.cwd(), flags['keys-path']),
                 refsPath: join(process.cwd(), flags['refs-path']),
                 network: flags.network,

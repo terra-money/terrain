@@ -73,7 +73,7 @@ export const getEnv = (
 
   if (!refs) {
     TerrainCLI.error(`No contracts refs found for network "${network}" and chainID "${chainID}"`);
-    process.exit(1);
+    process.exit();
   }
 
   const lcd = new LCDClientExtra({ [chainID]: connection }, chainID, prefix, refs);

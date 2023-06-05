@@ -3,6 +3,7 @@ import * as childProcess from 'child_process';
 const runScript = (
   scriptPath: string,
   env: {
+    configPath: string;
     keysPath: string;
     refsPath: string;
     network: string;
