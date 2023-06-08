@@ -195,14 +195,13 @@ export const storeCode = async ({
     : path.join('contracts', contract, 'artifacts', wasmByteCodeFilename);
 
   const wasmByteCode = fs.readFileSync(artifactFileName).toString('base64');
-
   cli.action.start('storing wasm bytecode on chain');
 
   const storeCodeTx = await signer.createAndSignTx({
     chainID,
     memo,
     msgs: [
-      typeof codeId !== 'undefined'
+      codeId
         ? new MsgMigrateCode(signer.key.accAddress(prefix), codeId, wasmByteCode)
         : new MsgStoreCode(signer.key.accAddress(prefix), wasmByteCode),
     ],
