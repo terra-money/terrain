@@ -11,7 +11,6 @@ import * as flag from '../lib/flag';
 import runCommand from '../lib/runCommand';
 import defaultErrorCheck from '../lib/defaultErrorCheck';
 import TerrainCLI from '../TerrainCLI';
-import { frontendRefsPath } from '../lib/flag';
 
 export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
