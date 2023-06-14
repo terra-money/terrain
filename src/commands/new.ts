@@ -66,8 +66,8 @@ export default class New extends Command {
     cli.action.start('  🛠  Workspace');
     await TemplateScaffolding.from({
       remoteUrl:
-        'https://codeload.github.com/terra-money/terrain-core-template/zip/refs/heads/feat/interchain',
-      subFolder: 'terrain-core-template-feat-interchain',
+        'https://codeload.github.com/terra-money/terrain-core-template/zip/refs/heads/main',
+      subFolder: 'terrain-core-template-main',
       localOptions: {
         folderUrl: appDir,
       },
@@ -97,8 +97,8 @@ export default class New extends Command {
     if (flags.framework === 'react') {
       await TemplateScaffolding.from({
         remoteUrl:
-          'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/feat/interchain',
-        subFolder: 'terrain-frontend-template-feat-interchain',
+          'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main',
+        subFolder: 'terrain-frontend-template-main',
         localOptions: {
           folderUrl: frontendDir,
         },
