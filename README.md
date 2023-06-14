@@ -764,13 +764,14 @@ Create new dapp from template.
 ```
 USAGE
   $ terrain new [NAME] [--path <value>] [--framework react|vue|svelte|next|vite|lit] [--version <value>]
-    [--authors <value>]
+    [--authors <value>] [--no-frontend]
 
 FLAGS
   --authors=<value>     [default: Terra Money <core@terra.money>]
   --framework=<option>  [default: react] Choose the frontend framework you want to use. Non-react framework options have
                         better wallet-provider support but less streamlined contract integration.
                         <options: react|vue|svelte|next|vite|lit>
+  --no-frontend         Setup terrain as a CLI tool only
   --path=<value>        [default: .] Path to create the workspace
   --version=<value>     [default: 1.0]
 
@@ -785,6 +786,8 @@ EXAMPLES
   $ terrain new awesome-dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"
 
   $ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"
+
+  $ terrain new awesome-dapp --path path/to/dapp --no-frontend
 ```
 
 _See code: [src/commands/new.ts](https://github.com/terra-money/terrain/blob/v0.8.0/src/commands/new.ts)_
