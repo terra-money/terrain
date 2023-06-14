@@ -1,9 +1,9 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import dedent from 'dedent';
-import { LCDClient } from '@terra-money/terra.js';
+import { LCDClient } from '@terra-money/feather.js';
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { loadConfig, loadConnections } from '../../config';
+import { loadConfig, loadConnections, CONFIG_FILE_NAME as execPath } from '../../config';
 import { storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -14,10 +14,9 @@ export default class CodeStore extends Command {
   static description = 'Store code on chain.';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
     'no-rebuild': flag.noRebuild,
-    'code-id': flags.integer({}),
+    'code-id': flag.codeId,
+    ...flag.tx,
     ...flag.terrainPaths,
   };
 
@@ -27,20 +26,21 @@ export default class CodeStore extends Command {
     const { args, flags } = this.parse(CodeStore);
 
     // Command execution path.
-    const execPath = flags['config-path'];
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
-      const config = loadConfig(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
+      const config = loadConfig();
       const conf = config(flags.network, args.contract);
+      const connection = connections(flags.network);
 
-      const lcd = new LCDClient(connections(flags.network));
+      const lcd = new LCDClient({ [connection.chainID]: connection });
       const signer = await getSigner({
         network: flags.network,
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        prefix: flags.prefix,
       });
 
       await storeCode({
@@ -52,6 +52,7 @@ export default class CodeStore extends Command {
         refsPath: flags['refs-path'],
         lcd,
         codeId: flags['code-id'],
+        prefix: flags.prefix,
       });
     };
 
@@ -69,16 +70,13 @@ export default class CodeStore extends Command {
     };
 
     // Message to be displayed upon successful command execution.
-    const terraNetwork = flags.network === 'localterra'
-      ? 'LocalTerra'
-      : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        The Wasm bytecode for contract "${args.contract}" was successfully stored on "${terraNetwork}".\n
+        The Wasm bytecode for contract "${args.contract}" was successfully stored on "${flags.network}".\n
         The next step is to instantiate the contract:\n
         "terrain contract:instantiate ${args.contract} --signer <signer-wallet>" "--network <desired-network>"\n
-        "NOTE:" To instantiate your contract on the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
+        "NOTE:" To instantiate your contract on the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, use the following command:\n
         "terrain contract:instantiate ${args.contract}"
       `,
         'Wasm Bytecode Stored',

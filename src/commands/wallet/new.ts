@@ -1,11 +1,11 @@
 import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
-import { MnemonicKey } from '@terra-money/terra.js';
+import { MnemonicKey } from '@terra-money/feather.js';
 import * as fs from 'fs';
 import TerrainCLI from '../../TerrainCLI';
 
 export default class WalletNew extends Command {
-  static description = 'Generate a new wallet to use for signing contracts';
+  static description = 'Generate a new wallet to use for signing contracts.';
 
   static flags = {
     outfile: flags.string({
@@ -36,8 +36,9 @@ export default class WalletNew extends Command {
 
     TerrainCLI.success(
       dedent`
-      Your wallet has been successfully generated. You may find your mnemonic, or seed phrase, in the "${flags.outfile}" file.\n
-      Wallet Address: "${mk.accAddress}"\n
+      Your wallet has been successfully generated. 
+      ${flags.outfile ? `You may find your mnemonic, or seed phrase, in the "${flags.outfile}" file.` : `\n Mnemonic: "${mk.mnemonic}"`}\n
+      Wallet Address: "${mk.accAddress('terra')}"\n
       "WARNING:" Anyone who gains access to your seed phrase can access the contents of the corresponding wallet. Be cognizant of the fact that there is no recourse for theft of a seed phrase.`,
       'Wallet Successfully Generated',
     );

@@ -1,7 +1,9 @@
 import * as R from 'ramda';
 import * as fs from 'fs-extra';
-import { LCDClientConfig, MnemonicKey, RawKey } from '@terra-money/terra.js';
+import { LCDClientConfig, MnemonicKey, RawKey } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
+import path from 'path';
+import TerrainCLI from './TerrainCLI';
 
 type Fee = {
   gasLimit: number;
@@ -26,56 +28,81 @@ export type ContractConfig = {
 };
 
 type Config = {
-  _base: ContractConfig;
+  base: ContractConfig;
   contracts?: { [contract: string]: ContractConfig };
 };
 
 type GlobalConfig = {
-  _base: ContractConfig;
+  base: ContractConfig;
   useCargoWorkspace?: boolean;
   contracts?: { [contract: string]: ContractConfig };
 };
 
 export type ContractRef = {
-  codeId: number;
-  contractAddresses: {
-    [key: string]: string;
-  };
+  [contractName: string]: {
+    codeId: number;
+    contractAddresses: {
+      [key: string]: string;
+    };
+  }
 };
 
 export type Refs = {
   [network: string]: {
-    [contract: string]: ContractRef;
+    [chainID: string]: ContractRef;
   };
 };
 
-export const connection = (
-  networks: {
-    [network: string]: {
-      _connection: LCDClientConfig,
-    }
-  },
-) => (network: string) => networks[network]._connection
-    || cli.error(`network '${network}' not found in config`);
+export type Network = {
+  [network: string]: {
+    [chainID: string] : LCDClientConfig
+  }
+}
 
-export const loadConnections = (
-  path = `${__dirname}/template/config.terrain.json`,
-) => connection(fs.readJSONSync(path));
+export const CONFIG_FILE_NAME = 'config.terrain.json';
+
+export const GLOBAL_CONFIG = {
+  global: {
+    useCargoWorkspace: false,
+    prefix: 'terra',
+    network: 'localterra',
+    base: {
+      instantiation: {
+        instantiateMsg: {
+          count: 0,
+        },
+      },
+    },
+  },
+};
+
+export const connection = (
+  networks: Network,
+  prefix: string,
+) => (network: string) => {
+  const chainID = Object.keys(networks[network])
+    .find((chainID) => networks[network][chainID].prefix === prefix);
+  if (!chainID) {
+    TerrainCLI.error(`no chain with network "${network}" with prefix "${prefix}" not found in config`);
+    process.exit();
+  }
+  return networks[network][chainID];
+};
 
 export const config = (
   allConfig: {
-    _global: GlobalConfig;
+    global: GlobalConfig;
     [network: string]: Partial<Config>;
   },
 ) => (network: string, contract: string): ContractConfig => {
-  const globalBaseConfig = (allConfig._global && allConfig._global._base) || {};
+  const globalBaseConfig = (allConfig.global && allConfig.global.base) || {};
   const globalContractConfig = (
-    allConfig._global
-    && allConfig._global.contracts
-    && allConfig._global.contracts[contract]
+    allConfig.global
+    && allConfig.global.contracts
+    && allConfig.global.contracts[contract]
   ) || {};
 
-  const baseConfig = (allConfig[network] && allConfig[network]._base) || {};
+  const baseConfig = (allConfig[network] && allConfig[network].base) || {};
   const contractConfig = (
     allConfig[network]
     && allConfig[network].contracts
@@ -83,7 +110,7 @@ export const config = (
   ) || {};
 
   return [
-    allConfig._global._base,
+    allConfig.global.base,
     globalBaseConfig,
     globalContractConfig,
     baseConfig,
@@ -101,17 +128,43 @@ export const saveConfig = (
   fs.writeJSONSync(path, updated, { spaces: 2 });
 };
 
-export const loadConfig = (
-  path = `${__dirname}/template/config.terrain.json`,
-) => config(fs.readJSONSync(path));
+export const readConfig = () => {
+  let currentPath = process.cwd();
 
-export const loadGlobalConfig = (
-  path = `${__dirname}/template/config.terrain.json`,
-  // Extract useCargoWorkspace from global config.
-) => (({ _global: { useCargoWorkspace } }) => ({ useCargoWorkspace }))(fs.readJSONSync(path));
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < 5; i += 1) {
+    const configPath = path.join(currentPath, CONFIG_FILE_NAME);
+
+    try {
+      const config = fs.readJSONSync(configPath);
+      return config;
+    } catch (error: any) {
+      if (error.code !== 'ENOENT') {
+        return cli.error(
+          `Error reading configuration from ${configPath}: ${error.message}`,
+        );
+      }
+    }
+    currentPath = path.resolve(currentPath, '..');
+  }
+  return GLOBAL_CONFIG;
+};
+
+export const loadConnections = (
+  prefix: string,
+) => connection(readConfig(), prefix);
+
+export const loadConfig = () => config(readConfig());
+
+export const loadGlobalConfig = () => (({
+  global: {
+    useCargoWorkspace,
+    prefix, network,
+  },
+}) => ({ useCargoWorkspace, prefix, network }))(readConfig());
 
 export const loadKeys = (
-  path = `${__dirname}/template/keys.terrain.js`,
+  path: string,
 ): { [keyName: string]: RawKey } => {
   // eslint-disable-next-line import/no-dynamic-require, global-require
   const keys = require(path);
@@ -133,21 +186,7 @@ export const loadKeys = (
   );
 };
 
-export const setCodeId = (network: string, contract: string, codeId: number) => R.set(R.lensPath([network, contract, 'codeId']), codeId);
-
-export const setContractAddress = (
-  network: string,
-  contract: string,
-  instanceId: string,
-  contractAddress: string,
-) => R.set(
-  R.lensPath([network, contract, 'contractAddresses', instanceId]),
-  contractAddress,
-);
-
-export const loadRefs = (
-  path = `${__dirname}/template/refs.terrain.json`,
-): Refs => fs.readJSONSync(path);
+export const loadRefs = (path: string): Refs => fs.readJSONSync(path);
 
 export const saveRefs = (refs: Refs, path: string) => {
   fs.writeJSONSync(path, refs, { spaces: 2 });

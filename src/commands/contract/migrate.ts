@@ -1,6 +1,6 @@
-import { Command, flags } from '@oclif/command';
-import { LCDClient } from '@terra-money/terra.js';
-import { loadConfig, loadConnections } from '../../config';
+import { Command } from '@oclif/command';
+import { LCDClient } from '@terra-money/feather.js';
+import { loadConfig, loadConnections, CONFIG_FILE_NAME as execPath } from '../../config';
 import { migrate, storeCode } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -11,17 +11,11 @@ export default class ContractMigrate extends Command {
   static description = 'Migrate the contract.';
 
   static flags = {
-    signer: flag.signer,
     'no-rebuild': flag.noRebuild,
-    network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
-    'instance-id': flags.string({ default: 'default' }),
-    'code-id': flags.integer({
-      description:
-        'target code id for migration',
-    }),
+    'instance-id': flag.instanceId,
+    'code-id': flag.codeId,
+    ...flag.tx,
+    ...flag.terrainPaths,
   };
 
   static args = [{ name: 'contract', required: true }];
@@ -29,21 +23,20 @@ export default class ContractMigrate extends Command {
   async run() {
     const { args, flags } = this.parse(ContractMigrate);
 
-    // Command execution path.
-    const execPath = flags['config-path'];
-
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
-      const config = loadConfig(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
+      const config = loadConfig();
       const conf = config(flags.network, args.contract);
+      const connection = connections(flags.network);
 
-      const lcd = new LCDClient(connections(flags.network));
+      const lcd = new LCDClient({ [connection.chainID]: connection });
       const signer = await getSigner({
         network: flags.network,
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        prefix: flags.prefix,
       });
 
       const codeId = await storeCode({
@@ -54,6 +47,7 @@ export default class ContractMigrate extends Command {
         network: flags.network,
         refsPath: flags['refs-path'],
         lcd,
+        prefix: flags.prefix,
       });
 
       migrate({
@@ -65,6 +59,7 @@ export default class ContractMigrate extends Command {
         instanceId: flags['instance-id'],
         refsPath: flags['refs-path'],
         lcd,
+        prefix: flags.prefix,
       });
     };
 

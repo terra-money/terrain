@@ -10,7 +10,7 @@ import {
   Wallet,
   SignerData,
   CreateTxOptions,
-} from '@terra-money/terra.js';
+} from '@terra-money/feather.js';
 import { parse } from 'toml';
 import hyperlinker from 'hyperlinker';
 import { execSync } from 'child_process';
@@ -23,9 +23,13 @@ import {
   ContractConfig,
   loadRefs,
   saveRefs,
-  setCodeId,
-  setContractAddress,
+  loadConnections,
 } from '../config';
+import {
+  setContractAddress,
+  setCodeId,
+  getFeeDenom,
+} from '../util';
 import TerrainCLI from '../TerrainCLI';
 import useARM64 from './useARM64';
 
@@ -129,8 +133,10 @@ type StoreCodeParams = {
   contract: string;
   noRebuild?: boolean;
   signer: Wallet;
+  prefix: string;
   codeId?: number;
   useCargoWorkspace?: boolean;
+  memo?: string;
 };
 
 export const storeCode = async ({
@@ -142,8 +148,12 @@ export const storeCode = async ({
   codeId,
   noRebuild,
   useCargoWorkspace,
+  memo,
+  prefix,
 }: StoreCodeParams) => {
   const arm64 = useARM64(network);
+  const connections = loadConnections(prefix);
+  const { chainID } = connections(network);
 
   if (!noRebuild) {
     await build({ contract });
@@ -185,19 +195,18 @@ export const storeCode = async ({
     : path.join('contracts', contract, 'artifacts', wasmByteCodeFilename);
 
   const wasmByteCode = fs.readFileSync(artifactFileName).toString('base64');
-
   cli.action.start('storing wasm bytecode on chain');
 
   const storeCodeTx = await signer.createAndSignTx({
+    chainID,
+    memo,
     msgs: [
-      typeof codeId !== 'undefined'
-        ? new MsgMigrateCode(signer.key.accAddress, codeId, wasmByteCode)
-        : new MsgStoreCode(signer.key.accAddress, wasmByteCode),
+      codeId
+        ? new MsgMigrateCode(signer.key.accAddress(prefix), codeId, wasmByteCode)
+        : new MsgStoreCode(signer.key.accAddress(prefix), wasmByteCode),
     ],
   });
-
-  const res = await lcd.tx.broadcast(storeCodeTx);
-
+  const res = await lcd.tx.broadcast(storeCodeTx, chainID);
   cli.action.stop();
 
   try {
@@ -207,9 +216,11 @@ export const storeCode = async ({
 
     const updatedRefs = setCodeId(
       network,
+      chainID,
       contract,
       savedCodeId,
     )(loadRefs(refsPath));
+
     saveRefs(updatedRefs, refsPath);
     cli.log(`code is stored at code id: ${savedCodeId}`);
 
@@ -229,11 +240,13 @@ type InstantiateParams = {
   network: string;
   refsPath: string;
   lcd: LCDClient;
-  admin?: AccAddress;
+  prefix: string;
   contract: string;
+  admin?: AccAddress;
   codeId?: number;
   instanceId?: string;
   sequence?: number;
+  memo?: string;
 };
 
 export const instantiate = async ({
@@ -247,22 +260,24 @@ export const instantiate = async ({
   codeId,
   instanceId,
   sequence,
+  prefix,
+  memo,
 }: InstantiateParams) => {
   const { instantiation } = conf;
+  const connections = loadConnections(prefix);
+  const { chainID } = connections(network);
 
   // Ensure contract refs are available in refs.terrain.json.
   const refs = loadRefs(refsPath);
-  if (!(network in refs) || !(contract in refs[network])) {
-    const terraNetwork = network === 'localterra'
-      ? 'LocalTerra'
-      : `${network[0].toUpperCase()}${network.substring(1)}`;
+  if (!(network in refs) || !(contract in refs[network][chainID])) {
+    const name = `${network[0].toUpperCase()}${network.substring(1)}`;
     TerrainCLI.error(
-      `Contract "${contract}" has not yet been stored on the "${terraNetwork}" network.`,
+      `Contract "${contract}" has not yet been stored on the "${name}" network with prefix "${prefix}.`,
       'Contract Not Stored',
     );
   }
 
-  const actualCodeId = codeId || refs[network][contract].codeId;
+  const actualCodeId = codeId || refs[network][chainID][contract].codeId;
 
   cli.action.start(
     `instantiating contract with msg: ${JSON.stringify(
@@ -271,20 +286,25 @@ export const instantiate = async ({
   );
 
   // Allow manual account sequences.
-  const manualSequence = sequence || (await signer.sequence());
+  const manualSequence = sequence || (await signer.sequence(chainID));
 
   // Create signerData and txOptions for fee estimation.
-  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress);
+  const accountInfo = await lcd.auth.accountInfo(signer.key.accAddress(prefix));
+
   const signerData: [SignerData] = [
     {
       sequenceNumber: manualSequence,
       publicKey: accountInfo.getPublicKey(),
     },
   ];
+  const feeDenom = getFeeDenom(network, prefix);
+
   const txOptions: CreateTxOptions = {
+    chainID,
+    memo,
     msgs: [
       new MsgInstantiateContract(
-        signer.key.accAddress,
+        signer.key.accAddress(prefix),
         admin, // can migrate
         actualCodeId,
         instantiation.instantiateMsg,
@@ -294,18 +314,15 @@ export const instantiate = async ({
     ],
   };
 
-  // Set default terraDenom and feeDenoms value if not specified.
   if (!txOptions.feeDenoms) {
-    txOptions.feeDenoms = ['uluna'];
+    txOptions.feeDenoms = [feeDenom];
   }
-  const terraDenom = 'LUNA';
 
-  // Prompt user to accept gas fee for contract initialization if network is mainnet.
   if (network === 'mainnet') {
     const feeEstimate = await lcd.tx.estimateFee(signerData, txOptions);
     const gasFee = Number(feeEstimate.amount.get(txOptions.feeDenoms[0])!.amount) / 1000000;
     await TerrainCLI.anykey(
-      `The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${terraDenom}. Press any key to continue or "ctl+c" to exit`,
+      `The gas needed to deploy the '${contract}' contact is estimated to be ${gasFee} ${feeDenom}. Press any key to continue or "ctl+c" to exit`,
     );
   }
 
@@ -314,7 +331,7 @@ export const instantiate = async ({
     ...txOptions,
   });
 
-  const res = await lcd.tx.broadcast(instantiateTx);
+  const res = await lcd.tx.broadcast(instantiateTx, chainID);
 
   let log = [];
   try {
@@ -340,6 +357,7 @@ export const instantiate = async ({
 
   const updatedRefs = setContractAddress(
     network,
+    chainID,
     contract,
     instanceId || 'default',
     contractAddress,
@@ -360,6 +378,7 @@ type MigrateParams = {
   instanceId: string;
   refsPath: string;
   lcd: LCDClient;
+  prefix: string;
 };
 
 export const migrate = async ({
@@ -371,20 +390,25 @@ export const migrate = async ({
   codeId,
   network,
   instanceId,
+  prefix,
 }: MigrateParams) => {
   const { instantiation } = conf;
   const refs = loadRefs(refsPath);
 
-  const contractAddress = refs[network][contract].contractAddresses[instanceId];
+  const connections = loadConnections(prefix);
+  const { chainID } = connections(network);
+
+  const contractAddress = refs[network][chainID][contract].contractAddresses[instanceId];
 
   cli.action.start(
     `migrating contract with address ${contractAddress} to code id: ${codeId}`,
   );
 
   const migrateTx = await signer.createAndSignTx({
+    chainID,
     msgs: [
       new MsgMigrateContract(
-        signer.key.accAddress,
+        signer.key.accAddress(prefix),
         contractAddress,
         codeId,
         instantiation.instantiateMsg,
@@ -392,7 +416,7 @@ export const migrate = async ({
     ],
   });
 
-  const resInstant = await lcd.tx.broadcast(migrateTx);
+  const resInstant = await lcd.tx.broadcast(migrateTx, chainID);
 
   let log = [];
   try {
@@ -410,6 +434,7 @@ export const migrate = async ({
 
   const updatedRefs = setContractAddress(
     network,
+    chainID,
     contract,
     instanceId,
     contractAddress,

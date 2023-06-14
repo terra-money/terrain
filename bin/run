@@ -10,7 +10,6 @@ oclif.run()
   .catch((error) => {
     const oclifHandler = require('@oclif/core/handle');
     if (error?.response?.data?.message) {
-      // Append the response from LCD.
       error.message += `\nResponse: ${error?.response?.data?.message}`;
     }
     return oclifHandler(error);

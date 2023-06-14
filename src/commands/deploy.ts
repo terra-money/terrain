@@ -1,7 +1,9 @@
 import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
-import { LCDClient } from '@terra-money/terra.js';
-import { loadConfig, loadConnections, loadGlobalConfig } from '../config';
+import { LCDClient } from '@terra-money/feather.js';
+import {
+  loadConfig, loadConnections, loadGlobalConfig, CONFIG_FILE_NAME as execPath,
+} from '../config';
 import { instantiate, storeCode } from '../lib/deployment';
 import { getSigner } from '../lib/signer';
 import * as flag from '../lib/flag';
@@ -13,8 +15,7 @@ export default class Deploy extends Command {
   static description = 'Build wasm bytecode, store code on chain and instantiate.';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
+    memo: flag.memo,
     'no-rebuild': flag.noRebuild,
     'instance-id': flag.instanceId,
     'frontend-refs-path': flag.frontendRefsPath,
@@ -24,6 +25,7 @@ export default class Deploy extends Command {
     'no-sync': flags.string({
       description: "don't attempt to sync contract refs to frontend.",
     }),
+    ...flag.tx,
     ...flag.terrainPaths,
   };
 
@@ -31,27 +33,24 @@ export default class Deploy extends Command {
 
   async run() {
     const { args, flags } = this.parse(Deploy);
+    const globalConfig = loadGlobalConfig();
 
-    // initialize variables.
     let contractAddress: string;
     let admin: string;
 
-    // Command execution path.
-    const execPath = 'config.terrain.json';
-
-    // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
-      const config = loadConfig(flags['config-path']);
-      const globalConfig = loadGlobalConfig(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
+      const config = loadConfig();
       const conf = config(flags.network, args.contract);
+      const connection = connections(flags.network);
 
-      const lcd = new LCDClient(connections(flags.network));
+      const lcd = new LCDClient({ [connection.chainID]: connection });
       const signer = await getSigner({
         network: flags.network,
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        prefix: flags.prefix,
       });
 
       if (conf.deployTask) {
@@ -63,15 +62,12 @@ export default class Deploy extends Command {
           flags.network,
           '--refs-path',
           flags['refs-path'],
-          '--config-path',
-          flags['config-path'],
           '--keys-path',
           flags['keys-path'],
         ]);
       } else {
         // Store sequence to manually increment after code is stored.
-        const sequence = await signer.sequence();
-
+        const sequence = await signer.sequence(connection.chainID);
         const codeId = await storeCode({
           lcd,
           conf,
@@ -81,6 +77,8 @@ export default class Deploy extends Command {
           network: flags.network,
           refsPath: flags['refs-path'],
           useCargoWorkspace: globalConfig.useCargoWorkspace,
+          prefix: flags.prefix,
+          memo: flags.memo,
         });
 
         // pause for account sequence to update.
@@ -89,7 +87,7 @@ export default class Deploy extends Command {
 
         admin = flags['admin-address']
           ? flags['admin-address']
-          : signer.key.accAddress;
+          : signer.key.accAddress(flags.prefix);
 
         contractAddress = await instantiate({
           conf,
@@ -102,10 +100,10 @@ export default class Deploy extends Command {
           instanceId: flags['instance-id'],
           refsPath: flags['refs-path'],
           lcd,
+          prefix: flags.prefix,
+          memo: flags.memo,
         });
       }
-
-      await this.config.runCommand('contract:generateClient', [args.contract]);
 
       if (!flags['no-sync']) {
         await this.config.runCommand('sync-refs', [
@@ -118,13 +116,10 @@ export default class Deploy extends Command {
     };
 
     // Message to be displayed upon successful command execution.
-    const terraNetwork = flags.network === 'localterra'
-      ? 'LocalTerra'
-      : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        Contract "${args.contract}" has been successfully deployed on "${terraNetwork}".\n
+        Contract "${args.contract}" has been successfully deployed on "${flags.network}".\n
         Contract Address: "${contractAddress}"\n
         Administrator: "${admin}"
       `,
@@ -132,7 +127,6 @@ export default class Deploy extends Command {
       );
     };
 
-    // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
       command,

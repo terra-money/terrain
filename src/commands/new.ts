@@ -6,7 +6,9 @@ import * as fs from 'fs';
 import { execSync } from 'child_process';
 import { pascal } from 'case';
 import dedent from 'dedent';
+import axios from 'axios';
 import TerrainCLI from '../TerrainCLI';
+import { GLOBAL_CONFIG } from '../config';
 
 export default class New extends Command {
   static description = 'Create new dapp from template.';
@@ -41,7 +43,6 @@ export default class New extends Command {
 
   async run() {
     const { args, flags } = this.parse(New);
-
     const appDir = path.join(process.cwd(), flags.path, args.name);
     const contractDir = path.join(appDir, 'contracts', args.name);
     const frontendDir = path.join(appDir, 'frontend');
@@ -74,6 +75,9 @@ export default class New extends Command {
         entries: templateEntries,
       },
     });
+    const res = await axios.get('https://station-assets.terra.money/chains.json');
+    fs.writeFileSync(path.join(appDir, 'config.terrain.json'), JSON.stringify({ ...GLOBAL_CONFIG, ...res.data }, null, 2));
+
     cli.action.stop();
 
     cli.action.start('  📝 Contract');
@@ -137,7 +141,7 @@ export default class New extends Command {
       "cd ${args.name}"\n
       And try to deploy it to your preferred Terra network:\n
       "terrain deploy ${args.name} --signer <signer-wallet> --network" "<desired-network>"\n
-      "NOTE:" To deploy your contract to the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, utilize the following command:\n
+      "NOTE:" To deploy your contract to the "LocalTerra" network utilizing the preconfigured test wallet "test1" as the signer, use the following command:\n
       "terrain deploy ${args.name}"
     `,
       'Application Generated',

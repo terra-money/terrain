@@ -1,8 +1,8 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import * as YAML from 'yaml';
-import { LCDClient, MsgUpdateContractAdmin } from '@terra-money/terra.js';
+import { LCDClient, MsgUpdateContractAdmin } from '@terra-money/feather.js';
 import { cli } from 'cli-ux';
-import { loadConnections, loadRefs } from '../../config';
+import { loadConnections, loadRefs, CONFIG_FILE_NAME as execPath } from '../../config';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
 import runCommand from '../../lib/runCommand';
@@ -12,12 +12,9 @@ export default class ContractUpdateAdmin extends Command {
   static description = 'Update the admin of a contract.';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
-    'instance-id': flags.string({ default: 'default' }),
+    ...flag.tx,
+    'instance-id': flag.instanceId,
+    ...flag.terrainPaths,
   };
 
   static args = [
@@ -27,40 +24,44 @@ export default class ContractUpdateAdmin extends Command {
 
   async run() {
     const { args, flags } = this.parse(ContractUpdateAdmin);
-
     // Command execution path.
-    const execPath = flags['config-path'];
 
     // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
       const refs = loadRefs(flags['refs-path']);
       const { network } = flags;
-      const lcd = new LCDClient(connections(flags.network));
+      const connection = connections(network);
+
+      const { chainID } = connection;
+      const lcd = new LCDClient({ [chainID]: connection });
+
       const signer = await getSigner({
         network: flags.network,
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        prefix: flags.prefix,
       });
 
-      const contractAddress = refs[network][args.contract].contractAddresses[flags['instance-id']];
+      const contractAddress = refs[network][chainID][args.contract].contractAddresses[flags['instance-id']];
 
       cli.action.start(
         `Updating contract admin to: ${args.admin}`,
       );
 
       const updateAdminTx = await signer.createAndSignTx({
+        chainID,
         msgs: [
           new MsgUpdateContractAdmin(
-            signer.key.accAddress,
+            signer.key.accAddress(flags.prefix),
             args.admin,
             contractAddress,
           ),
         ],
       });
 
-      const res = await lcd.tx.broadcast(updateAdminTx);
+      const res = await lcd.tx.broadcast(updateAdminTx, chainID);
 
       cli.action.stop();
 

@@ -1,7 +1,7 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import dedent from 'dedent';
-import { LCDClient } from '@terra-money/terra.js';
-import { loadConfig, loadConnections } from '../../config';
+import { LCDClient } from '@terra-money/feather.js';
+import { loadConfig, loadConnections, CONFIG_FILE_NAME as execPath } from '../../config';
 import { instantiate } from '../../lib/deployment';
 import { getSigner } from '../../lib/signer';
 import * as flag from '../../lib/flag';
@@ -13,12 +13,9 @@ export default class ContractInstantiate extends Command {
   static description = 'Instantiate the contract.';
 
   static flags = {
-    signer: flag.signer,
-    network: flag.network,
-    'instance-id': flags.string({ default: 'default' }),
-    'code-id': flags.integer({
-      description: 'specific codeId to instantiate',
-    }),
+    'instance-id': flag.instanceId,
+    'code-id': flag.codeId,
+    ...flag.tx,
     ...flag.terrainPaths,
   };
 
@@ -27,28 +24,27 @@ export default class ContractInstantiate extends Command {
   async run() {
     const { args, flags } = this.parse(ContractInstantiate);
 
-    // Initialize variables.
     let contractAddress: string;
     let admin: string;
 
     // Command execution path.
-    const execPath = flags['config-path'];
 
-    // Command to be performed.
     const command = async () => {
-      const connections = loadConnections(flags['config-path']);
-      const config = loadConfig(flags['config-path']);
+      const connections = loadConnections(flags.prefix);
+      const config = loadConfig();
       const conf = config(flags.network, args.contract);
+      const connection = connections(flags.network);
 
-      const lcd = new LCDClient(connections(flags.network));
+      const lcd = new LCDClient({ [connection.chainID]: connection });
       const signer = await getSigner({
         network: flags.network,
         signerId: flags.signer,
         keysPath: flags['keys-path'],
         lcd,
+        prefix: flags.prefix,
       });
 
-      admin = signer.key.accAddress;
+      admin = signer.key.accAddress(flags.prefix);
 
       contractAddress = await instantiate({
         conf,
@@ -60,17 +56,15 @@ export default class ContractInstantiate extends Command {
         instanceId: flags['instance-id'],
         refsPath: flags['refs-path'],
         lcd,
+        prefix: flags.prefix,
       });
     };
 
     // Message to be displayed upon successful command execution.
-    const terraNetwork = flags.network === 'localterra'
-      ? 'LocalTerra'
-      : `${flags.network[0].toUpperCase()}${flags.network.substring(1)}`;
     const successMessage = () => {
       TerrainCLI.success(
         dedent`
-        Contract "${args.contract}" was successfully instantiated on "${terraNetwork}".\n
+        Contract "${args.contract}" was successfully instantiated on "${flags.network}".\n
         Contract Address: "${contractAddress}"\n
         Administrator: "${admin}"
       `,

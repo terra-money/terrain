@@ -1,12 +1,13 @@
 import * as childProcess from 'child_process';
 
-export default (
+const runScript = (
   scriptPath: string,
   env: {
     configPath: string;
     keysPath: string;
     refsPath: string;
     network: string;
+    prefix: string;
     signer: string;
   },
   callback: (err?: Error) => void,
@@ -45,3 +46,5 @@ export default (
     callback(err);
   });
 };
+
+export default runScript;

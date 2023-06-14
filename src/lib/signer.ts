@@ -1,9 +1,10 @@
-import { LCDClient, LocalTerra, Wallet } from '@terra-money/terra.js';
+import { LCDClient, LocalTerra, Wallet } from '@terra-money/feather.js';
 import hyperlinker from 'hyperlinker';
 import { cli } from 'cli-ux';
 import dedent from 'dedent';
 import * as path from 'path';
-import { loadKeys } from '../config';
+import { loadKeys, loadConnections } from '../config';
+import { isLocalNetwork } from '../util';
 import TerrainCLI from '../TerrainCLI';
 
 export const getSigner = async ({
@@ -11,28 +12,32 @@ export const getSigner = async ({
   signerId,
   keysPath,
   lcd,
+  prefix,
 }: {
   network: string;
   signerId: string;
   keysPath: string;
   lcd: LCDClient;
+  prefix: string;
 }): Promise<Wallet> => {
-  // If transaction is being attempted on LocalTerra...
   const localterra = new LocalTerra();
   if (
-    network === 'localterra'
+    isLocalNetwork(network)
     && Object.prototype.hasOwnProperty.call(localterra.wallets, signerId)
   ) {
     // Attempt to request sequence from LocalTerra.
     // Alert user if LocalTerra request fails.
     try {
       const signer = localterra.wallets[signerId as keyof typeof localterra.wallets];
-      await signer.sequence();
+      const connections = loadConnections(prefix);
+      const { chainID } = connections(network);
+
+      await signer.sequence(chainID);
       cli.log(
         `Using pre-baked '${signerId}' wallet on LocalTerra as signer...`,
       );
       return signer;
-    } catch {
+    } catch (error) {
       TerrainCLI.error(
         dedent`
         "LocalTerra" is currently not running.\n

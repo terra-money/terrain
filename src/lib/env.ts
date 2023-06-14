@@ -2,7 +2,7 @@ import {
   LocalTerra,
   RawKey,
   Wallet,
-} from '@terra-money/terra.js';
+} from '@terra-money/feather.js';
 import * as R from 'ramda';
 import {
   ContractConfig,
@@ -21,6 +21,7 @@ import {
   optimize,
 } from './deployment';
 import { LCDClientExtra } from './LCDClientExtra';
+import TerrainCLI from '../TerrainCLI';
 
 export type DeployHelpers = {
   build: (contract: string) => Promise<void>;
@@ -56,19 +57,26 @@ export type Env = {
 };
 
 export const getEnv = (
-  configPath: string,
   keysPath: string,
   refsPath: string,
   network: string,
+  prefix: string,
   defaultWallet: string,
 ): Env => {
-  const connections = loadConnections(configPath);
-  const config = loadConfig(configPath);
-  const globalConfig = loadGlobalConfig(configPath);
+  const connections = loadConnections(prefix);
+  const config = loadConfig();
+  const globalConfig = loadGlobalConfig();
   const keys = loadKeys(keysPath);
   const refs = loadRefs(refsPath)[network];
+  const connection = connections(network);
+  const { chainID } = connection;
 
-  const lcd = new LCDClientExtra(connections(network), refs);
+  if (!refs) {
+    TerrainCLI.error(`No contracts refs found for network "${network}" and chainID "${chainID}"`);
+    process.exit();
+  }
+
+  const lcd = new LCDClientExtra({ [chainID]: connection }, chainID, prefix, refs);
 
   const userDefinedWallets = R.map<
     { [k: string]: RawKey },
@@ -108,6 +116,7 @@ export const getEnv = (
         conf: config(network, contract),
         noRebuild: typeof options?.noRebuild === 'undefined' ? false : options.noRebuild,
         useCargoWorkspace: globalConfig.useCargoWorkspace,
+        prefix,
       }),
       instantiate: (
         contract: string,
@@ -121,6 +130,7 @@ export const getEnv = (
         network,
         refsPath,
         lcd,
+        prefix,
         admin: options?.admin,
         // Use the instantiation message passed instead of default.
         conf: options?.init

@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import { join } from 'path';
 import { cli } from 'cli-ux';
 import { existsSync } from 'fs';
@@ -7,15 +7,16 @@ import * as flag from '../../lib/flag';
 import runScript from '../../lib/runScript';
 import runCommand from '../../lib/runCommand';
 import TerrainCLI from '../../TerrainCLI';
+import { CONFIG_FILE_NAME } from '../../config';
 
 export const task = async (fn: (env: Env) => Promise<void>) => {
   try {
     await fn(
       getEnv(
-        process.env.configPath || '',
         process.env.keysPath || '',
         process.env.refsPath || '',
         process.env.network || '',
+        process.env.prefix || '',
         process.env.signer || '',
       ),
     );
@@ -35,11 +36,8 @@ export default class Run extends Command {
   static description = 'run predefined task';
 
   static flags = {
-    signer: flag.signer,
-    network: flags.string({ default: 'localterra' }),
-    'config-path': flags.string({ default: 'config.terrain.json' }),
-    'refs-path': flags.string({ default: 'refs.terrain.json' }),
-    'keys-path': flags.string({ default: 'keys.terrain.js' }),
+    ...flag.tx,
+    ...flag.terrainPaths,
   };
 
   static args = [{ name: 'task' }];
@@ -49,16 +47,18 @@ export default class Run extends Command {
 
     // Command execution path.
     const execPath = join('tasks', `${args.task}.ts`);
+    const configPath = join(process.cwd(), CONFIG_FILE_NAME);
 
     // Command to be performed.
     const command = async () => new Promise<void | Error>((resolve, reject) => {
       runScript(
         execPath,
         {
-          configPath: join(process.cwd(), flags['config-path']),
+          configPath,
           keysPath: join(process.cwd(), flags['keys-path']),
           refsPath: join(process.cwd(), flags['refs-path']),
           network: flags.network,
+          prefix: flags.prefix,
           signer: flags.signer,
         },
         (err) => {
@@ -77,10 +77,11 @@ export default class Run extends Command {
             runScript(
               jsExecutablePath,
               {
-                configPath: join(process.cwd(), flags['config-path']),
+                configPath,
                 keysPath: join(process.cwd(), flags['keys-path']),
                 refsPath: join(process.cwd(), flags['refs-path']),
                 network: flags.network,
+                prefix: flags.prefix,
                 signer: flags.signer,
               },
               (err) => {
@@ -90,6 +91,7 @@ export default class Run extends Command {
             );
           });
         }
+
         TerrainCLI.error(
           `Task "${args.task}" not available in "tasks" directory.`,
           'Task Not Found',
@@ -97,7 +99,6 @@ export default class Run extends Command {
       }
       return null;
     };
-
     // Attempt to execute command while backtracking through file tree.
     await runCommand(
       execPath,
