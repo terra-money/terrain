@@ -7,7 +7,7 @@
 ---
 
 <p align="center">
-  <b>Terrain</b> - A Terra development environment for seamless smart contract development.
+  <b>Terrain</b> - A development environment for seamless smart contract development on the interchain.
 </p>
 
 <div align="center">
@@ -20,13 +20,13 @@
 
 Terrain allows you to:
 
-- Scaffold a template smart contract and frontend for app development.
+- Scaffold a template smart contract and frontend for interchain app development.
 - Dramatically simplify the development and deployment process.
 
 Terrain is **not**:
 
-- A fully-featured Terra command-line interface (CLI). If you need a fully-featured client, use <a href="https://docs.terra.money/develop/terrad/using-terrad" target="_blank">terrad</a>.
-- A Light Client Daemon (LCD). You will still need an RPC endpoint to deploy your contract. <a href="https://github.com/terra-money/LocalTerra#readme" target="_blank">LocalTerra</a> is the recommended option for this.
+- A fully-featured command-line interface (CLI). If you need a fully-featured client for Terra, use <a href="https://docs.terra.money/develop/terrad/using-terrad" target="_blank">terrad</a>.
+- A Light Client Daemon (LCD). You will still need an RPC endpoint to deploy your contract. A local chain like <a href="https://github.com/terra-money/LocalTerra#readme" target="_blank">LocalTerra</a> is the recommended option for this.
 
 ---
 
