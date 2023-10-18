@@ -18,6 +18,7 @@ export default class New extends Command {
     '$ terrain new awesome-dapp --path path/to/dapp',
     '$ terrain new awesome-dapp --path path/to/dapp --authors "ExampleAuthor<example@email.domain>"',
     '$ terrain new awesome-dapp --path path/to/dapp --framework vue --authors "ExampleAuthor<example@email.domain>"',
+    '$ terrain new awesome-dapp --path path/to/dapp --no-frontend',
   ];
 
   static flags = {
@@ -36,6 +37,10 @@ export default class New extends Command {
     }),
     authors: flags.string({
       default: 'Terra Money <core@terra.money>',
+    }),
+    'no-frontend': flags.boolean({
+      description: 'Setup terrain as a CLI tool only',
+      default: false,
     }),
   };
 
@@ -92,31 +97,33 @@ export default class New extends Command {
       },
     });
     cli.action.stop();
+    if (!flags['no-frontend']) {
+      cli.action.start('  💻 Frontend');
 
-    cli.action.start('  💻 Frontend');
-    if (flags.framework === 'react') {
-      await TemplateScaffolding.from({
-        remoteUrl:
+      if (flags.framework === 'react') {
+        await TemplateScaffolding.from({
+          remoteUrl:
           'https://codeload.github.com/terra-money/terrain-frontend-template/zip/refs/heads/main',
-        subFolder: 'terrain-frontend-template-main',
-        localOptions: {
-          folderUrl: frontendDir,
-        },
-        replace: {
-          entries: templateEntries,
-        },
-      });
-    } else {
-      await TemplateScaffolding.from({
-        remoteUrl:
+          subFolder: 'terrain-frontend-template-main',
+          localOptions: {
+            folderUrl: frontendDir,
+          },
+          replace: {
+            entries: templateEntries,
+          },
+        });
+      } else {
+        await TemplateScaffolding.from({
+          remoteUrl:
           'https://codeload.github.com/terra-money/wallet-provider/zip/refs/heads/main',
-        subFolder: `wallet-provider-main/templates/${flags.framework}`,
-        localOptions: {
-          folderUrl: frontendDir,
-        },
-      });
+          subFolder: `wallet-provider-main/templates/${flags.framework}`,
+          localOptions: {
+            folderUrl: frontendDir,
+          },
+        });
+      }
+      cli.action.stop();
     }
-    cli.action.stop();
 
     // Install app dependencies.
     process.chdir(appDir);
@@ -127,12 +134,14 @@ export default class New extends Command {
     cli.action.stop();
 
     // Install frontend dependencies.
-    process.chdir(frontendDir);
-    cli.action.start('  🔧 Installing frontend dependencies');
-    await execSync('npm i --loglevel error', {
-      stdio: ['ignore', 'ignore', 'inherit'],
-    });
-    cli.action.stop();
+    if (!flags['no-frontend']) {
+      process.chdir(frontendDir);
+      cli.action.start('  🔧 Installing frontend dependencies');
+      await execSync('npm i --loglevel error', {
+        stdio: ['ignore', 'ignore', 'inherit'],
+      });
+      cli.action.stop();
+    }
 
     TerrainCLI.success(
       dedent`

@@ -1,6 +1,7 @@
 import { Command, flags } from '@oclif/command';
 import dedent from 'dedent';
 import { LCDClient } from '@terra-money/feather.js';
+import { existsSync } from 'fs';
 import {
   loadConfig, loadConnections, loadGlobalConfig, CONFIG_FILE_NAME as execPath,
 } from '../config';
@@ -105,7 +106,9 @@ export default class Deploy extends Command {
         });
       }
 
-      if (!flags['no-sync']) {
+      const hasFrontend = existsSync(flags['frontend-refs-path']);
+
+      if (!flags['no-sync'] && hasFrontend) {
         await this.config.runCommand('sync-refs', [
           '--refs-path',
           flags['refs-path'],
